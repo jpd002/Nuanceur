@@ -48,6 +48,12 @@ namespace Nuanceur
 			convertedParams.insert(convertedParams.end(), param.begin(), param.end());
 		}
 
+		static void ConvertParam(ConvertedParamArray& convertedParams, float param)
+		{
+			uint32 convertedValue = *reinterpret_cast<uint32*>(&param);
+			convertedParams.push_back(convertedValue);
+		}
+
 		template <typename ParamType>
 		static void ConvertParams(ConvertedParamArray& convertedParams, ParamType&& param)
 		{
@@ -105,11 +111,15 @@ namespace Nuanceur
 		void DecorateOutputPointerIds();
 		void DeclareOutputPointerIds();
 
+		void DeclareTemporaryValueIds();
+
 		static uint32 MapSemanticToLocation(Nuanceur::SEMANTIC, uint32);
 
 		uint32 AllocateId();
 
 		//Type Ids
+		uint32 m_floatTypeId = 0;
+		uint32 m_float4TypeId = 0;
 		uint32 m_inputFloat4PointerTypeId = 0;
 		uint32 m_outputFloat4PointerTypeId = 0;
 
@@ -119,6 +129,7 @@ namespace Nuanceur
 
 		std::map<uint32, uint32> m_inputPointerIds;
 		std::map<uint32, uint32> m_outputPointerIds;
+		std::map<uint32, uint32> m_temporaryValueIds;
 		uint32 m_nextId = 1;
 	};
 }
