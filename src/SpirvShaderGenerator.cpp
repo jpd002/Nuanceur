@@ -196,20 +196,7 @@ void CSpirvShaderGenerator::Generate()
 				break;
 			}
 		}
-#if 0
-		auto positionTempId = AllocateId();
-		auto colorTempId = AllocateId();
-		auto outputPositionPointerId = AllocateId();
 
-		//Write Position
-		WriteOp(spv::OpLoad, float4TypeId, positionTempId, inputPositionVariableId);
-		WriteOp(spv::OpAccessChain, outputFloat4PointerTypeId, outputPositionPointerId, outputPerVertexVariableId, int32ZeroConstantId);
-		WriteOp(spv::OpStore, outputPositionPointerId, positionTempId);
-
-		//Write Color
-		WriteOp(spv::OpLoad, float4TypeId, colorTempId, inputColorVariableId);
-		WriteOp(spv::OpStore, outputColorVariableId, colorTempId);
-#endif
 		WriteOp(spv::OpReturn);
 		WriteOp(spv::OpFunctionEnd);
 	}
