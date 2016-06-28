@@ -113,6 +113,12 @@ namespace Nuanceur
 
 		void DeclareTemporaryValueIds();
 
+		void DecorateUniformStructIds();
+		void DeclareUniformStructIds();
+
+		uint32 LoadFromSymbol(const CShaderBuilder::SYMBOLREF&);
+		void StoreToSymbol(const CShaderBuilder::SYMBOLREF&, uint32);
+
 		static uint32 MapSemanticToLocation(Nuanceur::SEMANTIC, uint32);
 
 		uint32 AllocateId();
@@ -121,15 +127,27 @@ namespace Nuanceur
 		uint32 m_floatTypeId = 0;
 		uint32 m_float4TypeId = 0;
 		uint32 m_inputFloat4PointerTypeId = 0;
+
 		uint32 m_outputFloat4PointerTypeId = 0;
+
+		uint32 m_outputPerVertexVariableId = 0;
+
+		uint32 m_uniformStructTypeId = 0;
+		uint32 m_pushUniformStructPointerTypeId = 0;
+		uint32 m_pushFloat4PointerTypeId = 0;
+		uint32 m_pushUniformVariableId = 0;
+
+		uint32 m_int32ZeroConstantId = 0;
 
 		Framework::CStream& m_outputStream;
 		const CShaderBuilder& m_shaderBuilder;
 		SHADER_TYPE m_shaderType = SHADER_TYPE_VERTEX;
 
+		bool m_hasUniforms = false;
 		std::map<uint32, uint32> m_inputPointerIds;
 		std::map<uint32, uint32> m_outputPointerIds;
 		std::map<uint32, uint32> m_temporaryValueIds;
+		std::map<uint32, uint32> m_uniformStructMemberIds;
 		uint32 m_nextId = 1;
 	};
 }

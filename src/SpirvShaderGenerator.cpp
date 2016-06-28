@@ -27,6 +27,9 @@ void CSpirvShaderGenerator::Generate()
 	Write32(0);                //Bound
 	Write32(0);                //Instruction Schema
 
+	m_hasUniforms = std::count_if(m_shaderBuilder.GetSymbols().begin(), m_shaderBuilder.GetSymbols().end(),
+		[] (const CShaderBuilder::SYMBOL& symbol) { return symbol.location == CShaderBuilder::SYMBOL_LOCATION_UNIFORM; }) != 0;
+
 	auto voidTypeId = AllocateId();
 	auto mainFunctionTypeId = AllocateId();
 	m_floatTypeId = AllocateId();
@@ -37,11 +40,19 @@ void CSpirvShaderGenerator::Generate()
 	m_outputFloat4PointerTypeId = AllocateId();
 	auto outputPerVertexStructPointerTypeId = AllocateId();
 
+	if(m_hasUniforms)
+	{
+		m_uniformStructTypeId = AllocateId();
+		m_pushUniformStructPointerTypeId = AllocateId();
+		m_pushFloat4PointerTypeId = AllocateId();
+		m_pushUniformVariableId = AllocateId();
+	}
+
 	AllocateInputPointerIds();
 	AllocateOutputPointerIds();
 
-	auto outputPerVertexVariableId = AllocateId();
-	auto int32ZeroConstantId = AllocateId();
+	m_outputPerVertexVariableId = AllocateId();
+	m_int32ZeroConstantId = AllocateId();
 
 	auto mainFunctionId = AllocateId();
 	auto mainFunctionLabelId = AllocateId();
@@ -76,7 +87,7 @@ void CSpirvShaderGenerator::Generate()
 		outputPointerIds.reserve(m_outputPointerIds.size() + 1);
 		if(m_shaderType == SHADER_TYPE_VERTEX)
 		{
-			outputPointerIds.push_back(outputPerVertexVariableId);
+			outputPointerIds.push_back(m_outputPerVertexVariableId);
 		}
 		for(const auto& outputPointerIdPair : m_outputPointerIds)
 		{
@@ -106,6 +117,11 @@ void CSpirvShaderGenerator::Generate()
 		WriteOp(spv::OpDecorate, perVertexStructTypeId, spv::DecorationBlock);
 	}
 
+	if(m_hasUniforms)
+	{
+		DecorateUniformStructIds();
+	}
+
 	DecorateInputPointerIds();
 	DecorateOutputPointerIds();
 
@@ -115,12 +131,20 @@ void CSpirvShaderGenerator::Generate()
 	WriteOp(spv::OpTypeFloat, m_floatTypeId, 32);
 	WriteOp(spv::OpTypeVector, m_float4TypeId, m_floatTypeId, 4);
 	WriteOp(spv::OpTypeInt, int32TypeId, 32, 1);
-	WriteOp(spv::OpTypeStruct, perVertexStructTypeId, m_float4TypeId, m_floatTypeId);
 	WriteOp(spv::OpTypePointer, m_inputFloat4PointerTypeId, spv::StorageClassInput, m_float4TypeId);
 	WriteOp(spv::OpTypePointer, m_outputFloat4PointerTypeId, spv::StorageClassOutput, m_float4TypeId);
+	
 	if(m_shaderType == SHADER_TYPE_VERTEX)
 	{
+		WriteOp(spv::OpTypeStruct, perVertexStructTypeId, m_float4TypeId, m_floatTypeId);
 		WriteOp(spv::OpTypePointer, outputPerVertexStructPointerTypeId, spv::StorageClassOutput, perVertexStructTypeId);
+	}
+
+	if(m_hasUniforms)
+	{
+		DeclareUniformStructIds();
+		WriteOp(spv::OpTypePointer, m_pushUniformStructPointerTypeId, spv::StorageClassPushConstant, m_uniformStructTypeId);
+		WriteOp(spv::OpTypePointer, m_pushFloat4PointerTypeId, spv::StorageClassPushConstant, m_float4TypeId);
 	}
 
 	DeclareInputPointerIds();
@@ -129,11 +153,16 @@ void CSpirvShaderGenerator::Generate()
 	//Declare Output PerVertex (Position + PointSize) BuiltIn
 	if(m_shaderType == SHADER_TYPE_VERTEX)
 	{
-		WriteOp(spv::OpVariable, outputPerVertexStructPointerTypeId, outputPerVertexVariableId, spv::StorageClassOutput);
+		WriteOp(spv::OpVariable, outputPerVertexStructPointerTypeId, m_outputPerVertexVariableId, spv::StorageClassOutput);
+	}
+
+	if(m_hasUniforms)
+	{
+		WriteOp(spv::OpVariable, m_pushUniformStructPointerTypeId, m_pushUniformVariableId, spv::StorageClassPushConstant);
 	}
 
 	//Declare Zero Index Constant
-	WriteOp(spv::OpConstant, int32TypeId, int32ZeroConstantId, 0);
+	WriteOp(spv::OpConstant, int32TypeId, m_int32ZeroConstantId, 0);
 
 	DeclareTemporaryValueIds();
 
@@ -146,61 +175,22 @@ void CSpirvShaderGenerator::Generate()
 		{
 			const auto& dstRef = statement.dstRef;
 			const auto& src1Ref = statement.src1Ref;
+			const auto& src2Ref = statement.src2Ref;
 			switch(statement.op)
 			{
+			case CShaderBuilder::STATEMENT_OP_ADD:
+				{
+					auto src1Id = LoadFromSymbol(src1Ref);
+					auto src2Id = LoadFromSymbol(src2Ref);
+					auto resultId = AllocateId();
+					WriteOp(spv::OpFAdd, m_float4TypeId, resultId, src1Id, src2Id);
+					StoreToSymbol(dstRef, resultId);
+				}
+				break;
 			case CShaderBuilder::STATEMENT_OP_ASSIGN:
 				{
-					uint32 src1Id = 0;
-					assert(src1Ref.swizzle == SWIZZLE_XYZW);
-					switch(src1Ref.symbol.location)
-					{
-					case CShaderBuilder::SYMBOL_LOCATION_INPUT:
-						{
-							src1Id = AllocateId();
-							assert(m_inputPointerIds.find(src1Ref.symbol.index) != std::end(m_inputPointerIds));
-							auto pointerId = m_inputPointerIds[src1Ref.symbol.index];
-							WriteOp(spv::OpLoad, m_float4TypeId, src1Id, pointerId);
-						}
-						break;
-					case CShaderBuilder::SYMBOL_LOCATION_TEMPORARY:
-						{
-							assert(m_temporaryValueIds.find(src1Ref.symbol.index) != std::end(m_temporaryValueIds));
-							src1Id = m_temporaryValueIds[src1Ref.symbol.index];
-						}
-						break;
-					default:
-						assert(false);
-						break;
-					}
-					if(dstRef.symbol.location == CShaderBuilder::SYMBOL_LOCATION_OUTPUT)
-					{
-						auto outputSemantic = m_shaderBuilder.GetOutputSemantic(dstRef.symbol);
-						switch(outputSemantic.type)
-						{
-						case Nuanceur::SEMANTIC_SYSTEM_POSITION:
-							{
-								auto outputPositionPointerId = AllocateId();
-								WriteOp(spv::OpAccessChain, m_outputFloat4PointerTypeId, outputPositionPointerId, outputPerVertexVariableId, int32ZeroConstantId);
-								WriteOp(spv::OpStore, outputPositionPointerId, src1Id);
-							}
-							break;
-						case Nuanceur::SEMANTIC_TEXCOORD:
-						case Nuanceur::SEMANTIC_SYSTEM_COLOR:
-							{
-								assert(m_outputPointerIds.find(dstRef.symbol.index) != std::end(m_outputPointerIds));
-								auto pointerId = m_outputPointerIds[dstRef.symbol.index];
-								WriteOp(spv::OpStore, pointerId, src1Id);
-							}
-							break;
-						default:
-							assert(false);
-							break;
-						}
-					}
-					else
-					{
-						assert(false);
-					}
+					auto src1Id = LoadFromSymbol(src1Ref);
+					StoreToSymbol(dstRef, src1Id);
 				}
 				break;
 			default:
@@ -338,6 +328,126 @@ void CSpirvShaderGenerator::DeclareTemporaryValueIds()
 		uint32 valueWId = floatConstantIds[temporaryValue.w];
 		WriteOp(spv::OpConstantComposite, m_float4TypeId, temporaryValueId, valueXId, valueYId, valueZId, valueWId);
 		m_temporaryValueIds[symbol.index] = temporaryValueId;
+	}
+}
+
+void CSpirvShaderGenerator::DecorateUniformStructIds()
+{
+	assert(m_hasUniforms);
+
+	unsigned int memberIndex = 0;
+	for(const auto& symbol : m_shaderBuilder.GetSymbols())
+	{
+		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_UNIFORM) continue;
+		//TODO: Supply proper offset
+		WriteOp(spv::OpMemberDecorate, m_uniformStructTypeId, memberIndex, spv::DecorationOffset, 0);
+		m_uniformStructMemberIds[symbol.index] = memberIndex;
+		memberIndex++;
+	}
+
+	WriteOp(spv::OpDecorate, m_uniformStructTypeId, spv::DecorationBlock);
+}
+
+void CSpirvShaderGenerator::DeclareUniformStructIds()
+{
+	assert(m_hasUniforms);
+
+	std::vector<uint32> structComponents;
+	for(const auto& symbol : m_shaderBuilder.GetSymbols())
+	{
+		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_UNIFORM) continue;
+		switch(symbol.type)
+		{
+		case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
+			structComponents.push_back(m_float4TypeId);
+			break;
+		default:
+			assert(false);
+			break;
+		}
+	}
+	
+	assert(m_uniformStructTypeId != 0);
+	WriteOp(spv::OpTypeStruct, m_uniformStructTypeId, structComponents);
+}
+
+uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& srcRef)
+{
+	uint32 srcId = 0;
+	assert(srcRef.swizzle == SWIZZLE_XYZW);
+	assert(srcRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
+	switch(srcRef.symbol.location)
+	{
+	case CShaderBuilder::SYMBOL_LOCATION_INPUT:
+		{
+			srcId = AllocateId();
+			assert(m_inputPointerIds.find(srcRef.symbol.index) != std::end(m_inputPointerIds));
+			auto pointerId = m_inputPointerIds[srcRef.symbol.index];
+			WriteOp(spv::OpLoad, m_float4TypeId, srcId, pointerId);
+		}
+		break;
+	case CShaderBuilder::SYMBOL_LOCATION_UNIFORM:
+		{
+			assert(m_hasUniforms);
+			srcId = AllocateId();
+			auto memberPointerId = AllocateId();
+			//TODO: Obtain proper member index
+			WriteOp(spv::OpAccessChain, m_pushFloat4PointerTypeId, memberPointerId, m_pushUniformVariableId, m_int32ZeroConstantId);
+			WriteOp(spv::OpLoad, m_float4TypeId, srcId, memberPointerId);
+		}
+		break;
+	case CShaderBuilder::SYMBOL_LOCATION_TEMPORARY:
+		{
+			assert(m_temporaryValueIds.find(srcRef.symbol.index) != std::end(m_temporaryValueIds));
+			srcId = m_temporaryValueIds[srcRef.symbol.index];
+		}
+		break;
+	default:
+		assert(false);
+		break;
+	}
+	return srcId;
+}
+
+void CSpirvShaderGenerator::StoreToSymbol(const CShaderBuilder::SYMBOLREF& dstRef, uint32 dstId)
+{
+	assert(dstRef.swizzle == SWIZZLE_XYZW);
+	assert(dstRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
+	switch(dstRef.symbol.location)
+	{
+	case CShaderBuilder::SYMBOL_LOCATION_OUTPUT:
+		{
+			auto outputSemantic = m_shaderBuilder.GetOutputSemantic(dstRef.symbol);
+			switch(outputSemantic.type)
+			{
+			case Nuanceur::SEMANTIC_SYSTEM_POSITION:
+				{
+					auto outputPositionPointerId = AllocateId();
+					WriteOp(spv::OpAccessChain, m_outputFloat4PointerTypeId, outputPositionPointerId, m_outputPerVertexVariableId, m_int32ZeroConstantId);
+					WriteOp(spv::OpStore, outputPositionPointerId, dstId);
+				}
+				break;
+			case Nuanceur::SEMANTIC_TEXCOORD:
+			case Nuanceur::SEMANTIC_SYSTEM_COLOR:
+				{
+					assert(m_outputPointerIds.find(dstRef.symbol.index) != std::end(m_outputPointerIds));
+					auto pointerId = m_outputPointerIds[dstRef.symbol.index];
+					WriteOp(spv::OpStore, pointerId, dstId);
+				}
+				break;
+			default:
+				assert(false);
+				break;
+			}
+		}
+		break;
+	case CShaderBuilder::SYMBOL_LOCATION_TEMPORARY:
+		//Replace current active id for that temporary symbol.
+		m_temporaryValueIds[dstRef.symbol.index] = dstId;
+		break;
+	default:
+		assert(false);
+		break;
 	}
 }
 
