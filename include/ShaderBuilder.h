@@ -173,7 +173,7 @@ namespace Nuanceur
 
 		//We need a special operator = that will remap symbol owners
 
-		virtual					~CShaderBuilder();
+		virtual					~CShaderBuilder() = default;
 
 		const SymbolArray&		GetSymbols() const;
 		SEMANTIC_INFO			GetInputSemantic(const SYMBOL&) const;
@@ -189,11 +189,12 @@ namespace Nuanceur
 		SYMBOL					CreateConstant(float, float, float, float);
 		SYMBOL					CreateTemporary();
 
+		SYMBOL					CreateUniformFloat4(const std::string&);
 //		SYMBOLREF_FLOAT			CreateUniformFloat(const std::string&);
 //		SYMBOLREF_FLOAT3		CreateUniformFloat3(const std::string&);
 //		SYMBOLREF_MATRIX		CreateUniformMatrix(const std::string&);
 
-//		SYMBOLREF				CreateTexture2D(unsigned int);
+		SYMBOL					CreateTexture2D(unsigned int);
 
 	private:
 		typedef std::unordered_map<unsigned int, SEMANTIC_INFO> SemanticMap;

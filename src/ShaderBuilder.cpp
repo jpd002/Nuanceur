@@ -2,11 +2,6 @@
 
 using namespace Nuanceur;
 
-CShaderBuilder::~CShaderBuilder()
-{
-
-}
-
 const CShaderBuilder::SymbolArray& CShaderBuilder::GetSymbols() const
 {
 	return m_symbols;
@@ -99,12 +94,24 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateConstant(float v1, float v2, float 
 	SYMBOL sym;
 	sym.owner    = this;
 	sym.index    = m_currentTempIndex++;
-	sym.type     = SYMBOL_TYPE_FLOAT;
+	sym.type     = SYMBOL_TYPE_FLOAT4;
 	sym.location = SYMBOL_LOCATION_TEMPORARY;
 	m_symbols.push_back(sym);
 
 	auto tempValue = CVector4(v1, v2, v3, v4);
 	m_temporaryValues.insert(std::make_pair(sym.index, tempValue));
+
+	return sym;
+}
+
+CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformFloat4(const std::string& name)
+{
+	SYMBOL sym;
+	sym.owner    = this;
+	sym.index    = m_currentTempIndex++;
+	sym.type     = SYMBOL_TYPE_FLOAT4;
+	sym.location = SYMBOL_LOCATION_UNIFORM;
+	m_symbols.push_back(sym);
 
 	return sym;
 }
@@ -153,17 +160,16 @@ CShaderBuilder::SYMBOLREF_MATRIX CShaderBuilder::CreateUniformMatrix(const std::
 	return ref;
 }
 
-CShaderBuilder::SYMBOLREF CShaderBuilder::CreateTexture2D(unsigned int unit)
+#endif
+
+CShaderBuilder::SYMBOL CShaderBuilder::CreateTexture2D(unsigned int unit)
 {
 	SYMBOL sym;
+	sym.owner		= this;
 	sym.index		= unit;
 	sym.type		= SYMBOL_TYPE_TEXTURE2D;
 	sym.location	= SYMBOL_LOCATION_TEXTURE;
 	m_symbols.push_back(sym);
 
-	SYMBOLREF ref;
-	ref.symbol = sym;
-	ref.swizzle = SWIZZLE_XYZW;
-	return ref;
+	return sym;
 }
-#endif
