@@ -30,6 +30,7 @@
     <ClInclude Include="..\include\ShaderBuilder.h" />
     <ClInclude Include="..\include\SpirvShaderGenerator.h" />
     <ClInclude Include="..\include\SwizzleSelector4.h" />
+    <ClInclude Include="..\include\Texture2DValue.h" />
     <ClInclude Include="Pch.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

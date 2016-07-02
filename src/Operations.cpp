@@ -75,3 +75,14 @@ CFloat4Rvalue Nuanceur::Normalize(const CFloat4Value& rhs)
 		);
 	return temp;
 }
+
+CFloat4Rvalue Nuanceur::Sample(const CTexture2DValue& texture, const CFloat4Value& coord)
+{
+	auto owner = GetCommonOwner(texture.symbol, coord.symbol);
+	auto temp = CFloat4Rvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_SAMPLE, temp, texture, coord)
+	);
+	return temp;
+
+}

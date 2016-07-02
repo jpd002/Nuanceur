@@ -3,6 +3,7 @@
 #include "ShaderBuilder.h"
 #include "Float3Value.h"
 #include "Float4Value.h"
+#include "Texture2DValue.h"
 
 namespace Nuanceur
 {
@@ -15,4 +16,6 @@ namespace Nuanceur
 	CFloat4Rvalue NewFloat4(const CFloat3Value& rhs, float constant);
 
 	CFloat4Rvalue Normalize(const CFloat4Value& rhs);
+
+	CFloat4Rvalue Sample(const CTexture2DValue& texture, const CFloat4Value& coord);
 }
