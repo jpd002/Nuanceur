@@ -30,6 +30,9 @@ void CSpirvShaderGenerator::Generate()
 	m_hasUniforms = std::count_if(m_shaderBuilder.GetSymbols().begin(), m_shaderBuilder.GetSymbols().end(),
 		[] (const CShaderBuilder::SYMBOL& symbol) { return symbol.location == CShaderBuilder::SYMBOL_LOCATION_UNIFORM; }) != 0;
 
+	m_hasTextures = std::count_if(m_shaderBuilder.GetSymbols().begin(), m_shaderBuilder.GetSymbols().end(),
+		[] (const CShaderBuilder::SYMBOL& symbol) { return symbol.location == CShaderBuilder::SYMBOL_LOCATION_TEXTURE; }) != 0;
+
 	auto voidTypeId = AllocateId();
 	auto mainFunctionTypeId = AllocateId();
 	m_floatTypeId = AllocateId();
@@ -46,6 +49,14 @@ void CSpirvShaderGenerator::Generate()
 		m_pushUniformStructPointerTypeId = AllocateId();
 		m_pushFloat4PointerTypeId = AllocateId();
 		m_pushUniformVariableId = AllocateId();
+	}
+
+	if(m_hasTextures)
+	{
+		m_image2DTypeId = AllocateId();
+		m_imageSamplerTypeId = AllocateId();
+		m_imageSamplerPointerTypeId = AllocateId();
+		AllocateTextureIds();
 	}
 
 	AllocateInputPointerIds();
@@ -122,6 +133,11 @@ void CSpirvShaderGenerator::Generate()
 		DecorateUniformStructIds();
 	}
 
+	if(m_hasTextures)
+	{
+		DecorateTextureIds();
+	}
+
 	DecorateInputPointerIds();
 	DecorateOutputPointerIds();
 
@@ -147,6 +163,13 @@ void CSpirvShaderGenerator::Generate()
 		WriteOp(spv::OpTypePointer, m_pushFloat4PointerTypeId, spv::StorageClassPushConstant, m_float4TypeId);
 	}
 
+	if(m_hasTextures)
+	{
+		WriteOp(spv::OpTypeImage, m_image2DTypeId, m_float4TypeId, spv::Dim2D, 0, 0, 0, 1, spv::ImageFormatUnknown);
+		WriteOp(spv::OpTypeSampledImage, m_imageSamplerTypeId, m_image2DTypeId);
+		WriteOp(spv::OpTypePointer, m_imageSamplerPointerTypeId, spv::StorageClassUniformConstant, m_imageSamplerTypeId);
+	}
+
 	DeclareInputPointerIds();
 	DeclareOutputPointerIds();
 
@@ -159,6 +182,11 @@ void CSpirvShaderGenerator::Generate()
 	if(m_hasUniforms)
 	{
 		WriteOp(spv::OpVariable, m_pushUniformStructPointerTypeId, m_pushUniformVariableId, spv::StorageClassPushConstant);
+	}
+
+	if(m_hasTextures)
+	{
+		DeclareTextureIds();
 	}
 
 	//Declare Zero Index Constant
@@ -184,6 +212,15 @@ void CSpirvShaderGenerator::Generate()
 					auto src2Id = LoadFromSymbol(src2Ref);
 					auto resultId = AllocateId();
 					WriteOp(spv::OpFAdd, m_float4TypeId, resultId, src1Id, src2Id);
+					StoreToSymbol(dstRef, resultId);
+				}
+				break;
+			case CShaderBuilder::STATEMENT_OP_SAMPLE:
+				{
+					auto src1Id = LoadFromSymbol(src1Ref);
+					auto src2Id = LoadFromSymbol(src2Ref);
+					auto resultId = AllocateId();
+					WriteOp(spv::OpImageSampleImplicitLod, m_float4TypeId, resultId, src1Id, src2Id);
 					StoreToSymbol(dstRef, resultId);
 				}
 				break;
@@ -371,15 +408,50 @@ void CSpirvShaderGenerator::DeclareUniformStructIds()
 	WriteOp(spv::OpTypeStruct, m_uniformStructTypeId, structComponents);
 }
 
+void CSpirvShaderGenerator::AllocateTextureIds()
+{
+	for(const auto& symbol : m_shaderBuilder.GetSymbols())
+	{
+		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_TEXTURE) continue;
+		assert(symbol.type == CShaderBuilder::SYMBOL_TYPE_TEXTURE2D);
+		assert(m_texturePointerIds.find(symbol.index) == std::end(m_texturePointerIds));
+		auto pointerId = AllocateId();
+		m_texturePointerIds[symbol.index] = pointerId;
+	}
+}
+
+void CSpirvShaderGenerator::DecorateTextureIds()
+{
+	for(const auto& symbol : m_shaderBuilder.GetSymbols())
+	{
+		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_TEXTURE) continue;
+		assert(m_texturePointerIds.find(symbol.index) != std::end(m_texturePointerIds));
+		auto pointerId = m_texturePointerIds[symbol.index];
+		WriteOp(spv::OpDecorate, pointerId, spv::DecorationDescriptorSet, 0);
+		WriteOp(spv::OpDecorate, pointerId, spv::DecorationBinding, symbol.index);
+	}
+}
+
+void CSpirvShaderGenerator::DeclareTextureIds()
+{
+	for(const auto& symbol : m_shaderBuilder.GetSymbols())
+	{
+		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_TEXTURE) continue;
+		assert(m_texturePointerIds.find(symbol.index) != std::end(m_texturePointerIds));
+		auto pointerId = m_texturePointerIds[symbol.index];
+		WriteOp(spv::OpVariable, m_imageSamplerPointerTypeId, pointerId, spv::StorageClassUniformConstant);
+	}
+}
+
 uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& srcRef)
 {
 	uint32 srcId = 0;
 	assert(srcRef.swizzle == SWIZZLE_XYZW);
-	assert(srcRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
 	switch(srcRef.symbol.location)
 	{
 	case CShaderBuilder::SYMBOL_LOCATION_INPUT:
 		{
+			assert(srcRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
 			srcId = AllocateId();
 			assert(m_inputPointerIds.find(srcRef.symbol.index) != std::end(m_inputPointerIds));
 			auto pointerId = m_inputPointerIds[srcRef.symbol.index];
@@ -389,11 +461,22 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 	case CShaderBuilder::SYMBOL_LOCATION_UNIFORM:
 		{
 			assert(m_hasUniforms);
+			assert(srcRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
 			srcId = AllocateId();
 			auto memberPointerId = AllocateId();
 			//TODO: Obtain proper member index
 			WriteOp(spv::OpAccessChain, m_pushFloat4PointerTypeId, memberPointerId, m_pushUniformVariableId, m_int32ZeroConstantId);
 			WriteOp(spv::OpLoad, m_float4TypeId, srcId, memberPointerId);
+		}
+		break;
+	case CShaderBuilder::SYMBOL_LOCATION_TEXTURE:
+		{
+			assert(m_hasTextures);
+			assert(srcRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_TEXTURE2D);
+			srcId = AllocateId();
+			assert(m_texturePointerIds.find(srcRef.symbol.index) != std::end(m_texturePointerIds));
+			auto pointerId = m_texturePointerIds[srcRef.symbol.index];
+			WriteOp(spv::OpLoad, m_imageSamplerTypeId, srcId, pointerId);
 		}
 		break;
 	case CShaderBuilder::SYMBOL_LOCATION_TEMPORARY:
