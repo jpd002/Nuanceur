@@ -76,6 +76,11 @@ namespace Nuanceur
 
 		struct SYMBOL
 		{
+			SYMBOL()
+			{
+			
+			}
+
 			CShaderBuilder*		owner = nullptr;
 			SYMBOL_TYPE			type = SYMBOL_TYPE_NULL;
 			SYMBOL_LOCATION		location = SYMBOL_LOCATION_NULL;
