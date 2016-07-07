@@ -26,6 +26,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\Float3Value.h" />
     <ClInclude Include="..\include\Float4Value.h" />
+    <ClInclude Include="..\include\Matrix44Value.h" />
     <ClInclude Include="..\include\Operations.h" />
     <ClInclude Include="..\include\ShaderBuilder.h" />
     <ClInclude Include="..\include\SpirvShaderGenerator.h" />

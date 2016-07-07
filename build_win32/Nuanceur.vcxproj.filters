@@ -5,42 +5,51 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="ソース ファイル\ValueTypes">
+      <UniqueIdentifier>{6158f861-dca8-4e91-afa6-091bc433626b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Generators">
+      <UniqueIdentifier>{98f098b4-3d9e-4685-92d6-892a37ce372b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\Operations.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\ShaderBuilder.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="..\src\SpirvShaderGenerator.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Operations.cpp">
+      <Filter>ソース ファイル\ValueTypes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\Float3Value.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Float4Value.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Operations.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\ShaderBuilder.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\SpirvShaderGenerator.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\SwizzleSelector4.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Pch.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\Float3Value.h">
+      <Filter>ソース ファイル\ValueTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Float4Value.h">
+      <Filter>ソース ファイル\ValueTypes</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\Texture2DValue.h">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\ValueTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Matrix44Value.h">
+      <Filter>ソース ファイル\ValueTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\SpirvShaderGenerator.h">
+      <Filter>ソース ファイル\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Operations.h">
+      <Filter>ソース ファイル\ValueTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\SwizzleSelector4.h">
+      <Filter>ソース ファイル\ValueTypes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
