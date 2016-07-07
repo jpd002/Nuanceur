@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\GlslShaderGenerator.cpp" />
     <ClCompile Include="..\src\Operations.cpp" />
     <ClCompile Include="..\src\ShaderBuilder.cpp" />
     <ClCompile Include="..\src\SpirvShaderGenerator.cpp" />
@@ -26,6 +27,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\Float3Value.h" />
     <ClInclude Include="..\include\Float4Value.h" />
+    <ClInclude Include="..\include\GlslShaderGenerator.h" />
     <ClInclude Include="..\include\Matrix44Value.h" />
     <ClInclude Include="..\include\Operations.h" />
     <ClInclude Include="..\include\ShaderBuilder.h" />

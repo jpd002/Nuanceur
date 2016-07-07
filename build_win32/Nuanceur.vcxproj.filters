@@ -22,6 +22,9 @@
     <ClCompile Include="..\src\Operations.cpp">
       <Filter>ソース ファイル\ValueTypes</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\GlslShaderGenerator.cpp">
+      <Filter>ソース ファイル\Generators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\ShaderBuilder.h">
@@ -50,6 +53,9 @@
     </ClInclude>
     <ClInclude Include="..\include\SwizzleSelector4.h">
       <Filter>ソース ファイル\ValueTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\GlslShaderGenerator.h">
+      <Filter>ソース ファイル\Generators</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

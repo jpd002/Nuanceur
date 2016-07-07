@@ -7,6 +7,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE       := libNuanceur
 LOCAL_SRC_FILES    := ../../src/Operations.cpp \
+                      ../../src/GlslShaderGenerator.cpp \
                       ../../src/ShaderBuilder.cpp \
                       ../../src/SpirvShaderGenerator.cpp
 LOCAL_C_INCLUDES   := $(VULKAN_PATH) $(FRAMEWORK_PATH)/include $(LOCAL_PATH)/../../include
