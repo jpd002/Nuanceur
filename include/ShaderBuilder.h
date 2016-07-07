@@ -44,9 +44,6 @@ namespace Nuanceur
 		enum SYMBOL_TYPE
 		{
 			SYMBOL_TYPE_NULL,
-			SYMBOL_TYPE_FLOAT,
-			SYMBOL_TYPE_FLOAT2,
-			SYMBOL_TYPE_FLOAT3,
 			SYMBOL_TYPE_FLOAT4,
 			SYMBOL_TYPE_MATRIX,
 			SYMBOL_TYPE_TEXTURE2D,
@@ -195,9 +192,7 @@ namespace Nuanceur
 		SYMBOL					CreateTemporary();
 
 		SYMBOL					CreateUniformFloat4(const std::string&);
-//		SYMBOLREF_FLOAT			CreateUniformFloat(const std::string&);
-//		SYMBOLREF_FLOAT3		CreateUniformFloat3(const std::string&);
-//		SYMBOLREF_MATRIX		CreateUniformMatrix(const std::string&);
+		SYMBOL					CreateUniformMatrix(const std::string&);
 
 		SYMBOL					CreateTexture2D(unsigned int);
 

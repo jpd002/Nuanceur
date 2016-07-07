@@ -41,6 +41,16 @@ CFloat4Rvalue Nuanceur::operator -(const CFloat4Value& lhs, const CFloat4Value& 
 	return temp;
 }
 
+CFloat4Rvalue Nuanceur::operator *(const CMatrix44Value& lhs, const CFloat4Value& rhs)
+{
+	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
+	auto temp = CFloat4Rvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MULTIPLY, temp, lhs, rhs)
+	);
+	return temp;
+}
+
 void CFloat4Lvalue::operator =(const CFloat4Rvalue& rhs)
 {
 	auto owner = rhs.symbol.owner;
