@@ -130,8 +130,9 @@ namespace Nuanceur
 		//Type Ids
 		uint32 m_floatTypeId = 0;
 		uint32 m_float4TypeId = 0;
-		uint32 m_inputFloat4PointerTypeId = 0;
+		uint32 m_matrix44TypeId = 0;
 
+		uint32 m_inputFloat4PointerTypeId = 0;
 		uint32 m_outputFloat4PointerTypeId = 0;
 
 		uint32 m_outputPerVertexVariableId = 0;
@@ -139,6 +140,7 @@ namespace Nuanceur
 		uint32 m_uniformStructTypeId = 0;
 		uint32 m_pushUniformStructPointerTypeId = 0;
 		uint32 m_pushFloat4PointerTypeId = 0;
+		uint32 m_pushMatrix44PointerTypeId = 0;
 		uint32 m_pushUniformVariableId = 0;
 
 		uint32 m_image2DTypeId = 0;
@@ -156,7 +158,7 @@ namespace Nuanceur
 		std::map<uint32, uint32> m_inputPointerIds;
 		std::map<uint32, uint32> m_outputPointerIds;
 		std::map<uint32, uint32> m_temporaryValueIds;
-		std::map<uint32, uint32> m_uniformStructMemberIds;
+		std::map<uint32, uint32> m_uniformStructMemberIndices;
 		std::map<uint32, uint32> m_texturePointerIds;
 		uint32 m_nextId = 1;
 	};
