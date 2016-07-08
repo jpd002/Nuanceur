@@ -279,10 +279,11 @@ void CSpirvShaderGenerator::DecorateInputPointerIds()
 	for(const auto& symbol : m_shaderBuilder.GetSymbols())
 	{
 		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_INPUT) continue;
-//		auto semantic = m_shaderBuilder.GetInputSemantic(symbol);
+		auto semantic = m_shaderBuilder.GetInputSemantic(symbol);
 		assert(m_inputPointerIds.find(symbol.index) != std::end(m_inputPointerIds));
+		auto location = MapSemanticToLocation(semantic.type, semantic.index);
 		auto pointerId = m_inputPointerIds[symbol.index];
-		WriteOp(spv::OpDecorate, pointerId, spv::DecorationLocation, symbol.index);
+		WriteOp(spv::OpDecorate, pointerId, spv::DecorationLocation, location);
 	}
 }
 
@@ -323,8 +324,7 @@ void CSpirvShaderGenerator::DecorateOutputPointerIds()
 		if(semantic.type == Nuanceur::SEMANTIC_SYSTEM_POSITION) continue;
 		assert(m_outputPointerIds.find(symbol.index) != std::end(m_outputPointerIds));
 		auto pointerId = m_outputPointerIds[symbol.index];
-		uint32 location = semantic.index;
-		//TODO: Use "map semantic to location"
+		auto location = MapSemanticToLocation(semantic.type, semantic.index);
 		WriteOp(spv::OpDecorate, pointerId, spv::DecorationLocation, location);
 	}
 }
@@ -575,8 +575,25 @@ void CSpirvShaderGenerator::Write32(uint32 value)
 
 uint32 CSpirvShaderGenerator::MapSemanticToLocation(Nuanceur::SEMANTIC semantic, uint32 index)
 {
-	//Position = 0
-	//Tex Coord = 1 + (index)
+	//Position     -> 0 (only one position attribute supported)
+	//Tex Coord    -> 1 + index
+	//System Color -> 0 (used by the system after fragment shading)
+	switch(semantic)
+	{
+	case Nuanceur::SEMANTIC_POSITION:
+		assert(index == 0);
+		return 0;
+		break;
+	case Nuanceur::SEMANTIC_TEXCOORD:
+		return 1 + index;
+		break;
+	case Nuanceur::SEMANTIC_SYSTEM_COLOR:
+		return 0;
+		break;
+	default:
+		assert(false);
+		break;
+	}
 	return 0;
 }
 
