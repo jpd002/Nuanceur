@@ -1,5 +1,6 @@
 #pragma once
 
+#include <set>
 #include <map>
 #include "ShaderBuilder.h"
 #include "Stream.h"
@@ -147,8 +148,6 @@ namespace Nuanceur
 		uint32 m_imageSamplerTypeId = 0;
 		uint32 m_imageSamplerPointerTypeId = 0;
 
-		uint32 m_int32ZeroConstantId = 0;
-
 		Framework::CStream& m_outputStream;
 		const CShaderBuilder& m_shaderBuilder;
 		SHADER_TYPE m_shaderType = SHADER_TYPE_VERTEX;
@@ -160,6 +159,8 @@ namespace Nuanceur
 		std::map<uint32, uint32> m_temporaryValueIds;
 		std::map<uint32, uint32> m_uniformStructMemberIndices;
 		std::map<uint32, uint32> m_texturePointerIds;
+		std::set<uint32> m_intConstants;
+		std::map<uint32, uint32> m_intConstantIds;
 		uint32 m_nextId = 1;
 	};
 }
