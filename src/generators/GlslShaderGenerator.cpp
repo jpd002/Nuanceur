@@ -1,4 +1,4 @@
-#include "GlslShaderGenerator.h"
+#include "nuanceur/generators/GlslShaderGenerator.h"
 #include "string_format.h"
 
 using namespace Nuanceur;

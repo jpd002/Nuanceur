@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ShaderBuilder.h"
+#include "nuanceur/builder/ShaderBuilder.h"
 
 namespace Nuanceur
 {

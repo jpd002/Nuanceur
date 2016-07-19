@@ -1,4 +1,4 @@
-#include "SpirvShaderGenerator.h"
+#include "nuanceur/generators/SpirvShaderGenerator.h"
 
 using namespace Nuanceur;
 

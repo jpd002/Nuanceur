@@ -1,4 +1,4 @@
-#include "ShaderBuilder.h"
+#include "nuanceur/builder/ShaderBuilder.h"
 
 using namespace Nuanceur;
 

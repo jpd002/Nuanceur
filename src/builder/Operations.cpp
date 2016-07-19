@@ -1,5 +1,5 @@
-#include "Operations.h"
-#include "SwizzleSelector4.h"
+#include "nuanceur/builder/Operations.h"
+#include "nuanceur/builder/SwizzleSelector4.h"
 
 using namespace Nuanceur;
 
