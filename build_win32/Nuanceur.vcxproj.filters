@@ -5,57 +5,60 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="ソース ファイル\ValueTypes">
-      <UniqueIdentifier>{6158f861-dca8-4e91-afa6-091bc433626b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Generators">
       <UniqueIdentifier>{98f098b4-3d9e-4685-92d6-892a37ce372b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Builder">
+      <UniqueIdentifier>{6158f861-dca8-4e91-afa6-091bc433626b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\ShaderBuilder.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\SpirvShaderGenerator.cpp">
+    <ClCompile Include="..\src\generators\GlslShaderGenerator.cpp">
       <Filter>ソース ファイル\Generators</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Operations.cpp">
-      <Filter>ソース ファイル\ValueTypes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\GlslShaderGenerator.cpp">
+    <ClCompile Include="..\src\generators\SpirvShaderGenerator.cpp">
       <Filter>ソース ファイル\Generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\builder\Operations.cpp">
+      <Filter>ソース ファイル\Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\builder\ShaderBuilder.cpp">
+      <Filter>ソース ファイル\Builder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\ShaderBuilder.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Pch.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\Float3Value.h">
-      <Filter>ソース ファイル\ValueTypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Float4Value.h">
-      <Filter>ソース ファイル\ValueTypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Texture2DValue.h">
-      <Filter>ソース ファイル\ValueTypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Matrix44Value.h">
-      <Filter>ソース ファイル\ValueTypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\SpirvShaderGenerator.h">
+    <ClInclude Include="..\include\nuanceur\generators\GlslShaderGenerator.h">
       <Filter>ソース ファイル\Generators</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\Operations.h">
-      <Filter>ソース ファイル\ValueTypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\SwizzleSelector4.h">
-      <Filter>ソース ファイル\ValueTypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\GlslShaderGenerator.h">
+    <ClInclude Include="..\include\nuanceur\generators\SpirvShaderGenerator.h">
       <Filter>ソース ファイル\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\nuanceur\builder\Float3Value.h">
+      <Filter>ソース ファイル\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\nuanceur\builder\Float4Value.h">
+      <Filter>ソース ファイル\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\nuanceur\builder\Matrix44Value.h">
+      <Filter>ソース ファイル\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\nuanceur\builder\Operations.h">
+      <Filter>ソース ファイル\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\nuanceur\builder\ShaderBuilder.h">
+      <Filter>ソース ファイル\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\nuanceur\builder\SwizzleSelector4.h">
+      <Filter>ソース ファイル\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\nuanceur\builder\Texture2DValue.h">
+      <Filter>ソース ファイル\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\nuanceur\Builder.h">
+      <Filter>ソース ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -19,21 +19,22 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\GlslShaderGenerator.cpp" />
-    <ClCompile Include="..\src\Operations.cpp" />
-    <ClCompile Include="..\src\ShaderBuilder.cpp" />
-    <ClCompile Include="..\src\SpirvShaderGenerator.cpp" />
+    <ClCompile Include="..\src\builder\Operations.cpp" />
+    <ClCompile Include="..\src\builder\ShaderBuilder.cpp" />
+    <ClCompile Include="..\src\generators\GlslShaderGenerator.cpp" />
+    <ClCompile Include="..\src\generators\SpirvShaderGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\Float3Value.h" />
-    <ClInclude Include="..\include\Float4Value.h" />
-    <ClInclude Include="..\include\GlslShaderGenerator.h" />
-    <ClInclude Include="..\include\Matrix44Value.h" />
-    <ClInclude Include="..\include\Operations.h" />
-    <ClInclude Include="..\include\ShaderBuilder.h" />
-    <ClInclude Include="..\include\SpirvShaderGenerator.h" />
-    <ClInclude Include="..\include\SwizzleSelector4.h" />
-    <ClInclude Include="..\include\Texture2DValue.h" />
+    <ClInclude Include="..\include\nuanceur\Builder.h" />
+    <ClInclude Include="..\include\nuanceur\builder\Float3Value.h" />
+    <ClInclude Include="..\include\nuanceur\builder\Float4Value.h" />
+    <ClInclude Include="..\include\nuanceur\builder\Matrix44Value.h" />
+    <ClInclude Include="..\include\nuanceur\builder\Operations.h" />
+    <ClInclude Include="..\include\nuanceur\builder\ShaderBuilder.h" />
+    <ClInclude Include="..\include\nuanceur\builder\SwizzleSelector4.h" />
+    <ClInclude Include="..\include\nuanceur\builder\Texture2DValue.h" />
+    <ClInclude Include="..\include\nuanceur\generators\GlslShaderGenerator.h" />
+    <ClInclude Include="..\include\nuanceur\generators\SpirvShaderGenerator.h" />
     <ClInclude Include="Pch.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
