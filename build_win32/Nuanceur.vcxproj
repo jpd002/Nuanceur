@@ -22,6 +22,7 @@
     <ClCompile Include="..\src\builder\Operations.cpp" />
     <ClCompile Include="..\src\builder\ShaderBuilder.cpp" />
     <ClCompile Include="..\src\generators\GlslShaderGenerator.cpp" />
+    <ClCompile Include="..\src\generators\HlslShaderGenerator.cpp" />
     <ClCompile Include="..\src\generators\SpirvShaderGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -34,6 +35,7 @@
     <ClInclude Include="..\include\nuanceur\builder\SwizzleSelector4.h" />
     <ClInclude Include="..\include\nuanceur\builder\Texture2DValue.h" />
     <ClInclude Include="..\include\nuanceur\generators\GlslShaderGenerator.h" />
+    <ClInclude Include="..\include\nuanceur\generators\HlslShaderGenerator.h" />
     <ClInclude Include="..\include\nuanceur\generators\SpirvShaderGenerator.h" />
     <ClInclude Include="Pch.h" />
   </ItemGroup>
