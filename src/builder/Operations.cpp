@@ -41,6 +41,16 @@ CFloat4Rvalue Nuanceur::operator -(const CFloat4Value& lhs, const CFloat4Value& 
 	return temp;
 }
 
+CFloat4Rvalue Nuanceur::operator *(const CFloat4Value& lhs, const CFloat4Value& rhs)
+{
+	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
+	auto temp = CFloat4Rvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MULTIPLY, temp, lhs, rhs)
+	);
+	return temp;
+}
+
 CFloat4Rvalue Nuanceur::operator *(const CMatrix44Value& lhs, const CFloat4Value& rhs)
 {
 	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
@@ -86,7 +96,7 @@ CFloat4Rvalue Nuanceur::Normalize(const CFloat4Value& rhs)
 	return temp;
 }
 
-CFloat4Rvalue Nuanceur::Sample(const CTexture2DValue& texture, const CFloat4Value& coord)
+CFloat4Rvalue Nuanceur::Sample(const CTexture2DValue& texture, const CFloat2Value& coord)
 {
 	auto owner = GetCommonOwner(texture.symbol, coord.symbol);
 	auto temp = CFloat4Rvalue(owner->CreateTemporary());
@@ -94,5 +104,4 @@ CFloat4Rvalue Nuanceur::Sample(const CTexture2DValue& texture, const CFloat4Valu
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_SAMPLE, temp, texture, coord)
 	);
 	return temp;
-
 }

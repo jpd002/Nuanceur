@@ -4,7 +4,6 @@
 
 namespace Nuanceur
 {
-	//class CFloat3Value;
 	class CFloat3Rvalue;
 	class CSwizzleSelector4;
 
@@ -24,18 +23,10 @@ namespace Nuanceur
 		CFloat3Lvalue(const CShaderBuilder::SYMBOL& symbol)
 			: CFloat3Value(symbol, SWIZZLE_XYZ)
 		{
-		//	m_swizzleSelector = std::make_unique<CSwizzleSelector4>(symbol);
+
 		}
 
 		void operator =(const CFloat3Rvalue& rvalue);
-
-		//CSwizzleSelector3* operator ->()
-		//{
-		//	return m_swizzleSelector.get();
-		//}
-
-	private:
-		//std::unique_ptr<CSwizzleSelector3> m_swizzleSelector;
 	};
 
 	class CFloat3Rvalue : public CFloat3Value
@@ -46,7 +37,7 @@ namespace Nuanceur
 
 		CFloat3Rvalue(const CFloat3Rvalue&) = default;
 
-		CFloat3Rvalue(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_XYZW)
+		CFloat3Rvalue(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_XYZ)
 			: CFloat3Value(symbol, swizzle)
 		{
 

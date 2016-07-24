@@ -66,5 +66,8 @@
     <ClInclude Include="..\include\nuanceur\generators\HlslShaderGenerator.h">
       <Filter>ソース ファイル\Generators</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\nuanceur\builder\Float2Value.h">
+      <Filter>ソース ファイル\Builder</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

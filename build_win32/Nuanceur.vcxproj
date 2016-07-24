@@ -27,6 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\nuanceur\Builder.h" />
+    <ClInclude Include="..\include\nuanceur\builder\Float2Value.h" />
     <ClInclude Include="..\include\nuanceur\builder\Float3Value.h" />
     <ClInclude Include="..\include\nuanceur\builder\Float4Value.h" />
     <ClInclude Include="..\include\nuanceur\builder\Matrix44Value.h" />

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Float2Value.h"
 #include "Float3Value.h"
 #include "Float4Value.h"
 
@@ -12,6 +13,11 @@ namespace Nuanceur
 			: m_symbol(symbol)
 		{
 
+		}
+
+		CFloat2Rvalue xy() const
+		{
+			return CFloat2Rvalue(m_symbol, SWIZZLE_XY);
 		}
 
 		CFloat3Rvalue xyz() const
