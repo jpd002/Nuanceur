@@ -3,15 +3,16 @@
 
 using namespace Nuanceur;
 
-CHlslShaderGenerator::CHlslShaderGenerator(const CShaderBuilder& shaderBuilder)
+CHlslShaderGenerator::CHlslShaderGenerator(const CShaderBuilder& shaderBuilder, uint32 flags)
 : m_shaderBuilder(shaderBuilder)
+, m_flags(flags)
 {
 
 }
 
-std::string CHlslShaderGenerator::Generate(const std::string& methodName, const CShaderBuilder& shaderBuilder)
+std::string CHlslShaderGenerator::Generate(const std::string& methodName, const CShaderBuilder& shaderBuilder, uint32 flags)
 {
-	CHlslShaderGenerator generator(shaderBuilder);
+	CHlslShaderGenerator generator(shaderBuilder, flags);
 	return generator.Generate(methodName);
 }
 
@@ -167,10 +168,21 @@ std::string CHlslShaderGenerator::Generate(const std::string& methodName) const
 				PrintSymbolRef(src1Ref).c_str());
 			break;
 		case CShaderBuilder::STATEMENT_OP_SAMPLE:
-			result += string_format("\t%s = c_texture%d.Sample(c_sampler%d, %s);\r\n",
-				PrintSymbolRef(dstRef).c_str(),
-				src1Ref.symbol.index, src1Ref.symbol.index,
-				PrintSymbolRef(src2Ref).c_str());
+			if(m_flags & FLAG_COMBINED_SAMPLER_TEXTURE)
+			{
+				assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_TEXTURE2D);
+				result += string_format("\t%s = tex2D(c_sampler%d, %s);\r\n",
+					PrintSymbolRef(dstRef).c_str(),
+					src1Ref.symbol.index,
+					PrintSymbolRef(src2Ref).c_str());
+			}
+			else
+			{
+				result += string_format("\t%s = c_texture%d.Sample(c_sampler%d, %s);\r\n",
+					PrintSymbolRef(dstRef).c_str(),
+					src1Ref.symbol.index, src1Ref.symbol.index,
+					PrintSymbolRef(src2Ref).c_str());
+			}
 			break;
 		default:
 			assert(0);

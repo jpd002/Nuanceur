@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Types.h"
 #include "nuanceur/builder/ShaderBuilder.h"
 
 namespace Nuanceur
@@ -7,10 +8,15 @@ namespace Nuanceur
 	class CHlslShaderGenerator
 	{
 	public:
-		static std::string		Generate(const std::string&, const CShaderBuilder&);
+		enum FLAGS : uint32
+		{
+			FLAG_COMBINED_SAMPLER_TEXTURE = 0x01,    //Use tex2D/texCUBE instead of texture.Sample
+		};
+
+		static std::string		Generate(const std::string&, const CShaderBuilder&, uint32 flags = 0);
 
 	private:
-								CHlslShaderGenerator(const CShaderBuilder&);
+								CHlslShaderGenerator(const CShaderBuilder&, uint32);
 
 		std::string				Generate(const std::string&) const;
 
@@ -26,5 +32,6 @@ namespace Nuanceur
 		std::string				PrintSymbolRef(const CShaderBuilder::SYMBOLREF&) const;
 
 		const CShaderBuilder&	m_shaderBuilder;
+		uint32					m_flags = 0;
 	};
 }
