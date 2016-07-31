@@ -1,3 +1,4 @@
+#include <cstring>
 #include "nuanceur/generators/SpirvShaderGenerator.h"
 
 using namespace Nuanceur;

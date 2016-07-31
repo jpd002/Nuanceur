@@ -86,16 +86,19 @@ namespace Nuanceur
 
 		struct SYMBOLREF
 		{
-			SYMBOL			symbol;
-			SWIZZLE_TYPE	swizzle = SWIZZLE_XYZW;
-
-			SYMBOLREF() = default;
-
+			SYMBOLREF()
+			{
+			
+			}
+			
 			SYMBOLREF(const SYMBOL& symbol, const SWIZZLE_TYPE& swizzle)
 				: symbol(symbol), swizzle(swizzle)
 			{
-
+			
 			}
+			
+			SYMBOL			symbol;
+			SWIZZLE_TYPE	swizzle = SWIZZLE_XYZW;
 		};
 
 		enum STATEMENT_OP
