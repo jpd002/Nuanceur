@@ -21,7 +21,7 @@ namespace Nuanceur
 	{
 	public:
 		CFloat2Lvalue(const CShaderBuilder::SYMBOL& symbol)
-			: CFloat2Value(symbol, SWIZZLE_XYZ)
+			: CFloat2Value(symbol, SWIZZLE_XY)
 		{
 
 		}
