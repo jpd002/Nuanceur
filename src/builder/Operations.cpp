@@ -69,20 +69,20 @@ void CFloat4Lvalue::operator =(const CFloat4Rvalue& rhs)
 	);
 }
 
-CFloat4Rvalue Nuanceur::NewFloat4(CShaderBuilder& owner, float cstX, float cstY, float cstZ, float cstW)
+CFloat4Rvalue Nuanceur::NewFloat4(CShaderBuilder& owner, float x, float y, float z, float w)
 {
-	auto literal = owner.CreateConstant(cstX, cstY, cstZ, cstW);
+	auto literal = owner.CreateConstant(x, y, z, w);
 	return CFloat4Rvalue(literal);
 }
 
-CFloat4Rvalue Nuanceur::NewFloat4(const CFloat3Value& rhs, float constant)
+CFloat4Rvalue Nuanceur::NewFloat4(const CFloat3Value& xyz, float w)
 {
-	auto owner = rhs.symbol.owner;
-	auto literal = CFloat4Rvalue(owner->CreateConstant(constant, 0, 0, 0), SWIZZLE_X); //This should be CFloat1Value
+	auto owner = xyz.symbol.owner;
+	auto literal = CFloat4Rvalue(owner->CreateConstant(w, 0, 0, 0), SWIZZLE_X); //This should be CFloat1Value
 	auto temp = CFloat4Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, rhs, literal)
-		);
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, xyz, literal)
+	);
 	return temp;
 }
 

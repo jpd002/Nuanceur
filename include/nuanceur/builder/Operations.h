@@ -18,8 +18,8 @@ namespace Nuanceur
 
 	CFloat4Rvalue operator *(const CMatrix44Value& lhs, const CFloat4Value& rhs);
 
-	CFloat4Rvalue NewFloat4(CShaderBuilder& owner, float cstX, float cstY, float cstZ, float cstW);
-	CFloat4Rvalue NewFloat4(const CFloat3Value& rhs, float constant);
+	CFloat4Rvalue NewFloat4(CShaderBuilder& owner, float x, float y, float z, float w);
+	CFloat4Rvalue NewFloat4(const CFloat3Value& xyz, float w);
 
 	CFloat4Rvalue Normalize(const CFloat4Value& rhs);
 
