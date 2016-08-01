@@ -30,6 +30,7 @@
     <ClInclude Include="..\include\nuanceur\builder\Float2Value.h" />
     <ClInclude Include="..\include\nuanceur\builder\Float3Value.h" />
     <ClInclude Include="..\include\nuanceur\builder\Float4Value.h" />
+    <ClInclude Include="..\include\nuanceur\builder\FloatValue.h" />
     <ClInclude Include="..\include\nuanceur\builder\Matrix44Value.h" />
     <ClInclude Include="..\include\nuanceur\builder\Operations.h" />
     <ClInclude Include="..\include\nuanceur\builder\ShaderBuilder.h" />
