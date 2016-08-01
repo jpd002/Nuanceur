@@ -69,6 +69,17 @@ void CFloat4Lvalue::operator =(const CFloat4Rvalue& rhs)
 	);
 }
 
+CFloat2Rvalue Nuanceur::NewFloat2(const CFloatValue& x, float y)
+{
+	auto owner = x.symbol.owner;
+	auto literal = CFloat2Rvalue(owner->CreateConstant(y, 0, 0, 0), SWIZZLE_X);
+	auto temp = CFloat2Rvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR2, temp, x, literal)
+	);
+	return temp;
+}
+
 CFloat4Rvalue Nuanceur::NewFloat4(CShaderBuilder& owner, float x, float y, float z, float w)
 {
 	auto literal = owner.CreateConstant(x, y, z, w);
