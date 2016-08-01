@@ -17,7 +17,7 @@ CFloat3Rvalue Nuanceur::operator +(const CFloat3Value& lhs, const CFloat3Value& 
 	auto temp = CFloat3Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ADD, temp, lhs, rhs)
-		);
+	);
 	return temp;
 }
 
@@ -27,7 +27,7 @@ CFloat4Rvalue Nuanceur::operator +(const CFloat4Value& lhs, const CFloat4Value& 
 	auto temp = CFloat4Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ADD, temp, lhs, rhs)
-		);
+	);
 	return temp;
 }
 
@@ -37,7 +37,7 @@ CFloat4Rvalue Nuanceur::operator -(const CFloat4Value& lhs, const CFloat4Value& 
 	auto temp = CFloat4Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_SUBSTRACT, temp, lhs, rhs)
-		);
+	);
 	return temp;
 }
 
@@ -66,7 +66,7 @@ void CFloat4Lvalue::operator =(const CFloat4Rvalue& rhs)
 	auto owner = rhs.symbol.owner;
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ASSIGN, *this, rhs)
-		);
+	);
 }
 
 CFloat4Rvalue Nuanceur::NewFloat4(CShaderBuilder& owner, float cstX, float cstY, float cstZ, float cstW)
@@ -92,7 +92,7 @@ CFloat4Rvalue Nuanceur::Normalize(const CFloat4Value& rhs)
 	auto temp = CFloat4Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NORMALIZE, temp, rhs)
-		);
+	);
 	return temp;
 }
 
