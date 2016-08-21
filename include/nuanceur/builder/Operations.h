@@ -15,9 +15,14 @@ namespace Nuanceur
 
 	CFloat4Rvalue operator -(const CFloat4Value& lhs, const CFloat4Value& rhs);
 
+	CFloatRvalue operator *(const CFloatValue& lhs, const CFloatValue& rhs);
 	CFloat4Rvalue operator *(const CFloat4Value& lhs, const CFloat4Value& rhs);
 
+	CFloatRvalue operator /(const CFloatValue& lhs, const CFloatValue& rhs);
+
 	CFloat4Rvalue operator *(const CMatrix44Value& lhs, const CFloat4Value& rhs);
+
+	CFloatRvalue NewFloat(CShaderBuilder&, float x);
 
 	CFloat2Rvalue NewFloat2(const CFloatValue& x, float y);
 

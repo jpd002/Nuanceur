@@ -33,6 +33,9 @@ namespace Nuanceur
 	{
 	private:
 		friend CSwizzleSelector4;
+		friend CFloatRvalue operator *(const CFloatValue&, const CFloatValue&);
+		friend CFloatRvalue operator /(const CFloatValue&, const CFloatValue&);
+		friend CFloatRvalue NewFloat(CShaderBuilder&, float);
 
 		CFloatRvalue(const CFloatRvalue&) = default;
 
