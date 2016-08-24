@@ -362,6 +362,9 @@ std::string CHlslShaderGenerator::PrintSymbolRef(const CShaderBuilder::SYMBOLREF
 	case SWIZZLE_XZ:
 		return symbolName + ".xz";
 		break;
+	case SWIZZLE_ZZ:
+		return symbolName + ".zz";
+		break;
 	case SWIZZLE_XYZ:
 		return symbolName + ".xyz";
 		break;

@@ -21,9 +21,19 @@ namespace Nuanceur
 			return CFloatRvalue(m_symbol, SWIZZLE_X);
 		}
 
+		CFloatRvalue z() const
+		{
+			return CFloatRvalue(m_symbol, SWIZZLE_Z);
+		}
+
 		CFloat2Rvalue xy() const
 		{
 			return CFloat2Rvalue(m_symbol, SWIZZLE_XY);
+		}
+
+		CFloat2Rvalue zz() const
+		{
+			return CFloat2Rvalue(m_symbol, SWIZZLE_ZZ);
 		}
 
 		CFloat3Rvalue xyz() const

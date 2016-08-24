@@ -71,6 +71,16 @@ CFloatRvalue Nuanceur::operator /(const CFloatValue& lhs, const CFloatValue& rhs
 	return temp;
 }
 
+CFloat2Rvalue Nuanceur::operator /(const CFloat2Value& lhs, const CFloat2Value& rhs)
+{
+	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
+	auto temp = CFloat2Rvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_DIVIDE, temp, lhs, rhs)
+	);
+	return temp;
+}
+
 CFloat4Rvalue Nuanceur::operator *(const CMatrix44Value& lhs, const CFloat4Value& rhs)
 {
 	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
@@ -82,6 +92,14 @@ CFloat4Rvalue Nuanceur::operator *(const CMatrix44Value& lhs, const CFloat4Value
 }
 
 void CFloatLvalue::operator =(const CFloatRvalue& rhs)
+{
+	auto owner = rhs.symbol.owner;
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ASSIGN, *this, rhs)
+	);
+}
+
+void CFloat2Lvalue::operator =(const CFloat2Rvalue& rhs)
 {
 	auto owner = rhs.symbol.owner;
 	owner->InsertStatement(

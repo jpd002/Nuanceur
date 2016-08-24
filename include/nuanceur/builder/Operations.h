@@ -19,6 +19,7 @@ namespace Nuanceur
 	CFloat4Rvalue operator *(const CFloat4Value& lhs, const CFloat4Value& rhs);
 
 	CFloatRvalue operator /(const CFloatValue& lhs, const CFloatValue& rhs);
+	CFloat2Rvalue operator /(const CFloat2Value& lhs, const CFloat2Value& rhs);
 
 	CFloat4Rvalue operator *(const CMatrix44Value& lhs, const CFloat4Value& rhs);
 

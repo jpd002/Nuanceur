@@ -33,6 +33,7 @@ namespace Nuanceur
 	{
 	private:
 		friend CSwizzleSelector4;
+		friend CFloat2Rvalue operator /(const CFloat2Value&, const CFloat2Value&);
 		friend CFloat2Rvalue NewFloat2(const CFloatValue& x, float y);
 
 		CFloat2Rvalue(const CFloat2Rvalue&) = default;

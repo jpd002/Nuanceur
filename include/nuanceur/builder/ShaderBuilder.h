@@ -31,6 +31,7 @@ namespace Nuanceur
 		SWIZZLE_XY,
 		SWIZZLE_XZ,
 		SWIZZLE_XW,
+		SWIZZLE_ZZ,
 
 		SWIZZLE_XYZ,
 
