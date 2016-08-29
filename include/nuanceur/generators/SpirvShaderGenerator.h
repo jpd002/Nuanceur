@@ -4,7 +4,7 @@
 #include <map>
 #include "nuanceur/builder/ShaderBuilder.h"
 #include "Stream.h"
-#include <vulkan/spirv.hpp>
+#include "../external/vulkan/spirv.hpp"
 
 namespace Nuanceur
 {

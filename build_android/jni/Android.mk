@@ -9,7 +9,7 @@ LOCAL_SRC_FILES    := ../../src/builder/Operations.cpp \
                       ../../src/builder/ShaderBuilder.cpp \
                       ../../src/generators/GlslShaderGenerator.cpp \
                       ../../src/generators/SpirvShaderGenerator.cpp
-LOCAL_C_INCLUDES   := $(VULKAN_SDK)/Include $(FRAMEWORK_PATH)/include $(LOCAL_PATH)/../../include
+LOCAL_C_INCLUDES   := $(FRAMEWORK_PATH)/include $(LOCAL_PATH)/../../include
 LOCAL_CPP_FEATURES := exceptions rtti
 
 include $(BUILD_STATIC_LIBRARY)
