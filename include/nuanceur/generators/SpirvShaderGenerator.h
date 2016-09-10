@@ -2,6 +2,7 @@
 
 #include <set>
 #include <map>
+#include <cstring>
 #include "nuanceur/builder/ShaderBuilder.h"
 #include "Stream.h"
 #include "../external/vulkan/spirv.hpp"
