@@ -195,6 +195,8 @@ namespace Nuanceur
 		SYMBOL					CreateConstant(float, float, float, float);
 		SYMBOL					CreateTemporary();
 
+		SYMBOL					CreateOptionalInput(bool, SEMANTIC, unsigned int = 0);
+
 		SYMBOL					CreateUniformFloat4(const std::string&);
 		SYMBOL					CreateUniformMatrix(const std::string&);
 

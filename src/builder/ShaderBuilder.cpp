@@ -104,6 +104,11 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateConstant(float v1, float v2, float 
 	return sym;
 }
 
+CShaderBuilder::SYMBOL CShaderBuilder::CreateOptionalInput(bool available, SEMANTIC semantic, unsigned int semanticIndex)
+{
+	return available ? CreateInput(semantic, semanticIndex) : SYMBOL();
+}
+
 CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformFloat4(const std::string& name)
 {
 	SYMBOL sym;
