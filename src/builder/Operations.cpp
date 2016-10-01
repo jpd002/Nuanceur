@@ -3,6 +3,8 @@
 
 using namespace Nuanceur;
 
+#define CHECK_ISOPERANDVALID(a) assert((a).symbol.type != CShaderBuilder::SYMBOL_TYPE_NULL)
+
 static CShaderBuilder* GetCommonOwner(const CShaderBuilder::SYMBOL& symbol1, const CShaderBuilder::SYMBOL& symbol2)
 {
 	assert(symbol1.owner != nullptr);
@@ -109,6 +111,8 @@ void CFloat2Lvalue::operator =(const CFloat2Rvalue& rhs)
 
 void CFloat4Lvalue::operator =(const CFloat4Rvalue& rhs)
 {
+	CHECK_ISOPERANDVALID(*this);
+	CHECK_ISOPERANDVALID(rhs);
 	auto owner = rhs.symbol.owner;
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ASSIGN, *this, rhs)
