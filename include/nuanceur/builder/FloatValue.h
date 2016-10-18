@@ -36,6 +36,7 @@ namespace Nuanceur
 		friend CFloatRvalue operator *(const CFloatValue&, const CFloatValue&);
 		friend CFloatRvalue operator /(const CFloatValue&, const CFloatValue&);
 		friend CFloatRvalue NewFloat(CShaderBuilder&, float);
+		friend CFloatRvalue Saturate(const CFloatValue&);
 
 		CFloatRvalue(const CFloatRvalue&) = default;
 

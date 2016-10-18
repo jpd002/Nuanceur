@@ -33,4 +33,6 @@ namespace Nuanceur
 	CFloat4Rvalue Normalize(const CFloat4Value& rhs);
 
 	CFloat4Rvalue Sample(const CTexture2DValue& texture, const CFloat2Value& coord);
+
+	CFloatRvalue Saturate(const CFloatValue& rhs);
 }

@@ -172,3 +172,13 @@ CFloat4Rvalue Nuanceur::Sample(const CTexture2DValue& texture, const CFloat2Valu
 	);
 	return temp;
 }
+
+CFloatRvalue Nuanceur::Saturate(const CFloatValue& rhs)
+{
+	auto owner = rhs.symbol.owner;
+	auto temp = CFloatRvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_SATURATE, temp, rhs)
+	);
+	return temp;
+}
