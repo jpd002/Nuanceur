@@ -125,13 +125,12 @@ CFloatRvalue Nuanceur::NewFloat(CShaderBuilder& owner, float x)
 	return CFloatRvalue(literal);
 }
 
-CFloat2Rvalue Nuanceur::NewFloat2(const CFloatValue& x, float y)
+CFloat2Rvalue Nuanceur::NewFloat2(const CFloatValue& x, const CFloatValue& y)
 {
-	auto owner = x.symbol.owner;
-	auto literal = CFloat2Rvalue(owner->CreateConstant(y, 0, 0, 0), SWIZZLE_X);
+	auto owner = GetCommonOwner(x.symbol, y.symbol);
 	auto temp = CFloat2Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR2, temp, x, literal)
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR2, temp, x, y)
 	);
 	return temp;
 }
@@ -142,13 +141,12 @@ CFloat4Rvalue Nuanceur::NewFloat4(CShaderBuilder& owner, float x, float y, float
 	return CFloat4Rvalue(literal);
 }
 
-CFloat4Rvalue Nuanceur::NewFloat4(const CFloat3Value& xyz, float w)
+CFloat4Rvalue Nuanceur::NewFloat4(const CFloat3Value& xyz, const CFloatValue& w)
 {
-	auto owner = xyz.symbol.owner;
-	auto literal = CFloat4Rvalue(owner->CreateConstant(w, 0, 0, 0), SWIZZLE_X); //This should be CFloat1Value
+	auto owner = GetCommonOwner(xyz.symbol, w.symbol);
 	auto temp = CFloat4Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, xyz, literal)
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, xyz, w)
 	);
 	return temp;
 }

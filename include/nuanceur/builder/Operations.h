@@ -25,10 +25,10 @@ namespace Nuanceur
 
 	CFloatRvalue NewFloat(CShaderBuilder&, float x);
 
-	CFloat2Rvalue NewFloat2(const CFloatValue& x, float y);
+	CFloat2Rvalue NewFloat2(const CFloatValue& x, const CFloatValue& y);
 
 	CFloat4Rvalue NewFloat4(CShaderBuilder& owner, float x, float y, float z, float w);
-	CFloat4Rvalue NewFloat4(const CFloat3Value& xyz, float w);
+	CFloat4Rvalue NewFloat4(const CFloat3Value& xyz, const CFloatValue& w);
 
 	CFloat4Rvalue Normalize(const CFloat4Value& rhs);
 

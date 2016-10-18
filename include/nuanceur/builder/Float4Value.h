@@ -5,6 +5,7 @@
 
 namespace Nuanceur
 {
+	class CFloatValue;
 	class CFloat2Value;
 	class CFloat3Value;
 	class CFloat4Rvalue;
@@ -53,7 +54,7 @@ namespace Nuanceur
 		friend CFloat4Rvalue operator *(const CFloat4Value&, const CFloat4Value&);
 		friend CFloat4Rvalue operator *(const CMatrix44Value&, const CFloat4Value&);
 		friend CFloat4Rvalue NewFloat4(CShaderBuilder&, float, float, float, float);
-		friend CFloat4Rvalue NewFloat4(const CFloat3Value&, float);
+		friend CFloat4Rvalue NewFloat4(const CFloat3Value&, const CFloatValue&);
 		friend CFloat4Rvalue Normalize(const CFloat4Value&);
 		friend CFloat4Rvalue Sample(const CTexture2DValue&, const CFloat2Value&);
 
