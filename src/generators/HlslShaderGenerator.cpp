@@ -157,6 +157,13 @@ std::string CHlslShaderGenerator::Generate(const std::string& methodName) const
 				PrintSymbolRef(dstRef).c_str(),
 				PrintSymbolRef(src1Ref).c_str());
 			break;
+		case CShaderBuilder::STATEMENT_OP_CLAMP:
+			result += string_format("\t%s = clamp(%s, %s, %s);\r\n",
+				PrintSymbolRef(dstRef).c_str(),
+				PrintSymbolRef(src1Ref).c_str(),
+				PrintSymbolRef(src2Ref).c_str(),
+				PrintSymbolRef(src3Ref).c_str());
+			break;
 		case CShaderBuilder::STATEMENT_OP_NORMALIZE:
 			result += string_format("\t%s = normalize(%s);\r\n",
 				PrintSymbolRef(dstRef).c_str(),

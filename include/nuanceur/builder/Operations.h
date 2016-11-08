@@ -23,6 +23,8 @@ namespace Nuanceur
 
 	CFloat4Rvalue operator *(const CMatrix44Value& lhs, const CFloat4Value& rhs);
 
+	CFloat4Rvalue Clamp(const CFloat4Value&, const CFloat4Value&, const CFloat4Value&);
+
 	CFloatRvalue NewFloat(CShaderBuilder&, float x);
 
 	CFloat2Rvalue NewFloat2(const CFloatValue& x, const CFloatValue& y);

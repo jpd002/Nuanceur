@@ -119,6 +119,19 @@ void CFloat4Lvalue::operator =(const CFloat4Rvalue& rhs)
 	);
 }
 
+CFloat4Rvalue Nuanceur::Clamp(const CFloat4Value& value, const CFloat4Value& min, const CFloat4Value& max)
+{
+	CHECK_ISOPERANDVALID(value);
+	CHECK_ISOPERANDVALID(min);
+	CHECK_ISOPERANDVALID(max);
+	auto owner = GetCommonOwner(value.symbol, min.symbol);
+	auto temp = CFloat4Rvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_CLAMP, temp, value, min, max)
+	);
+	return temp;
+}
+
 CFloatRvalue Nuanceur::NewFloat(CShaderBuilder& owner, float x)
 {
 	auto literal = owner.CreateConstant(x, 0, 0, 0);
