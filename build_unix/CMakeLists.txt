@@ -4,6 +4,17 @@ project(Nuanceur)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+if(NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE Release CACHE STRING
+		"Choose the type of build, options are: None Debug Release"
+		FORCE)
+endif()
+
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+	add_definitions(-DNDEBUG)
+else()
+	add_definitions(-D_DEBUG)
+endif()
 
 if (WIN32)
     set(TARGET_PLATFORM WIN32)
