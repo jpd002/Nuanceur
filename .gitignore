@@ -2,6 +2,7 @@ build_android/libs
 build_android/obj
 Debug
 Release
+build_unix/build*
 *.suo
 *.VC.db
 *.VC.opendb
