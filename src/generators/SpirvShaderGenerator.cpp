@@ -255,21 +255,32 @@ void CSpirvShaderGenerator::Generate()
 			case CShaderBuilder::STATEMENT_OP_NEWVECTOR4:
 				{
 					assert(statement.GetSourceCount() == 2);
-					assert(statement.src1Ref.swizzle == SWIZZLE_XYZ);
-					assert(statement.src2Ref.swizzle == SWIZZLE_X);
-					auto src1Id = LoadFromSymbol(src1Ref);
-					auto src2Id = LoadFromSymbol(src2Ref);
-					auto elemXId = AllocateId();
-					auto elemYId = AllocateId();
-					auto elemZId = AllocateId();
-					auto elemWId = AllocateId();
-					auto resultId = AllocateId();
-					WriteOp(spv::OpCompositeExtract, m_floatTypeId, elemXId, src1Id, 0);
-					WriteOp(spv::OpCompositeExtract, m_floatTypeId, elemYId, src1Id, 1);
-					WriteOp(spv::OpCompositeExtract, m_floatTypeId, elemZId, src1Id, 2);
-					WriteOp(spv::OpCompositeExtract, m_floatTypeId, elemWId, src2Id, 0);
-					WriteOp(spv::OpCompositeConstruct, m_float4TypeId, resultId, elemXId, elemYId, elemZId, elemWId);
-					StoreToSymbol(dstRef, resultId);
+					if(
+						(statement.src1Ref.swizzle == SWIZZLE_XYZ) &&
+						(statement.src2Ref.swizzle == SWIZZLE_X)
+					)
+					{
+						auto src1Id = LoadFromSymbol(src1Ref);
+						auto src2Id = LoadFromSymbol(src2Ref);
+						auto resultId = AllocateId();
+						WriteOp(spv::OpVectorShuffle, m_float4TypeId, resultId, src1Id, src2Id, 0, 1, 2, 4);
+						StoreToSymbol(dstRef, resultId);
+					}
+					else if(
+						(statement.src1Ref.swizzle == SWIZZLE_X) &&
+						(statement.src2Ref.swizzle == SWIZZLE_XYZ)
+					)
+					{
+						auto src1Id = LoadFromSymbol(src1Ref);
+						auto src2Id = LoadFromSymbol(src2Ref);
+						auto resultId = AllocateId();
+						WriteOp(spv::OpVectorShuffle, m_float4TypeId, resultId, src1Id, src2Id, 0, 4, 5, 6);
+						StoreToSymbol(dstRef, resultId);
+					}
+					else
+					{
+						assert(false);
+					}
 				}
 				break;
 			case CShaderBuilder::STATEMENT_OP_ASSIGN:
