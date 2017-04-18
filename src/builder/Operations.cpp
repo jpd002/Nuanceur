@@ -148,10 +148,26 @@ CFloat2Rvalue Nuanceur::NewFloat2(const CFloatValue& x, const CFloatValue& y)
 	return temp;
 }
 
+CFloat3Rvalue Nuanceur::NewFloat3(CShaderBuilder& owner, float x, float y, float z)
+{
+	auto literal = owner.CreateConstant(x, y, z, 0);
+	return CFloat3Rvalue(literal);
+}
+
 CFloat4Rvalue Nuanceur::NewFloat4(CShaderBuilder& owner, float x, float y, float z, float w)
 {
 	auto literal = owner.CreateConstant(x, y, z, w);
 	return CFloat4Rvalue(literal);
+}
+
+CFloat4Rvalue Nuanceur::NewFloat4(const CFloatValue& x, const CFloat3Value& yzw)
+{
+	auto owner = GetCommonOwner(x.symbol, yzw.symbol);
+	auto temp = CFloat4Rvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, x, yzw)
+	);
+	return temp;
 }
 
 CFloat4Rvalue Nuanceur::NewFloat4(const CFloat3Value& xyz, const CFloatValue& w)
