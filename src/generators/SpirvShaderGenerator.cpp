@@ -17,6 +17,14 @@ void CSpirvShaderGenerator::Generate(Framework::CStream& outputStream, const CSh
 	generator.Generate();
 }
 
+static bool IsIdentitySwizzle(SWIZZLE_TYPE swizzle)
+{
+	return (swizzle == SWIZZLE_X)   ||
+	       (swizzle == SWIZZLE_XY)  ||
+	       (swizzle == SWIZZLE_XYZ) ||
+	       (swizzle == SWIZZLE_XYZW);
+}
+
 void CSpirvShaderGenerator::Generate()
 {
 	//Some notes:
@@ -562,12 +570,35 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 		assert(false);
 		break;
 	}
+	if(
+		(srcRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4) &&
+		!IsIdentitySwizzle(srcRef.swizzle)
+	)
+	{
+		auto prevId = srcId;
+		uint32 components[4] = { 0, 0, 0, 0 };
+		srcId = AllocateId();
+		switch(srcRef.swizzle)
+		{
+		case SWIZZLE_Z:
+			components[0] = 2;
+			break;
+		case SWIZZLE_W:
+			components[0] = 3;
+			break;
+		default:
+			assert(false);
+			break;
+		}
+		WriteOp(spv::OpVectorShuffle, m_float4TypeId, srcId, prevId, prevId, 
+			components[0], components[1], components[2], components[3]);
+	}
 	return srcId;
 }
 
 void CSpirvShaderGenerator::StoreToSymbol(const CShaderBuilder::SYMBOLREF& dstRef, uint32 dstId)
 {
-	assert(dstRef.swizzle == SWIZZLE_XYZW);
+	assert(IsIdentitySwizzle(dstRef.swizzle));
 	assert(dstRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
 	switch(dstRef.symbol.location)
 	{
