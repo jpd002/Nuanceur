@@ -243,6 +243,15 @@ void CSpirvShaderGenerator::Generate()
 					StoreToSymbol(dstRef, resultId);
 				}
 				break;
+			case CShaderBuilder::STATEMENT_OP_DIVIDE:
+				{
+					auto src1Id = LoadFromSymbol(src1Ref);
+					auto src2Id = LoadFromSymbol(src2Ref);
+					auto resultId = AllocateId();
+					WriteOp(spv::OpFDiv, m_float4TypeId, resultId, src1Id, src2Id);
+					StoreToSymbol(dstRef, resultId);
+				}
+				break;
 			case CShaderBuilder::STATEMENT_OP_SAMPLE:
 				{
 					auto src1Id = LoadFromSymbol(src1Ref);
