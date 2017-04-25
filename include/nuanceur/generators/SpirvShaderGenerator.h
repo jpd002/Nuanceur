@@ -125,11 +125,14 @@ namespace Nuanceur
 		uint32 LoadFromSymbol(const CShaderBuilder::SYMBOLREF&);
 		void StoreToSymbol(const CShaderBuilder::SYMBOLREF&, uint32);
 
+		uint32 ExtractFloat4X(uint32);
+
 		static uint32 MapSemanticToLocation(Nuanceur::SEMANTIC, uint32);
 
 		uint32 AllocateId();
 
 		//Type Ids
+		uint32 m_boolTypeId = 0;
 		uint32 m_floatTypeId = 0;
 		uint32 m_float4TypeId = 0;
 		uint32 m_matrix44TypeId = 0;

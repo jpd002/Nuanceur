@@ -44,6 +44,7 @@ void CSpirvShaderGenerator::Generate()
 
 	auto voidTypeId = AllocateId();
 	auto mainFunctionTypeId = AllocateId();
+	m_boolTypeId = AllocateId();
 	m_floatTypeId = AllocateId();
 	m_float4TypeId = AllocateId();
 	m_matrix44TypeId = AllocateId();
@@ -155,6 +156,7 @@ void CSpirvShaderGenerator::Generate()
 	//Type declarations
 	WriteOp(spv::OpTypeVoid, voidTypeId);
 	WriteOp(spv::OpTypeFunction, mainFunctionTypeId, voidTypeId);
+	WriteOp(spv::OpTypeBool, m_boolTypeId);
 	WriteOp(spv::OpTypeFloat, m_floatTypeId, 32);
 	WriteOp(spv::OpTypeVector, m_float4TypeId, m_floatTypeId, 4);
 	WriteOp(spv::OpTypeMatrix, m_matrix44TypeId, m_float4TypeId, 4);
@@ -249,6 +251,15 @@ void CSpirvShaderGenerator::Generate()
 					auto src2Id = LoadFromSymbol(src2Ref);
 					auto resultId = AllocateId();
 					WriteOp(spv::OpFDiv, m_float4TypeId, resultId, src1Id, src2Id);
+					StoreToSymbol(dstRef, resultId);
+				}
+				break;
+			case CShaderBuilder::STATEMENT_OP_COMPARE_LT:
+				{
+					auto src1Id = ExtractFloat4X(LoadFromSymbol(src1Ref));
+					auto src2Id = ExtractFloat4X(LoadFromSymbol(src2Ref));
+					auto resultId = AllocateId();
+					WriteOp(spv::OpFOrdLessThan, m_boolTypeId, resultId, src1Id, src2Id);
 					StoreToSymbol(dstRef, resultId);
 				}
 				break;
@@ -619,11 +630,11 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 void CSpirvShaderGenerator::StoreToSymbol(const CShaderBuilder::SYMBOLREF& dstRef, uint32 dstId)
 {
 	assert(IsIdentitySwizzle(dstRef.swizzle));
-	assert(dstRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
 	switch(dstRef.symbol.location)
 	{
 	case CShaderBuilder::SYMBOL_LOCATION_OUTPUT:
 		{
+			assert(dstRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
 			auto outputSemantic = m_shaderBuilder.GetOutputSemantic(dstRef.symbol);
 			switch(outputSemantic.type)
 			{
@@ -658,6 +669,13 @@ void CSpirvShaderGenerator::StoreToSymbol(const CShaderBuilder::SYMBOLREF& dstRe
 		assert(false);
 		break;
 	}
+}
+
+uint32 CSpirvShaderGenerator::ExtractFloat4X(uint32 float4VectorId)
+{
+	uint32 resultId = AllocateId();
+	WriteOp(spv::OpCompositeExtract, m_floatTypeId, resultId, float4VectorId, 0);
+	return resultId;
 }
 
 void CSpirvShaderGenerator::Write32(uint32 value)
