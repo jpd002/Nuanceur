@@ -95,6 +95,8 @@ CFloat4Rvalue Nuanceur::operator *(const CMatrix44Value& lhs, const CFloat4Value
 
 void CFloatLvalue::operator =(const CFloatRvalue& rhs)
 {
+	CHECK_ISOPERANDVALID(*this);
+	CHECK_ISOPERANDVALID(rhs);
 	auto owner = rhs.symbol.owner;
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ASSIGN, *this, rhs)
@@ -103,6 +105,8 @@ void CFloatLvalue::operator =(const CFloatRvalue& rhs)
 
 void CFloat2Lvalue::operator =(const CFloat2Rvalue& rhs)
 {
+	CHECK_ISOPERANDVALID(*this);
+	CHECK_ISOPERANDVALID(rhs);
 	auto owner = rhs.symbol.owner;
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ASSIGN, *this, rhs)
