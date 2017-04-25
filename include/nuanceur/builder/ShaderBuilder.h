@@ -46,6 +46,7 @@ namespace Nuanceur
 		{
 			SYMBOL_TYPE_NULL,
 			SYMBOL_TYPE_FLOAT4,
+			SYMBOL_TYPE_BOOL,
 			SYMBOL_TYPE_MATRIX,
 			SYMBOL_TYPE_TEXTURE2D,
 		};
@@ -109,6 +110,7 @@ namespace Nuanceur
 			STATEMENT_OP_SUBSTRACT,
 			STATEMENT_OP_MULTIPLY,
 			STATEMENT_OP_DIVIDE,
+			STATEMENT_OP_COMPARE_LT,
 			STATEMENT_OP_MAX,
 			STATEMENT_OP_DOT,
 			STATEMENT_OP_POW,
@@ -194,7 +196,9 @@ namespace Nuanceur
 		SYMBOL					CreateInput(SEMANTIC, unsigned int = 0);
 		SYMBOL					CreateOutput(SEMANTIC, unsigned int = 0);
 		SYMBOL					CreateConstant(float, float, float, float);
+		
 		SYMBOL					CreateTemporary();
+		SYMBOL					CreateTemporaryBool();
 
 		SYMBOL					CreateOptionalInput(bool, SEMANTIC, unsigned int = 0);
 

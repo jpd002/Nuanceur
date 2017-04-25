@@ -87,6 +87,18 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateTemporary()
 	return sym;
 }
 
+CShaderBuilder::SYMBOL CShaderBuilder::CreateTemporaryBool()
+{
+	SYMBOL sym;
+	sym.owner    = this;
+	sym.index    = m_currentTempIndex++;
+	sym.type     = SYMBOL_TYPE_BOOL;
+	sym.location = SYMBOL_LOCATION_TEMPORARY;
+	m_symbols.push_back(sym);
+
+	return sym;
+}
+
 CShaderBuilder::SYMBOL CShaderBuilder::CreateConstant(float v1, float v2, float v3, float v4)
 {
 	//TODO: Check if constant already exists

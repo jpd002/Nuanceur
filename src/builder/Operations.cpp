@@ -93,6 +93,28 @@ CFloat4Rvalue Nuanceur::operator *(const CMatrix44Value& lhs, const CFloat4Value
 	return temp;
 }
 
+CBoolRvalue Nuanceur::operator <(const CFloatValue& lhs, const CFloatValue& rhs)
+{
+	CHECK_ISOPERANDVALID(lhs);
+	CHECK_ISOPERANDVALID(rhs);
+	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
+	auto temp = CBoolRvalue(owner->CreateTemporaryBool());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_COMPARE_LT, temp, lhs, rhs)
+	);
+	return temp;
+}
+
+void CBoolLvalue::operator =(const CBoolRvalue& rhs)
+{
+	CHECK_ISOPERANDVALID(*this);
+	CHECK_ISOPERANDVALID(rhs);
+	auto owner = rhs.symbol.owner;
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ASSIGN, *this, rhs)
+	);
+}
+
 void CFloatLvalue::operator =(const CFloatRvalue& rhs)
 {
 	CHECK_ISOPERANDVALID(*this);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ShaderBuilder.h"
+#include "BoolValue.h"
 #include "FloatValue.h"
 #include "Float2Value.h"
 #include "Float3Value.h"
@@ -22,6 +23,8 @@ namespace Nuanceur
 	CFloat2Rvalue operator /(const CFloat2Value& lhs, const CFloat2Value& rhs);
 
 	CFloat4Rvalue operator *(const CMatrix44Value& lhs, const CFloat4Value& rhs);
+
+	CBoolRvalue operator <(const CFloatValue& lhs, const CFloatValue& rhs);
 
 	CFloat4Rvalue Clamp(const CFloat4Value&, const CFloat4Value&, const CFloat4Value&);
 

@@ -72,5 +72,8 @@
     <ClInclude Include="..\include\nuanceur\builder\FloatValue.h">
       <Filter>ソース ファイル\Builder</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\nuanceur\builder\BoolValue.h">
+      <Filter>ソース ファイル\Builder</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
