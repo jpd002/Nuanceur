@@ -43,4 +43,7 @@ namespace Nuanceur
 	CFloat4Rvalue Sample(const CTexture2DValue& texture, const CFloat2Value& coord);
 
 	CFloatRvalue Saturate(const CFloatValue& rhs);
+
+	void BeginIf(CShaderBuilder& owner, const CBoolValue& condition);
+	void EndIf(CShaderBuilder& owner);
 }

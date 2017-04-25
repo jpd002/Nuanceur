@@ -235,3 +235,17 @@ CFloatRvalue Nuanceur::Saturate(const CFloatValue& rhs)
 	);
 	return temp;
 }
+
+void Nuanceur::BeginIf(CShaderBuilder& owner, const CBoolValue& condition)
+{
+	owner.InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_IF_BEGIN, Nuanceur::CShaderBuilder::SYMBOLREF(), condition)
+	);
+}
+
+void Nuanceur::EndIf(CShaderBuilder& owner)
+{
+	owner.InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_IF_END, Nuanceur::CShaderBuilder::SYMBOLREF(), Nuanceur::CShaderBuilder::SYMBOLREF())
+	);
+}
