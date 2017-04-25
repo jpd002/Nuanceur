@@ -166,5 +166,6 @@ namespace Nuanceur
 		std::set<uint32> m_intConstants;
 		std::map<uint32, uint32> m_intConstantIds;
 		uint32 m_nextId = 1;
+		uint32 m_endLabelId = 0;
 	};
 }
