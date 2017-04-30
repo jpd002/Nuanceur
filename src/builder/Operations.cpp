@@ -13,6 +13,18 @@ static CShaderBuilder* GetCommonOwner(const CShaderBuilder::SYMBOL& symbol1, con
 	return symbol1.owner;
 }
 
+CFloat2Rvalue Nuanceur::operator +(const CFloat2Value& lhs, const CFloat2Value& rhs)
+{
+	CHECK_ISOPERANDVALID(lhs);
+	CHECK_ISOPERANDVALID(rhs);
+	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
+	auto temp = CFloat2Rvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ADD, temp, lhs, rhs)
+	);
+	return temp;
+}
+
 CFloat3Rvalue Nuanceur::operator +(const CFloat3Value& lhs, const CFloat3Value& rhs)
 {
 	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
@@ -47,6 +59,18 @@ CFloatRvalue Nuanceur::operator *(const CFloatValue& lhs, const CFloatValue& rhs
 {
 	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
 	auto temp = CFloatRvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MULTIPLY, temp, lhs, rhs)
+	);
+	return temp;
+}
+
+CFloat2Rvalue Nuanceur::operator *(const CFloat2Value& lhs, const CFloat2Value& rhs)
+{
+	CHECK_ISOPERANDVALID(lhs);
+	CHECK_ISOPERANDVALID(rhs);
+	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
+	auto temp = CFloat2Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MULTIPLY, temp, lhs, rhs)
 	);
@@ -162,6 +186,12 @@ CFloatRvalue Nuanceur::NewFloat(CShaderBuilder& owner, float x)
 {
 	auto literal = owner.CreateConstant(x, 0, 0, 0);
 	return CFloatRvalue(literal);
+}
+
+CFloat2Rvalue Nuanceur::NewFloat2(CShaderBuilder& owner, float x, float y)
+{
+	auto literal = owner.CreateConstant(x, y, 0, 0);
+	return CFloat2Rvalue(literal);
 }
 
 CFloat2Rvalue Nuanceur::NewFloat2(const CFloatValue& x, const CFloatValue& y)

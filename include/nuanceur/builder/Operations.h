@@ -11,12 +11,14 @@
 
 namespace Nuanceur
 {
+	CFloat2Rvalue operator +(const CFloat2Value& lhs, const CFloat2Value& rhs);
 	CFloat3Rvalue operator +(const CFloat3Value& lhs, const CFloat3Value& rhs);
 	CFloat4Rvalue operator +(const CFloat4Value& lhs, const CFloat4Value& rhs);
 
 	CFloat4Rvalue operator -(const CFloat4Value& lhs, const CFloat4Value& rhs);
 
 	CFloatRvalue operator *(const CFloatValue& lhs, const CFloatValue& rhs);
+	CFloat2Rvalue operator *(const CFloat2Value& lhs, const CFloat2Value& rhs);
 	CFloat4Rvalue operator *(const CFloat4Value& lhs, const CFloat4Value& rhs);
 
 	CFloatRvalue operator /(const CFloatValue& lhs, const CFloatValue& rhs);
@@ -30,6 +32,7 @@ namespace Nuanceur
 
 	CFloatRvalue NewFloat(CShaderBuilder&, float x);
 
+	CFloat2Rvalue NewFloat2(CShaderBuilder& owner, float x, float y);
 	CFloat2Rvalue NewFloat2(const CFloatValue& x, const CFloatValue& y);
 
 	CFloat3Rvalue NewFloat3(CShaderBuilder&, float x, float y, float z);
