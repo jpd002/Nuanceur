@@ -237,12 +237,32 @@ void CSpirvShaderGenerator::Generate()
 				break;
 			case CShaderBuilder::STATEMENT_OP_MULTIPLY:
 				{
-					assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_MATRIX);
-					auto src1Id = LoadFromSymbol(src1Ref);
-					auto src2Id = LoadFromSymbol(src2Ref);
-					auto resultId = AllocateId();
-					WriteOp(spv::OpMatrixTimesVector, m_float4TypeId, resultId, src1Id, src2Id);
-					StoreToSymbol(dstRef, resultId);
+					if(
+						(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_MATRIX) &&
+						(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4)
+						)
+					{
+						auto src1Id = LoadFromSymbol(src1Ref);
+						auto src2Id = LoadFromSymbol(src2Ref);
+						auto resultId = AllocateId();
+						WriteOp(spv::OpMatrixTimesVector, m_float4TypeId, resultId, src1Id, src2Id);
+						StoreToSymbol(dstRef, resultId);
+					}
+					else if(
+						(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4) &&
+						(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4)
+						)
+					{
+						auto src1Id = LoadFromSymbol(src1Ref);
+						auto src2Id = LoadFromSymbol(src2Ref);
+						auto resultId = AllocateId();
+						WriteOp(spv::OpFMul, m_float4TypeId, resultId, src1Id, src2Id);
+						StoreToSymbol(dstRef, resultId);
+					}
+					else
+					{
+						assert(false);
+					}
 				}
 				break;
 			case CShaderBuilder::STATEMENT_OP_DIVIDE:
