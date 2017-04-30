@@ -5,6 +5,19 @@ using namespace Nuanceur;
 
 #define CHECK_ISOPERANDVALID(a) assert((a).symbol.type != CShaderBuilder::SYMBOL_TYPE_NULL)
 
+#define GENERATE_VECTOR_BINARY_OP(StatementOp, Operator, VectorType) \
+	VectorType##Rvalue Nuanceur::operator Operator(const VectorType##Value& lhs, const VectorType##Value& rhs) \
+	{ \
+		CHECK_ISOPERANDVALID(lhs); \
+		CHECK_ISOPERANDVALID(rhs); \
+		auto owner = GetCommonOwner(lhs.symbol, rhs.symbol); \
+		auto temp = VectorType##Rvalue(owner->CreateTemporary()); \
+		owner->InsertStatement( \
+			CShaderBuilder::STATEMENT(CShaderBuilder::StatementOp, temp, lhs, rhs) \
+		); \
+		return temp; \
+	}
+
 static CShaderBuilder* GetCommonOwner(const CShaderBuilder::SYMBOL& symbol1, const CShaderBuilder::SYMBOL& symbol2)
 {
 	assert(symbol1.owner != nullptr);
@@ -13,99 +26,18 @@ static CShaderBuilder* GetCommonOwner(const CShaderBuilder::SYMBOL& symbol1, con
 	return symbol1.owner;
 }
 
-CFloat2Rvalue Nuanceur::operator +(const CFloat2Value& lhs, const CFloat2Value& rhs)
-{
-	CHECK_ISOPERANDVALID(lhs);
-	CHECK_ISOPERANDVALID(rhs);
-	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
-	auto temp = CFloat2Rvalue(owner->CreateTemporary());
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ADD, temp, lhs, rhs)
-	);
-	return temp;
-}
+GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_ADD, +, CFloat2)
+GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_ADD, +, CFloat3)
+GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_ADD, +, CFloat4)
 
-CFloat3Rvalue Nuanceur::operator +(const CFloat3Value& lhs, const CFloat3Value& rhs)
-{
-	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
-	auto temp = CFloat3Rvalue(owner->CreateTemporary());
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ADD, temp, lhs, rhs)
-	);
-	return temp;
-}
+GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_SUBSTRACT, -, CFloat4)
 
-CFloat4Rvalue Nuanceur::operator +(const CFloat4Value& lhs, const CFloat4Value& rhs)
-{
-	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
-	auto temp = CFloat4Rvalue(owner->CreateTemporary());
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ADD, temp, lhs, rhs)
-	);
-	return temp;
-}
+GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_MULTIPLY, *, CFloat)
+GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_MULTIPLY, *, CFloat2)
+GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_MULTIPLY, *, CFloat4)
 
-CFloat4Rvalue Nuanceur::operator -(const CFloat4Value& lhs, const CFloat4Value& rhs)
-{
-	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
-	auto temp = CFloat4Rvalue(owner->CreateTemporary());
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_SUBSTRACT, temp, lhs, rhs)
-	);
-	return temp;
-}
-
-CFloatRvalue Nuanceur::operator *(const CFloatValue& lhs, const CFloatValue& rhs)
-{
-	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
-	auto temp = CFloatRvalue(owner->CreateTemporary());
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MULTIPLY, temp, lhs, rhs)
-	);
-	return temp;
-}
-
-CFloat2Rvalue Nuanceur::operator *(const CFloat2Value& lhs, const CFloat2Value& rhs)
-{
-	CHECK_ISOPERANDVALID(lhs);
-	CHECK_ISOPERANDVALID(rhs);
-	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
-	auto temp = CFloat2Rvalue(owner->CreateTemporary());
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MULTIPLY, temp, lhs, rhs)
-	);
-	return temp;
-}
-
-CFloat4Rvalue Nuanceur::operator *(const CFloat4Value& lhs, const CFloat4Value& rhs)
-{
-	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
-	auto temp = CFloat4Rvalue(owner->CreateTemporary());
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MULTIPLY, temp, lhs, rhs)
-	);
-	return temp;
-}
-
-CFloatRvalue Nuanceur::operator /(const CFloatValue& lhs, const CFloatValue& rhs)
-{
-	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
-	auto temp = CFloatRvalue(owner->CreateTemporary());
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_DIVIDE, temp, lhs, rhs)
-	);
-	return temp;
-}
-
-CFloat2Rvalue Nuanceur::operator /(const CFloat2Value& lhs, const CFloat2Value& rhs)
-{
-	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
-	auto temp = CFloat2Rvalue(owner->CreateTemporary());
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_DIVIDE, temp, lhs, rhs)
-	);
-	return temp;
-}
+GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_DIVIDE, /, CFloat)
+GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_DIVIDE, /, CFloat2)
 
 CFloat4Rvalue Nuanceur::operator *(const CMatrix44Value& lhs, const CFloat4Value& rhs)
 {
