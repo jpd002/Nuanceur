@@ -40,6 +40,11 @@ namespace Nuanceur
 		{
 			return CFloat2Rvalue(m_symbol, SWIZZLE_ZZ);
 		}
+		
+		CFloat2Rvalue ww() const
+		{
+			return CFloat2Rvalue(m_symbol, SWIZZLE_WW);
+		}
 
 		CFloat3Rvalue xyz() const
 		{
