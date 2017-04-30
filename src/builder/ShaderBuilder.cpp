@@ -116,11 +116,6 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateConstant(float v1, float v2, float 
 	return sym;
 }
 
-CShaderBuilder::SYMBOL CShaderBuilder::CreateOptionalInput(bool available, SEMANTIC semantic, unsigned int semanticIndex)
-{
-	return available ? CreateInput(semantic, semanticIndex) : SYMBOL();
-}
-
 CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformFloat4(const std::string& name)
 {
 	SYMBOL sym;
@@ -159,4 +154,19 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateTexture2D(unsigned int unit)
 	m_symbols.push_back(sym);
 
 	return sym;
+}
+
+CShaderBuilder::SYMBOL CShaderBuilder::CreateOptionalInput(bool available, SEMANTIC semantic, unsigned int semanticIndex)
+{
+	return available ? CreateInput(semantic, semanticIndex) : SYMBOL();
+}
+
+CShaderBuilder::SYMBOL CShaderBuilder::CreateOptionalOutput(bool available, SEMANTIC semantic, unsigned int semanticIndex)
+{
+	return available ? CreateOutput(semantic, semanticIndex) : SYMBOL();
+}
+
+CShaderBuilder::SYMBOL CShaderBuilder::CreateOptionalUniformMatrix(bool available, const std::string& name)
+{
+	return available ? CreateUniformMatrix(name) : SYMBOL();
 }

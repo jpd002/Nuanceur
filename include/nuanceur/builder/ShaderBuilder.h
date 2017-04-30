@@ -203,12 +203,14 @@ namespace Nuanceur
 		SYMBOL					CreateTemporary();
 		SYMBOL					CreateTemporaryBool();
 
-		SYMBOL					CreateOptionalInput(bool, SEMANTIC, unsigned int = 0);
-
 		SYMBOL					CreateUniformFloat4(const std::string&);
 		SYMBOL					CreateUniformMatrix(const std::string&);
 
 		SYMBOL					CreateTexture2D(unsigned int);
+
+		SYMBOL					CreateOptionalInput(bool, SEMANTIC, unsigned int = 0);
+		SYMBOL					CreateOptionalOutput(bool, SEMANTIC, unsigned int = 0);
+		SYMBOL					CreateOptionalUniformMatrix(bool, const std::string&);
 
 	private:
 		typedef std::unordered_map<unsigned int, SEMANTIC_INFO> SemanticMap;
