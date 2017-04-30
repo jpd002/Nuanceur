@@ -641,6 +641,7 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 		assert(false);
 		break;
 	}
+	assert(srcId != 0);
 	if(
 		(srcRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4) &&
 		!IsIdentitySwizzle(srcRef.swizzle)
@@ -668,6 +669,7 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 		WriteOp(spv::OpVectorShuffle, m_float4TypeId, srcId, prevId, prevId, 
 			components[0], components[1], components[2], components[3]);
 	}
+	assert(srcId != 0);
 	return srcId;
 }
 
