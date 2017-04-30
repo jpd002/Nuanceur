@@ -112,6 +112,7 @@ namespace Nuanceur
 		void AllocateOutputPointerIds();
 		void DecorateOutputPointerIds();
 		void DeclareOutputPointerIds();
+		uint32 GetOutputPointerId(const CShaderBuilder::SYMBOLREF&);
 
 		void DeclareTemporaryValueIds();
 

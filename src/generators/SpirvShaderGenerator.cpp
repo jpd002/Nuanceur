@@ -448,6 +448,36 @@ void CSpirvShaderGenerator::DeclareOutputPointerIds()
 	}
 }
 
+uint32 CSpirvShaderGenerator::GetOutputPointerId(const CShaderBuilder::SYMBOLREF& symbol)
+{
+	assert(symbol.symbol.location == CShaderBuilder::SYMBOL_LOCATION_OUTPUT);
+	auto outputSemantic = m_shaderBuilder.GetOutputSemantic(symbol.symbol);
+	uint32 pointerId = 0;
+	switch(outputSemantic.type)
+	{
+	case Nuanceur::SEMANTIC_SYSTEM_POSITION:
+		{
+			assert(m_shaderType == SHADER_TYPE_VERTEX);
+			pointerId = AllocateId();
+			assert(m_intConstantIds.find(0) != m_intConstantIds.end());
+			auto intConstantId = m_intConstantIds[0];
+			WriteOp(spv::OpAccessChain, m_outputFloat4PointerTypeId, pointerId, m_outputPerVertexVariableId, intConstantId);
+		}
+		break;
+	case Nuanceur::SEMANTIC_TEXCOORD:
+	case Nuanceur::SEMANTIC_SYSTEM_COLOR:
+		{
+			assert(m_outputPointerIds.find(symbol.symbol.index) != std::end(m_outputPointerIds));
+			pointerId = m_outputPointerIds[symbol.symbol.index];
+		}
+		break;
+	default:
+		assert(false);
+		break;
+	}
+	return pointerId;
+}
+
 void CSpirvShaderGenerator::DeclareTemporaryValueIds()
 {
 	std::map<float, uint32> floatConstantIds;
@@ -597,6 +627,14 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 			WriteOp(spv::OpLoad, m_float4TypeId, srcId, pointerId);
 		}
 		break;
+	case CShaderBuilder::SYMBOL_LOCATION_OUTPUT:
+		{
+			assert(srcRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
+			srcId = AllocateId();
+			auto pointerId = GetOutputPointerId(srcRef);
+			WriteOp(spv::OpLoad, m_float4TypeId, srcId, pointerId);
+		}
+		break;
 	case CShaderBuilder::SYMBOL_LOCATION_UNIFORM:
 		{
 			assert(m_hasUniforms);
@@ -681,30 +719,8 @@ void CSpirvShaderGenerator::StoreToSymbol(const CShaderBuilder::SYMBOLREF& dstRe
 	case CShaderBuilder::SYMBOL_LOCATION_OUTPUT:
 		{
 			assert(dstRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
-			auto outputSemantic = m_shaderBuilder.GetOutputSemantic(dstRef.symbol);
-			switch(outputSemantic.type)
-			{
-			case Nuanceur::SEMANTIC_SYSTEM_POSITION:
-				{
-					auto outputPositionPointerId = AllocateId();
-					assert(m_intConstantIds.find(0) != m_intConstantIds.end());
-					auto intConstantId = m_intConstantIds[0];
-					WriteOp(spv::OpAccessChain, m_outputFloat4PointerTypeId, outputPositionPointerId, m_outputPerVertexVariableId, intConstantId);
-					WriteOp(spv::OpStore, outputPositionPointerId, dstId);
-				}
-				break;
-			case Nuanceur::SEMANTIC_TEXCOORD:
-			case Nuanceur::SEMANTIC_SYSTEM_COLOR:
-				{
-					assert(m_outputPointerIds.find(dstRef.symbol.index) != std::end(m_outputPointerIds));
-					auto pointerId = m_outputPointerIds[dstRef.symbol.index];
-					WriteOp(spv::OpStore, pointerId, dstId);
-				}
-				break;
-			default:
-				assert(false);
-				break;
-			}
+			auto pointerId = GetOutputPointerId(dstRef);
+			WriteOp(spv::OpStore, pointerId, dstId);
 		}
 		break;
 	case CShaderBuilder::SYMBOL_LOCATION_TEMPORARY:
