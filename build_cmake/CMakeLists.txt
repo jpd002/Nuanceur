@@ -25,8 +25,6 @@ if (WIN32)
 	add_definitions(-D_LIB)
 endif (WIN32)
 
-include_directories(../include ../../Framework/include)
-
 add_library(Nuanceur
 	../src/builder/Operations.cpp
 	../src/builder/ShaderBuilder.cpp
@@ -34,3 +32,5 @@ add_library(Nuanceur
 	../src/generators/HlslShaderGenerator.cpp
 	../src/generators/SpirvShaderGenerator.cpp
 )
+target_include_directories(Nuanceur PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include ${CMAKE_CURRENT_SOURCE_DIR}/../../Framework/include)
+
