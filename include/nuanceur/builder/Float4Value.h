@@ -53,6 +53,7 @@ namespace Nuanceur
 		friend CFloat4Rvalue operator +(const CFloat4Value&, const CFloat4Value&);
 		friend CFloat4Rvalue operator -(const CFloat4Value&, const CFloat4Value&);
 		friend CFloat4Rvalue operator *(const CFloat4Value&, const CFloat4Value&);
+		friend CFloat4Rvalue operator /(const CFloat4Value&, const CFloat4Value&);
 		friend CFloat4Rvalue operator *(const CMatrix44Value&, const CFloat4Value&);
 		friend CFloat4Rvalue Clamp(const CFloat4Value&, const CFloat4Value&, const CFloat4Value&);
 		friend CFloat4Rvalue NewFloat4(CShaderBuilder&, float, float, float, float);
