@@ -48,7 +48,7 @@ void CSpirvShaderGenerator::Generate()
 	m_floatTypeId = AllocateId();
 	m_float4TypeId = AllocateId();
 	m_matrix44TypeId = AllocateId();
-	auto int32TypeId = AllocateId();
+	m_intTypeId = AllocateId();
 	auto perVertexStructTypeId = AllocateId();
 	m_inputFloat4PointerTypeId = AllocateId();
 	m_outputFloat4PointerTypeId = AllocateId();
@@ -137,7 +137,7 @@ void CSpirvShaderGenerator::Generate()
 		WriteOp(spv::OpMemberDecorate, perVertexStructTypeId, 0, spv::DecorationBuiltIn, spv::BuiltInPosition);
 		WriteOp(spv::OpMemberDecorate, perVertexStructTypeId, 1, spv::DecorationBuiltIn, spv::BuiltInPointSize);
 		WriteOp(spv::OpDecorate, perVertexStructTypeId, spv::DecorationBlock);
-		m_intConstants.insert(0);    //Will be required when accessing built-in position
+		RegisterIntConstant(0);    //Will be required when accessing built-in position
 	}
 
 	if(m_hasUniforms)
@@ -160,7 +160,7 @@ void CSpirvShaderGenerator::Generate()
 	WriteOp(spv::OpTypeFloat, m_floatTypeId, 32);
 	WriteOp(spv::OpTypeVector, m_float4TypeId, m_floatTypeId, 4);
 	WriteOp(spv::OpTypeMatrix, m_matrix44TypeId, m_float4TypeId, 4);
-	WriteOp(spv::OpTypeInt, int32TypeId, 32, 1);
+	WriteOp(spv::OpTypeInt, m_intTypeId, 32, 1);
 	WriteOp(spv::OpTypePointer, m_inputFloat4PointerTypeId, spv::StorageClassInput, m_float4TypeId);
 	WriteOp(spv::OpTypePointer, m_outputFloat4PointerTypeId, spv::StorageClassOutput, m_float4TypeId);
 	
@@ -204,12 +204,20 @@ void CSpirvShaderGenerator::Generate()
 		DeclareTextureIds();
 	}
 
-	//Allocate and Declare Constants
-	for(const auto& intConstant : m_intConstants)
+	GatherConstantsFromTemps();
+
+	//Declare Int Constants
+	for(const auto& intConstantIdPair : m_intConstantIds)
 	{
-		auto id = AllocateId();
-		WriteOp(spv::OpConstant, int32TypeId, id,intConstant);
-		m_intConstantIds[intConstant] = id;
+		assert(m_intTypeId != EMPTY_ID);
+		WriteOp(spv::OpConstant, m_intTypeId, intConstantIdPair.second, intConstantIdPair.first);
+	}
+
+	//Declare Float Constants
+	for(const auto& floatConstantIdPair : m_floatConstantIds)
+	{
+		assert(m_floatTypeId != EMPTY_ID);
+		WriteOp(spv::OpConstant, m_floatTypeId, floatConstantIdPair.second, floatConstantIdPair.first);
 	}
 
 	DeclareTemporaryValueIds();
@@ -478,41 +486,49 @@ uint32 CSpirvShaderGenerator::GetOutputPointerId(const CShaderBuilder::SYMBOLREF
 	return pointerId;
 }
 
-void CSpirvShaderGenerator::DeclareTemporaryValueIds()
+void CSpirvShaderGenerator::GatherConstantsFromTemps()
 {
-	std::map<float, uint32> floatConstantIds;
-	auto registerFloatConstant =
-		[this, &floatConstantIds](float value)
-		{
-			if(floatConstantIds.find(value) != std::end(floatConstantIds)) return;
-			floatConstantIds[value] = AllocateId();
-		};
-
 	for(const auto& symbol : m_shaderBuilder.GetSymbols())
 	{
 		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_TEMPORARY) continue;
 		auto temporaryValue = m_shaderBuilder.GetTemporaryValue(symbol);
-		registerFloatConstant(temporaryValue.x);
-		registerFloatConstant(temporaryValue.y);
-		registerFloatConstant(temporaryValue.z);
-		registerFloatConstant(temporaryValue.w);
+		switch(symbol.type)
+		{
+		case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
+			RegisterFloatConstant(temporaryValue.x);
+			RegisterFloatConstant(temporaryValue.y);
+			RegisterFloatConstant(temporaryValue.z);
+			RegisterFloatConstant(temporaryValue.w);
+			break;
+		default:
+			assert(false);
+			break;
+		}
 	}
+}
 
-	for(const auto& floatConstantIdPair : floatConstantIds)
-	{
-		WriteOp(spv::OpConstant, m_floatTypeId, floatConstantIdPair.second, floatConstantIdPair.first);
-	}
-
+void CSpirvShaderGenerator::DeclareTemporaryValueIds()
+{
 	for(const auto& symbol : m_shaderBuilder.GetSymbols())
 	{
 		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_TEMPORARY) continue;
 		auto temporaryValue = m_shaderBuilder.GetTemporaryValue(symbol);
 		uint32 temporaryValueId = AllocateId();
-		uint32 valueXId = floatConstantIds[temporaryValue.x];
-		uint32 valueYId = floatConstantIds[temporaryValue.y];
-		uint32 valueZId = floatConstantIds[temporaryValue.z];
-		uint32 valueWId = floatConstantIds[temporaryValue.w];
-		WriteOp(spv::OpConstantComposite, m_float4TypeId, temporaryValueId, valueXId, valueYId, valueZId, valueWId);
+		switch(symbol.type)
+		{
+		case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
+			{
+				uint32 valueXId = m_floatConstantIds[temporaryValue.x];
+				uint32 valueYId = m_floatConstantIds[temporaryValue.y];
+				uint32 valueZId = m_floatConstantIds[temporaryValue.z];
+				uint32 valueWId = m_floatConstantIds[temporaryValue.w];
+				WriteOp(spv::OpConstantComposite, m_float4TypeId, temporaryValueId, valueXId, valueYId, valueZId, valueWId);
+			}
+			break;
+		default:
+			assert(false);
+			break;
+		}
 		m_temporaryValueIds[symbol.index] = temporaryValueId;
 	}
 }
@@ -533,7 +549,7 @@ void CSpirvShaderGenerator::DecorateUniformStructIds()
 			WriteOp(spv::OpMemberDecorate, m_uniformStructTypeId, memberIndex, spv::DecorationMatrixStride, 16);
 		}
 		m_uniformStructMemberIndices[symbol.index] = memberIndex;
-		m_intConstants.insert(memberIndex);
+		RegisterIntConstant(memberIndex);
 		//Assuming std430 layout
 		switch(symbol.type)
 		{
@@ -611,6 +627,18 @@ void CSpirvShaderGenerator::DeclareTextureIds()
 		auto pointerId = m_texturePointerIds[symbol.index];
 		WriteOp(spv::OpVariable, m_imageSamplerPointerTypeId, pointerId, spv::StorageClassUniformConstant);
 	}
+}
+
+void CSpirvShaderGenerator::RegisterFloatConstant(float value)
+{
+	if(m_floatConstantIds.find(value) != std::end(m_floatConstantIds)) return;
+	m_floatConstantIds[value] = AllocateId();
+}
+
+void CSpirvShaderGenerator::RegisterIntConstant(int32 value)
+{
+	if(m_intConstantIds.find(value) != std::end(m_intConstantIds)) return;
+	m_intConstantIds[value] = AllocateId();
 }
 
 uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& srcRef)

@@ -114,6 +114,7 @@ namespace Nuanceur
 		void DeclareOutputPointerIds();
 		uint32 GetOutputPointerId(const CShaderBuilder::SYMBOLREF&);
 
+		void GatherConstantsFromTemps();
 		void DeclareTemporaryValueIds();
 
 		void DecorateUniformStructIds();
@@ -122,6 +123,9 @@ namespace Nuanceur
 		void AllocateTextureIds();
 		void DecorateTextureIds();
 		void DeclareTextureIds();
+
+		void RegisterIntConstant(int32);
+		void RegisterFloatConstant(float);
 
 		uint32 LoadFromSymbol(const CShaderBuilder::SYMBOLREF&);
 		void StoreToSymbol(const CShaderBuilder::SYMBOLREF&, uint32);
@@ -142,6 +146,8 @@ namespace Nuanceur
 		uint32 m_floatTypeId = EMPTY_ID;
 		uint32 m_float4TypeId = EMPTY_ID;
 		uint32 m_matrix44TypeId = EMPTY_ID;
+
+		uint32 m_intTypeId = EMPTY_ID;
 
 		uint32 m_inputFloat4PointerTypeId = EMPTY_ID;
 		uint32 m_outputFloat4PointerTypeId = EMPTY_ID;
@@ -169,8 +175,8 @@ namespace Nuanceur
 		std::map<uint32, uint32> m_temporaryValueIds;
 		std::map<uint32, uint32> m_uniformStructMemberIndices;
 		std::map<uint32, uint32> m_texturePointerIds;
-		std::set<uint32> m_intConstants;
 		std::map<uint32, uint32> m_intConstantIds;
+		std::map<float, uint32> m_floatConstantIds;
 		uint32 m_nextId = EMPTY_ID + 1;
 		uint32 m_endLabelId = 0;
 	};
