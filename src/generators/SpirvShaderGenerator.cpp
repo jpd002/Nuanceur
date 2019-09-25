@@ -47,8 +47,11 @@ void CSpirvShaderGenerator::Generate()
 	m_boolTypeId = AllocateId();
 	m_floatTypeId = AllocateId();
 	m_float4TypeId = AllocateId();
+	m_uintTypeId = AllocateId();
+	m_uint4TypeId = AllocateId();
 	m_matrix44TypeId = AllocateId();
 	m_intTypeId = AllocateId();
+	m_int4TypeId = AllocateId();
 	auto perVertexStructTypeId = AllocateId();
 	m_inputFloat4PointerTypeId = AllocateId();
 	m_outputFloat4PointerTypeId = AllocateId();
@@ -65,9 +68,15 @@ void CSpirvShaderGenerator::Generate()
 
 	if(m_hasTextures)
 	{
+		//Sampled image
 		m_sampledImage2DTypeId = AllocateId();
 		m_sampledImageSamplerTypeId = AllocateId();
 		m_sampledImageSamplerPointerTypeId = AllocateId();
+
+		//Storage image
+		m_storageImage2DTypeId = AllocateId();
+		m_storageImage2DPointerTypeId = AllocateId();
+
 		AllocateTextureIds();
 	}
 
@@ -161,6 +170,9 @@ void CSpirvShaderGenerator::Generate()
 	WriteOp(spv::OpTypeVector, m_float4TypeId, m_floatTypeId, 4);
 	WriteOp(spv::OpTypeMatrix, m_matrix44TypeId, m_float4TypeId, 4);
 	WriteOp(spv::OpTypeInt, m_intTypeId, 32, 1);
+	WriteOp(spv::OpTypeVector, m_int4TypeId, m_intTypeId, 4);
+	WriteOp(spv::OpTypeInt, m_uintTypeId, 32, 0);
+	WriteOp(spv::OpTypeVector, m_uint4TypeId, m_uintTypeId, 4);
 	WriteOp(spv::OpTypePointer, m_inputFloat4PointerTypeId, spv::StorageClassInput, m_float4TypeId);
 	WriteOp(spv::OpTypePointer, m_outputFloat4PointerTypeId, spv::StorageClassOutput, m_float4TypeId);
 	
@@ -184,6 +196,10 @@ void CSpirvShaderGenerator::Generate()
 		WriteOp(spv::OpTypeImage, m_sampledImage2DTypeId, m_floatTypeId, spv::Dim2D, 0, 0, 0, 1, spv::ImageFormatUnknown);
 		WriteOp(spv::OpTypeSampledImage, m_sampledImageSamplerTypeId, m_sampledImage2DTypeId);
 		WriteOp(spv::OpTypePointer, m_sampledImageSamplerPointerTypeId, spv::StorageClassUniformConstant, m_sampledImageSamplerTypeId);
+
+		//Storage image
+		WriteOp(spv::OpTypeImage, m_storageImage2DTypeId, m_uintTypeId, spv::Dim2D, 0, 0, 0, 2, spv::ImageFormatR32ui);
+		WriteOp(spv::OpTypePointer, m_storageImage2DPointerTypeId, spv::StorageClassUniformConstant, m_storageImage2DTypeId);
 	}
 
 	DeclareInputPointerIds();
@@ -298,6 +314,15 @@ void CSpirvShaderGenerator::Generate()
 					auto src2Id = LoadFromSymbol(src2Ref);
 					auto resultId = AllocateId();
 					WriteOp(spv::OpImageSampleImplicitLod, m_float4TypeId, resultId, src1Id, src2Id);
+					StoreToSymbol(dstRef, resultId);
+				}
+				break;
+			case CShaderBuilder::STATEMENT_OP_LOAD:
+				{
+					auto src1Id = LoadFromSymbol(src1Ref);
+					auto src2Id = LoadFromSymbol(src2Ref);
+					auto resultId = AllocateId();
+					WriteOp(spv::OpImageRead, m_uint4TypeId, resultId, src1Id, src2Id);
 					StoreToSymbol(dstRef, resultId);
 				}
 				break;
@@ -500,14 +525,25 @@ void CSpirvShaderGenerator::GatherConstantsFromTemps()
 	for(const auto& symbol : m_shaderBuilder.GetSymbols())
 	{
 		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_TEMPORARY) continue;
-		auto temporaryValue = m_shaderBuilder.GetTemporaryValue(symbol);
 		switch(symbol.type)
 		{
 		case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
-			RegisterFloatConstant(temporaryValue.x);
-			RegisterFloatConstant(temporaryValue.y);
-			RegisterFloatConstant(temporaryValue.z);
-			RegisterFloatConstant(temporaryValue.w);
+			{
+				auto temporaryValue = m_shaderBuilder.GetTemporaryValue(symbol);
+				RegisterFloatConstant(temporaryValue.x);
+				RegisterFloatConstant(temporaryValue.y);
+				RegisterFloatConstant(temporaryValue.z);
+				RegisterFloatConstant(temporaryValue.w);
+			}
+			break;
+		case CShaderBuilder::SYMBOL_TYPE_INT4:
+			{
+				auto temporaryValue = m_shaderBuilder.GetTemporaryIntValue(symbol);
+				RegisterIntConstant(temporaryValue.x);
+				RegisterIntConstant(temporaryValue.y);
+				RegisterIntConstant(temporaryValue.z);
+				RegisterIntConstant(temporaryValue.w);
+			}
 			break;
 		default:
 			assert(false);
@@ -521,17 +557,27 @@ void CSpirvShaderGenerator::DeclareTemporaryValueIds()
 	for(const auto& symbol : m_shaderBuilder.GetSymbols())
 	{
 		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_TEMPORARY) continue;
-		auto temporaryValue = m_shaderBuilder.GetTemporaryValue(symbol);
 		uint32 temporaryValueId = AllocateId();
 		switch(symbol.type)
 		{
 		case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
 			{
+				auto temporaryValue = m_shaderBuilder.GetTemporaryValue(symbol);
 				uint32 valueXId = m_floatConstantIds[temporaryValue.x];
 				uint32 valueYId = m_floatConstantIds[temporaryValue.y];
 				uint32 valueZId = m_floatConstantIds[temporaryValue.z];
 				uint32 valueWId = m_floatConstantIds[temporaryValue.w];
 				WriteOp(spv::OpConstantComposite, m_float4TypeId, temporaryValueId, valueXId, valueYId, valueZId, valueWId);
+			}
+			break;
+		case CShaderBuilder::SYMBOL_TYPE_INT4:
+			{
+				auto temporaryValue = m_shaderBuilder.GetTemporaryIntValue(symbol);
+				uint32 valueXId = m_intConstantIds[temporaryValue.x];
+				uint32 valueYId = m_intConstantIds[temporaryValue.y];
+				uint32 valueZId = m_intConstantIds[temporaryValue.z];
+				uint32 valueWId = m_intConstantIds[temporaryValue.w];
+				WriteOp(spv::OpConstantComposite, m_int4TypeId, temporaryValueId, valueXId, valueYId, valueZId, valueWId);
 			}
 			break;
 		default:
@@ -639,6 +685,10 @@ void CSpirvShaderGenerator::DeclareTextureIds()
 			assert(m_sampledImageSamplerPointerTypeId != EMPTY_ID);
 			WriteOp(spv::OpVariable, m_sampledImageSamplerPointerTypeId, pointerId, spv::StorageClassUniformConstant);
 			break;
+		case CShaderBuilder::SYMBOL_TYPE_IMAGEUINT2D:
+			assert(m_storageImage2DPointerTypeId != EMPTY_ID);
+			WriteOp(spv::OpVariable, m_storageImage2DPointerTypeId, pointerId, spv::StorageClassUniformConstant);
+			break;
 		default:
 			assert(false);
 			break;
@@ -711,7 +761,12 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 			switch(srcRef.symbol.type)
 			{
 			case CShaderBuilder::SYMBOL_TYPE_TEXTURE2D:
+				assert(m_sampledImageSamplerTypeId != EMPTY_ID);
 				imageTypeId = m_sampledImageSamplerTypeId;
+				break;
+			case CShaderBuilder::SYMBOL_TYPE_IMAGEUINT2D:
+				assert(m_storageImage2DTypeId != EMPTY_ID);
+				imageTypeId = m_storageImage2DTypeId;
 				break;
 			default:
 				assert(false);

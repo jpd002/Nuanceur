@@ -148,6 +148,9 @@ namespace Nuanceur
 		uint32 m_matrix44TypeId = EMPTY_ID;
 
 		uint32 m_intTypeId = EMPTY_ID;
+		uint32 m_uintTypeId = EMPTY_ID;
+		uint32 m_int4TypeId = EMPTY_ID;
+		uint32 m_uint4TypeId = EMPTY_ID;
 
 		uint32 m_inputFloat4PointerTypeId = EMPTY_ID;
 		uint32 m_outputFloat4PointerTypeId = EMPTY_ID;
@@ -164,6 +167,10 @@ namespace Nuanceur
 		uint32 m_sampledImage2DTypeId = EMPTY_ID;
 		uint32 m_sampledImageSamplerTypeId = EMPTY_ID;
 		uint32 m_sampledImageSamplerPointerTypeId = EMPTY_ID;
+
+		//Storage Image
+		uint32 m_storageImage2DTypeId = EMPTY_ID;
+		uint32 m_storageImage2DPointerTypeId = EMPTY_ID;
 
 		Framework::CStream& m_outputStream;
 		const CShaderBuilder& m_shaderBuilder;
