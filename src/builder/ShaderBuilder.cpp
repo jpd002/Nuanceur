@@ -29,8 +29,22 @@ CVector4 CShaderBuilder::GetTemporaryValue(const SYMBOL& sym) const
 {
 	CVector4 result(0, 0, 0, 0);
 	assert(sym.location == SYMBOL_LOCATION_TEMPORARY);
+	assert(sym.type == SYMBOL_TYPE_FLOAT4);
 	auto temporaryValueIterator = m_temporaryValues.find(sym.index);
 	if(temporaryValueIterator != std::end(m_temporaryValues))
+	{
+		result = temporaryValueIterator->second;
+	}
+	return result;
+}
+
+CShaderBuilder::CIntVector4 CShaderBuilder::GetTemporaryIntValue(const SYMBOL& sym) const
+{
+	CIntVector4 result(0, 0, 0, 0);
+	assert(sym.location == SYMBOL_LOCATION_TEMPORARY);
+	assert(sym.type == SYMBOL_TYPE_INT4);
+	auto temporaryValueIterator = m_temporaryIntValues.find(sym.index);
+	if(temporaryValueIterator != std::end(m_temporaryIntValues))
 	{
 		result = temporaryValueIterator->second;
 	}
@@ -112,6 +126,23 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateConstant(float v1, float v2, float 
 
 	auto tempValue = CVector4(v1, v2, v3, v4);
 	m_temporaryValues.insert(std::make_pair(sym.index, tempValue));
+
+	return sym;
+}
+
+CShaderBuilder::SYMBOL CShaderBuilder::CreateIntConstant(int32 v1, int32 v2, int32 v3, int32 v4)
+{
+	//TODO: Check if constant already exists
+
+	SYMBOL sym;
+	sym.owner    = this;
+	sym.index    = m_currentTempIndex++;
+	sym.type     = SYMBOL_TYPE_INT4;
+	sym.location = SYMBOL_LOCATION_TEMPORARY;
+	m_symbols.push_back(sym);
+
+	auto tempValue = CIntVector4(v1, v2, v3, v4);
+	m_temporaryIntValues.insert(std::make_pair(sym.index, tempValue));
 
 	return sym;
 }

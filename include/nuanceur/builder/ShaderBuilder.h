@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <cassert>
 #include <string>
+#include "Types.h"
 #include "math/Vector4.h"
 
 namespace Nuanceur
@@ -47,6 +48,7 @@ namespace Nuanceur
 		{
 			SYMBOL_TYPE_NULL,
 			SYMBOL_TYPE_FLOAT4,
+			SYMBOL_TYPE_INT4,
 			SYMBOL_TYPE_BOOL,
 			SYMBOL_TYPE_MATRIX,
 			SYMBOL_TYPE_TEXTURE2D,
@@ -103,6 +105,21 @@ namespace Nuanceur
 			
 			SYMBOL			symbol;
 			SWIZZLE_TYPE	swizzle = SWIZZLE_XYZW;
+		};
+
+		class CIntVector4
+		{
+		public:
+			CIntVector4(int32 x, int32 y, int32 z, int32 w)
+				: x(x), y(y), z(z), w(w)
+			{
+			
+			}
+
+			int32 x;
+			int32 y;
+			int32 z;
+			int32 w;
 		};
 
 		enum STATEMENT_OP
@@ -195,6 +212,7 @@ namespace Nuanceur
 		SEMANTIC_INFO			GetOutputSemantic(const SYMBOL&) const;
 		std::string				GetUniformName(const SYMBOL&) const;
 		CVector4				GetTemporaryValue(const SYMBOL&) const;
+		CIntVector4				GetTemporaryIntValue(const SYMBOL&) const;
 
 		const StatementList&	GetStatements() const;
 		void					InsertStatement(const STATEMENT&);
@@ -202,6 +220,7 @@ namespace Nuanceur
 		SYMBOL					CreateInput(SEMANTIC, unsigned int = 0);
 		SYMBOL					CreateOutput(SEMANTIC, unsigned int = 0);
 		SYMBOL					CreateConstant(float, float, float, float);
+		SYMBOL					CreateIntConstant(int32, int32, int32, int32);
 		
 		SYMBOL					CreateTemporary();
 		SYMBOL					CreateTemporaryBool();
@@ -221,6 +240,7 @@ namespace Nuanceur
 		typedef std::unordered_map<unsigned int, SEMANTIC_INFO> SemanticMap;
 		typedef std::unordered_map<unsigned int, std::string> UniformNameMap;
 		typedef std::unordered_map<unsigned int, CVector4> TemporaryValueMap;
+		typedef std::unordered_map<unsigned int, CIntVector4> TemporaryIntValueMap;
 
 		SymbolArray				m_symbols;
 		StatementList			m_statements;
@@ -232,5 +252,6 @@ namespace Nuanceur
 		SemanticMap				m_outputSemantics;
 		UniformNameMap			m_uniformNames;
 		TemporaryValueMap		m_temporaryValues;
+		TemporaryIntValueMap	m_temporaryIntValues;
 	};
 }
