@@ -132,26 +132,31 @@ namespace Nuanceur
 
 		uint32 AllocateId();
 
+		enum
+		{
+			EMPTY_ID = 0
+		};
+
 		//Type Ids
-		uint32 m_boolTypeId = 0;
-		uint32 m_floatTypeId = 0;
-		uint32 m_float4TypeId = 0;
-		uint32 m_matrix44TypeId = 0;
+		uint32 m_boolTypeId = EMPTY_ID;
+		uint32 m_floatTypeId = EMPTY_ID;
+		uint32 m_float4TypeId = EMPTY_ID;
+		uint32 m_matrix44TypeId = EMPTY_ID;
 
-		uint32 m_inputFloat4PointerTypeId = 0;
-		uint32 m_outputFloat4PointerTypeId = 0;
+		uint32 m_inputFloat4PointerTypeId = EMPTY_ID;
+		uint32 m_outputFloat4PointerTypeId = EMPTY_ID;
 
-		uint32 m_outputPerVertexVariableId = 0;
+		uint32 m_outputPerVertexVariableId = EMPTY_ID;
 
-		uint32 m_uniformStructTypeId = 0;
-		uint32 m_pushUniformStructPointerTypeId = 0;
-		uint32 m_pushFloat4PointerTypeId = 0;
-		uint32 m_pushMatrix44PointerTypeId = 0;
-		uint32 m_pushUniformVariableId = 0;
+		uint32 m_uniformStructTypeId = EMPTY_ID;
+		uint32 m_pushUniformStructPointerTypeId = EMPTY_ID;
+		uint32 m_pushFloat4PointerTypeId = EMPTY_ID;
+		uint32 m_pushMatrix44PointerTypeId = EMPTY_ID;
+		uint32 m_pushUniformVariableId = EMPTY_ID;
 
-		uint32 m_image2DTypeId = 0;
-		uint32 m_imageSamplerTypeId = 0;
-		uint32 m_imageSamplerPointerTypeId = 0;
+		uint32 m_image2DTypeId = EMPTY_ID;
+		uint32 m_imageSamplerTypeId = EMPTY_ID;
+		uint32 m_imageSamplerPointerTypeId = EMPTY_ID;
 
 		Framework::CStream& m_outputStream;
 		const CShaderBuilder& m_shaderBuilder;
@@ -166,7 +171,7 @@ namespace Nuanceur
 		std::map<uint32, uint32> m_texturePointerIds;
 		std::set<uint32> m_intConstants;
 		std::map<uint32, uint32> m_intConstantIds;
-		uint32 m_nextId = 1;
+		uint32 m_nextId = EMPTY_ID + 1;
 		uint32 m_endLabelId = 0;
 	};
 }
