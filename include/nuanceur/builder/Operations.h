@@ -1,13 +1,17 @@
 #pragma once
 
 #include "ShaderBuilder.h"
+
 #include "BoolValue.h"
 #include "FloatValue.h"
 #include "Float2Value.h"
 #include "Float3Value.h"
 #include "Float4Value.h"
+#include "ImageUint2DValue.h"
+#include "Int2Value.h"
 #include "Matrix44Value.h"
 #include "Texture2DValue.h"
+#include "Uint4Value.h"
 
 namespace Nuanceur
 {
@@ -44,6 +48,8 @@ namespace Nuanceur
 	CFloat4Rvalue Normalize(const CFloat4Value& rhs);
 
 	CFloat4Rvalue Sample(const CTexture2DValue& texture, const CFloat2Value& coord);
+
+	CUint4Rvalue Load(const CImageUint2DValue& image, const CInt2Value& coord);
 
 	CFloatRvalue Saturate(const CFloatValue& rhs);
 
