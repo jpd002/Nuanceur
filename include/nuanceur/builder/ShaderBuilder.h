@@ -50,6 +50,7 @@ namespace Nuanceur
 			SYMBOL_TYPE_BOOL,
 			SYMBOL_TYPE_MATRIX,
 			SYMBOL_TYPE_TEXTURE2D,
+			SYMBOL_TYPE_IMAGEUINT2D,
 		};
 
 		enum SYMBOL_LOCATION
@@ -207,6 +208,8 @@ namespace Nuanceur
 		SYMBOL					CreateUniformMatrix(const std::string&);
 
 		SYMBOL					CreateTexture2D(unsigned int);
+
+		SYMBOL					CreateImageUint2D(unsigned int);
 
 		SYMBOL					CreateOptionalInput(bool, SEMANTIC, unsigned int = 0);
 		SYMBOL					CreateOptionalOutput(bool, SEMANTIC, unsigned int = 0);

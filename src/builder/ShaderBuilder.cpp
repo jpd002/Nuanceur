@@ -156,6 +156,18 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateTexture2D(unsigned int unit)
 	return sym;
 }
 
+CShaderBuilder::SYMBOL CShaderBuilder::CreateImageUint2D(unsigned int unit)
+{
+	SYMBOL sym;
+	sym.owner    = this;
+	sym.index    = unit;
+	sym.type     = SYMBOL_TYPE_IMAGEUINT2D;
+	sym.location = SYMBOL_LOCATION_TEXTURE;
+	m_symbols.push_back(sym);
+
+	return sym;
+}
+
 CShaderBuilder::SYMBOL CShaderBuilder::CreateOptionalInput(bool available, SEMANTIC semantic, unsigned int semanticIndex)
 {
 	return available ? CreateInput(semantic, semanticIndex) : SYMBOL();
