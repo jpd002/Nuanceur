@@ -51,6 +51,8 @@ namespace Nuanceur
 
 	CUint4Rvalue Load(const CImageUint2DValue& image, const CInt2Value& coord);
 
+	CFloat4Rvalue ToFloat(const CUint4Value&);
+
 	CFloatRvalue Saturate(const CFloatValue& rhs);
 
 	void BeginIf(CShaderBuilder& owner, const CBoolValue& condition);

@@ -12,6 +12,7 @@ namespace Nuanceur
 	class CTexture2DValue;
 	class CMatrix44Value;
 	class CSwizzleSelector4;
+	class CUint4Value;
 
 	class CFloat4Value : public CShaderBuilder::SYMBOLREF
 	{
@@ -59,6 +60,7 @@ namespace Nuanceur
 		friend CFloat4Rvalue NewFloat4(const CFloat3Value&, const CFloatValue&);
 		friend CFloat4Rvalue Normalize(const CFloat4Value&);
 		friend CFloat4Rvalue Sample(const CTexture2DValue&, const CFloat2Value&);
+		friend CFloat4Rvalue ToFloat(const CUint4Value&);
 
 		CFloat4Rvalue(const CFloat4Rvalue&) = default;
 

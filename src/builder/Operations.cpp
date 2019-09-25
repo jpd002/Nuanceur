@@ -198,6 +198,16 @@ CUint4Rvalue Nuanceur::Load(const CImageUint2DValue& image, const CInt2Value& co
 	return temp;
 }
 
+CFloat4Rvalue Nuanceur::ToFloat(const CUint4Value& rhs)
+{
+	auto owner = rhs.symbol.owner;
+	auto temp = CFloat4Rvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOFLOAT, temp, rhs)
+	);
+	return temp;
+}
+
 CFloatRvalue Nuanceur::Saturate(const CFloatValue& rhs)
 {
 	auto owner = rhs.symbol.owner;
