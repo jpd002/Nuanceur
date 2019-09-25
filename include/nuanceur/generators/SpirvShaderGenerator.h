@@ -160,9 +160,10 @@ namespace Nuanceur
 		uint32 m_pushMatrix44PointerTypeId = EMPTY_ID;
 		uint32 m_pushUniformVariableId = EMPTY_ID;
 
-		uint32 m_image2DTypeId = EMPTY_ID;
-		uint32 m_imageSamplerTypeId = EMPTY_ID;
-		uint32 m_imageSamplerPointerTypeId = EMPTY_ID;
+		//Sampled Image
+		uint32 m_sampledImage2DTypeId = EMPTY_ID;
+		uint32 m_sampledImageSamplerTypeId = EMPTY_ID;
+		uint32 m_sampledImageSamplerPointerTypeId = EMPTY_ID;
 
 		Framework::CStream& m_outputStream;
 		const CShaderBuilder& m_shaderBuilder;
