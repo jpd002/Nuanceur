@@ -181,7 +181,7 @@ void CSpirvShaderGenerator::Generate()
 	if(m_hasTextures)
 	{
 		//Sampled image
-		WriteOp(spv::OpTypeImage, m_sampledImage2DTypeId, m_float4TypeId, spv::Dim2D, 0, 0, 0, 1, spv::ImageFormatUnknown);
+		WriteOp(spv::OpTypeImage, m_sampledImage2DTypeId, m_floatTypeId, spv::Dim2D, 0, 0, 0, 1, spv::ImageFormatUnknown);
 		WriteOp(spv::OpTypeSampledImage, m_sampledImageSamplerTypeId, m_sampledImage2DTypeId);
 		WriteOp(spv::OpTypePointer, m_sampledImageSamplerPointerTypeId, spv::StorageClassUniformConstant, m_sampledImageSamplerTypeId);
 	}
