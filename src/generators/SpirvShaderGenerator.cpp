@@ -301,6 +301,14 @@ void CSpirvShaderGenerator::Generate()
 					StoreToSymbol(dstRef, resultId);
 				}
 				break;
+			case CShaderBuilder::STATEMENT_OP_TOFLOAT:
+				{
+					auto src1Id = LoadFromSymbol(src1Ref);
+					auto resultId = AllocateId();
+					WriteOp(spv::OpConvertUToF, m_float4TypeId, resultId, src1Id);
+					StoreToSymbol(dstRef, resultId);
+				}
+				break;
 			case CShaderBuilder::STATEMENT_OP_NEWVECTOR4:
 				{
 					assert(statement.GetSourceCount() == 2);
