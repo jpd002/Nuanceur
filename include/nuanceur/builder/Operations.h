@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Types.h"
 #include "ShaderBuilder.h"
 
 #include "BoolValue.h"
@@ -44,6 +45,8 @@ namespace Nuanceur
 	CFloat4Rvalue NewFloat4(CShaderBuilder& owner, float x, float y, float z, float w);
 	CFloat4Rvalue NewFloat4(const CFloatValue& x, const CFloat3Value& yzw);
 	CFloat4Rvalue NewFloat4(const CFloat3Value& xyz, const CFloatValue& w);
+
+	CInt2Rvalue NewInt2(CShaderBuilder& owner, int32 x, int32 y);
 
 	CFloat4Rvalue Normalize(const CFloat4Value& rhs);
 
