@@ -548,7 +548,7 @@ void CSpirvShaderGenerator::GatherConstantsFromTemps()
 			break;
 		case CShaderBuilder::SYMBOL_TYPE_INT4:
 			{
-				auto temporaryValue = m_shaderBuilder.GetTemporaryIntValue(symbol);
+				auto temporaryValue = m_shaderBuilder.GetTemporaryValueInt(symbol);
 				RegisterIntConstant(temporaryValue.x);
 				RegisterIntConstant(temporaryValue.y);
 				RegisterIntConstant(temporaryValue.z);
@@ -582,7 +582,7 @@ void CSpirvShaderGenerator::DeclareTemporaryValueIds()
 			break;
 		case CShaderBuilder::SYMBOL_TYPE_INT4:
 			{
-				auto temporaryValue = m_shaderBuilder.GetTemporaryIntValue(symbol);
+				auto temporaryValue = m_shaderBuilder.GetTemporaryValueInt(symbol);
 				uint32 valueXId = m_intConstantIds[temporaryValue.x];
 				uint32 valueYId = m_intConstantIds[temporaryValue.y];
 				uint32 valueZId = m_intConstantIds[temporaryValue.z];
@@ -695,7 +695,7 @@ void CSpirvShaderGenerator::DeclareTextureIds()
 			assert(m_sampledImageSamplerPointerTypeId != EMPTY_ID);
 			WriteOp(spv::OpVariable, m_sampledImageSamplerPointerTypeId, pointerId, spv::StorageClassUniformConstant);
 			break;
-		case CShaderBuilder::SYMBOL_TYPE_IMAGEUINT2D:
+		case CShaderBuilder::SYMBOL_TYPE_IMAGE2DUINT:
 			assert(m_storageImage2DPointerTypeId != EMPTY_ID);
 			WriteOp(spv::OpVariable, m_storageImage2DPointerTypeId, pointerId, spv::StorageClassUniformConstant);
 			break;
@@ -774,7 +774,7 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 				assert(m_sampledImageSamplerTypeId != EMPTY_ID);
 				imageTypeId = m_sampledImageSamplerTypeId;
 				break;
-			case CShaderBuilder::SYMBOL_TYPE_IMAGEUINT2D:
+			case CShaderBuilder::SYMBOL_TYPE_IMAGE2DUINT:
 				assert(m_storageImage2DTypeId != EMPTY_ID);
 				imageTypeId = m_storageImage2DTypeId;
 				break;

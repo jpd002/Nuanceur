@@ -52,7 +52,7 @@ namespace Nuanceur
 			SYMBOL_TYPE_BOOL,
 			SYMBOL_TYPE_MATRIX,
 			SYMBOL_TYPE_TEXTURE2D,
-			SYMBOL_TYPE_IMAGEUINT2D,
+			SYMBOL_TYPE_IMAGE2DUINT,
 		};
 
 		enum SYMBOL_LOCATION
@@ -213,7 +213,7 @@ namespace Nuanceur
 		SEMANTIC_INFO			GetOutputSemantic(const SYMBOL&) const;
 		std::string				GetUniformName(const SYMBOL&) const;
 		CVector4				GetTemporaryValue(const SYMBOL&) const;
-		CIntVector4				GetTemporaryIntValue(const SYMBOL&) const;
+		CIntVector4				GetTemporaryValueInt(const SYMBOL&) const;
 
 		const StatementList&	GetStatements() const;
 		void					InsertStatement(const STATEMENT&);
@@ -221,7 +221,7 @@ namespace Nuanceur
 		SYMBOL					CreateInput(SEMANTIC, unsigned int = 0);
 		SYMBOL					CreateOutput(SEMANTIC, unsigned int = 0);
 		SYMBOL					CreateConstant(float, float, float, float);
-		SYMBOL					CreateIntConstant(int32, int32, int32, int32);
+		SYMBOL					CreateConstantInt(int32, int32, int32, int32);
 		
 		SYMBOL					CreateTemporary();
 		SYMBOL					CreateTemporaryBool();
@@ -231,7 +231,7 @@ namespace Nuanceur
 
 		SYMBOL					CreateTexture2D(unsigned int);
 
-		SYMBOL					CreateImageUint2D(unsigned int);
+		SYMBOL					CreateImage2DUint(unsigned int);
 
 		SYMBOL					CreateOptionalInput(bool, SEMANTIC, unsigned int = 0);
 		SYMBOL					CreateOptionalOutput(bool, SEMANTIC, unsigned int = 0);
@@ -241,7 +241,7 @@ namespace Nuanceur
 		typedef std::unordered_map<unsigned int, SEMANTIC_INFO> SemanticMap;
 		typedef std::unordered_map<unsigned int, std::string> UniformNameMap;
 		typedef std::unordered_map<unsigned int, CVector4> TemporaryValueMap;
-		typedef std::unordered_map<unsigned int, CIntVector4> TemporaryIntValueMap;
+		typedef std::unordered_map<unsigned int, CIntVector4> TemporaryValueIntMap;
 
 		SymbolArray				m_symbols;
 		StatementList			m_statements;
@@ -253,6 +253,6 @@ namespace Nuanceur
 		SemanticMap				m_outputSemantics;
 		UniformNameMap			m_uniformNames;
 		TemporaryValueMap		m_temporaryValues;
-		TemporaryIntValueMap	m_temporaryIntValues;
+		TemporaryValueIntMap	m_temporaryValuesInt;
 	};
 }

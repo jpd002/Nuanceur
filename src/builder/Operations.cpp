@@ -171,7 +171,7 @@ CFloat4Rvalue Nuanceur::NewFloat4(const CFloat3Value& xyz, const CFloatValue& w)
 
 CInt2Rvalue Nuanceur::NewInt2(CShaderBuilder& owner, int32 x, int32 y)
 {
-	auto literal = owner.CreateIntConstant(x, y, 0, 0);
+	auto literal = owner.CreateConstantInt(x, y, 0, 0);
 	return CInt2Rvalue(literal);
 }
 
