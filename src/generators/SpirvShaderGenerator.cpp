@@ -438,9 +438,17 @@ void CSpirvShaderGenerator::DecorateInputPointerIds()
 		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_INPUT) continue;
 		auto semantic = m_shaderBuilder.GetInputSemantic(symbol);
 		assert(m_inputPointerIds.find(symbol.index) != std::end(m_inputPointerIds));
-		auto location = MapSemanticToLocation(semantic.type, semantic.index);
 		auto pointerId = m_inputPointerIds[symbol.index];
-		WriteOp(spv::OpDecorate, pointerId, spv::DecorationLocation, location);
+		if(semantic.type == Nuanceur::SEMANTIC_SYSTEM_POSITION)
+		{
+			assert(m_shaderType == SHADER_TYPE_FRAGMENT);
+			WriteOp(spv::OpDecorate, pointerId, spv::DecorationBuiltIn, spv::BuiltInFragCoord);
+		}
+		else
+		{
+			auto location = MapSemanticToLocation(semantic.type, semantic.index);
+			WriteOp(spv::OpDecorate, pointerId, spv::DecorationLocation, location);
+		}
 	}
 }
 
