@@ -205,6 +205,16 @@ CUint4Rvalue Nuanceur::Load(const CImageUint2DValue& image, const CInt2Value& co
 	return temp;
 }
 
+CInt2Rvalue Nuanceur::ToInt(const CFloat2Value& rhs)
+{
+	auto owner = rhs.symbol.owner;
+	auto temp = CInt2Rvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOINT, temp, rhs)
+	);
+	return temp;
+}
+
 CFloat4Rvalue Nuanceur::ToFloat(const CUint4Value& rhs)
 {
 	auto owner = rhs.symbol.owner;

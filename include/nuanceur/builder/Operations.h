@@ -55,6 +55,7 @@ namespace Nuanceur
 
 	CUint4Rvalue Load(const CImageUint2DValue& image, const CInt2Value& coord);
 
+	CInt2Rvalue ToInt(const CFloat2Value&);
 	CFloat4Rvalue ToFloat(const CUint4Value&);
 
 	CFloatRvalue Saturate(const CFloatValue& rhs);

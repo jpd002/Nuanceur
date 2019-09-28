@@ -326,6 +326,15 @@ void CSpirvShaderGenerator::Generate()
 					StoreToSymbol(dstRef, resultId);
 				}
 				break;
+			case CShaderBuilder::STATEMENT_OP_TOINT:
+				{
+					auto src1Id = LoadFromSymbol(src1Ref);
+					auto resultId = AllocateId();
+					assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
+					WriteOp(spv::OpConvertFToS, m_int4TypeId, resultId, src1Id);
+					StoreToSymbol(dstRef, resultId);
+				}
+				break;
 			case CShaderBuilder::STATEMENT_OP_TOFLOAT:
 				{
 					auto src1Id = LoadFromSymbol(src1Ref);
