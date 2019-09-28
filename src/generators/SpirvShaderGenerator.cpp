@@ -330,6 +330,7 @@ void CSpirvShaderGenerator::Generate()
 				{
 					auto src1Id = LoadFromSymbol(src1Ref);
 					auto resultId = AllocateId();
+					assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
 					WriteOp(spv::OpConvertUToF, m_float4TypeId, resultId, src1Id);
 					StoreToSymbol(dstRef, resultId);
 				}
