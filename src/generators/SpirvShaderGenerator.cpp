@@ -555,6 +555,7 @@ void CSpirvShaderGenerator::GatherConstantsFromTemps()
 			}
 			break;
 		case CShaderBuilder::SYMBOL_TYPE_INT4:
+		case CShaderBuilder::SYMBOL_TYPE_UINT4:
 			{
 				auto temporaryValue = m_shaderBuilder.GetTemporaryValueInt(symbol);
 				RegisterIntConstant(temporaryValue.x);
@@ -596,6 +597,16 @@ void CSpirvShaderGenerator::DeclareTemporaryValueIds()
 				uint32 valueZId = m_intConstantIds[temporaryValue.z];
 				uint32 valueWId = m_intConstantIds[temporaryValue.w];
 				WriteOp(spv::OpConstantComposite, m_int4TypeId, temporaryValueId, valueXId, valueYId, valueZId, valueWId);
+			}
+			break;
+		case CShaderBuilder::SYMBOL_TYPE_UINT4:
+			{
+				auto temporaryValue = m_shaderBuilder.GetTemporaryValueInt(symbol);
+				uint32 valueXId = m_intConstantIds[temporaryValue.x];
+				uint32 valueYId = m_intConstantIds[temporaryValue.y];
+				uint32 valueZId = m_intConstantIds[temporaryValue.z];
+				uint32 valueWId = m_intConstantIds[temporaryValue.w];
+				WriteOp(spv::OpConstantComposite, m_uint4TypeId, temporaryValueId, valueXId, valueYId, valueZId, valueWId);
 			}
 			break;
 		default:

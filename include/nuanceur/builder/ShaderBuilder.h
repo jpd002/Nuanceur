@@ -49,6 +49,7 @@ namespace Nuanceur
 			SYMBOL_TYPE_NULL,
 			SYMBOL_TYPE_FLOAT4,
 			SYMBOL_TYPE_INT4,
+			SYMBOL_TYPE_UINT4,
 			SYMBOL_TYPE_BOOL,
 			SYMBOL_TYPE_MATRIX,
 			SYMBOL_TYPE_TEXTURE2D,
@@ -225,6 +226,7 @@ namespace Nuanceur
 		
 		SYMBOL					CreateTemporary();
 		SYMBOL					CreateTemporaryBool();
+		SYMBOL					CreateTemporaryUint();
 
 		SYMBOL					CreateUniformFloat4(const std::string&);
 		SYMBOL					CreateUniformMatrix(const std::string&);
