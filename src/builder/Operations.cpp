@@ -175,6 +175,12 @@ CInt2Rvalue Nuanceur::NewInt2(CShaderBuilder& owner, int32 x, int32 y)
 	return CInt2Rvalue(literal);
 }
 
+CUint4Rvalue Nuanceur::NewUint4(CShaderBuilder& owner, uint32 x, uint32 y, uint32 z, uint32 w)
+{
+	auto literal = owner.CreateConstantUint(x, y, z, w);
+	return CUint4Rvalue(literal);
+}
+
 CFloat4Rvalue Nuanceur::Normalize(const CFloat4Value& rhs)
 {
 	auto owner = rhs.symbol.owner;
@@ -203,6 +209,14 @@ CUint4Rvalue Nuanceur::Load(const CImageUint2DValue& image, const CInt2Value& co
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOAD, temp, image, coord)
 	);
 	return temp;
+}
+
+void Nuanceur::Store(const CImageUint2DValue& image, const CInt2Value& coord, const CUint4Value& value)
+{
+	auto owner = GetCommonOwner(image.symbol, coord.symbol);
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_STORE, CShaderBuilder::SYMBOLREF(), image, coord, value)
+	);
 }
 
 CInt2Rvalue Nuanceur::ToInt(const CFloat2Value& rhs)

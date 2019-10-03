@@ -49,11 +49,14 @@ namespace Nuanceur
 
 	CInt2Rvalue NewInt2(CShaderBuilder& owner, int32 x, int32 y);
 
+	CUint4Rvalue NewUint4(CShaderBuilder& owner, uint32 x, uint32 y, uint32 z, uint32 w);
+
 	CFloat4Rvalue Normalize(const CFloat4Value& rhs);
 
 	CFloat4Rvalue Sample(const CTexture2DValue& texture, const CFloat2Value& coord);
 
 	CUint4Rvalue Load(const CImageUint2DValue& image, const CInt2Value& coord);
+	void Store(const CImageUint2DValue& image, const CInt2Value& coord, const CUint4Value&);
 
 	CInt2Rvalue ToInt(const CFloat2Value&);
 	CFloat4Rvalue ToFloat(const CUint4Value&);

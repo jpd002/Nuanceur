@@ -159,6 +159,23 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateConstantInt(int32 v1, int32 v2, int
 	return sym;
 }
 
+CShaderBuilder::SYMBOL CShaderBuilder::CreateConstantUint(uint32 v1, uint32 v2, uint32 v3, uint32 v4)
+{
+	//TODO: Check if constant already exists
+
+	SYMBOL sym;
+	sym.owner    = this;
+	sym.index    = m_currentTempIndex++;
+	sym.type     = SYMBOL_TYPE_UINT4;
+	sym.location = SYMBOL_LOCATION_TEMPORARY;
+	m_symbols.push_back(sym);
+
+	auto tempValue = CIntVector4(v1, v2, v3, v4);
+	m_temporaryValuesInt.insert(std::make_pair(sym.index, tempValue));
+
+	return sym;
+}
+
 CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformFloat4(const std::string& name)
 {
 	SYMBOL sym;

@@ -145,6 +145,7 @@ namespace Nuanceur
 			STATEMENT_OP_LENGTH,
 			STATEMENT_OP_SAMPLE,
 			STATEMENT_OP_LOAD,
+			STATEMENT_OP_STORE,
 			STATEMENT_OP_TOINT,
 			STATEMENT_OP_TOFLOAT,
 			STATEMENT_OP_IF_BEGIN,
@@ -223,6 +224,7 @@ namespace Nuanceur
 		SYMBOL					CreateOutput(SEMANTIC, unsigned int = 0);
 		SYMBOL					CreateConstant(float, float, float, float);
 		SYMBOL					CreateConstantInt(int32, int32, int32, int32);
+		SYMBOL					CreateConstantUint(uint32, uint32, uint32, uint32);
 		
 		SYMBOL					CreateTemporary();
 		SYMBOL					CreateTemporaryBool();
