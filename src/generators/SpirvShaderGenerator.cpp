@@ -223,6 +223,13 @@ void CSpirvShaderGenerator::Generate()
 
 	GatherConstantsFromTemps();
 
+	//Declare Float Constants
+	for(const auto& floatConstantIdPair : m_floatConstantIds)
+	{
+		assert(m_floatTypeId != EMPTY_ID);
+		WriteOp(spv::OpConstant, m_floatTypeId, floatConstantIdPair.second, floatConstantIdPair.first);
+	}
+
 	//Declare Int Constants
 	for(const auto& intConstantIdPair : m_intConstantIds)
 	{
@@ -230,11 +237,11 @@ void CSpirvShaderGenerator::Generate()
 		WriteOp(spv::OpConstant, m_intTypeId, intConstantIdPair.second, intConstantIdPair.first);
 	}
 
-	//Declare Float Constants
-	for(const auto& floatConstantIdPair : m_floatConstantIds)
+	//Declare Uint Constants
+	for(const auto& uintConstantIdPair : m_uintConstantIds)
 	{
-		assert(m_floatTypeId != EMPTY_ID);
-		WriteOp(spv::OpConstant, m_floatTypeId, floatConstantIdPair.second, floatConstantIdPair.first);
+		assert(m_uintTypeId != EMPTY_ID);
+		WriteOp(spv::OpConstant, m_uintTypeId, uintConstantIdPair.second, uintConstantIdPair.first);
 	}
 
 	DeclareTemporaryValueIds();
@@ -249,6 +256,7 @@ void CSpirvShaderGenerator::Generate()
 			const auto& dstRef = statement.dstRef;
 			const auto& src1Ref = statement.src1Ref;
 			const auto& src2Ref = statement.src2Ref;
+			const auto& src3Ref = statement.src3Ref;
 			switch(statement.op)
 			{
 			case CShaderBuilder::STATEMENT_OP_ADD:
@@ -324,6 +332,14 @@ void CSpirvShaderGenerator::Generate()
 					auto resultId = AllocateId();
 					WriteOp(spv::OpImageRead, m_uint4TypeId, resultId, src1Id, src2Id);
 					StoreToSymbol(dstRef, resultId);
+				}
+				break;
+			case CShaderBuilder::STATEMENT_OP_STORE:
+				{
+					auto src1Id = LoadFromSymbol(src1Ref);
+					auto src2Id = LoadFromSymbol(src2Ref);
+					auto src3Id = LoadFromSymbol(src3Ref);
+					WriteOp(spv::OpImageWrite, src1Id, src2Id, src3Id);
 				}
 				break;
 			case CShaderBuilder::STATEMENT_OP_TOINT:
@@ -555,13 +571,21 @@ void CSpirvShaderGenerator::GatherConstantsFromTemps()
 			}
 			break;
 		case CShaderBuilder::SYMBOL_TYPE_INT4:
-		case CShaderBuilder::SYMBOL_TYPE_UINT4:
 			{
 				auto temporaryValue = m_shaderBuilder.GetTemporaryValueInt(symbol);
 				RegisterIntConstant(temporaryValue.x);
 				RegisterIntConstant(temporaryValue.y);
 				RegisterIntConstant(temporaryValue.z);
 				RegisterIntConstant(temporaryValue.w);
+			}
+			break;
+		case CShaderBuilder::SYMBOL_TYPE_UINT4:
+			{
+				auto temporaryValue = m_shaderBuilder.GetTemporaryValueInt(symbol);
+				RegisterUintConstant(temporaryValue.x);
+				RegisterUintConstant(temporaryValue.y);
+				RegisterUintConstant(temporaryValue.z);
+				RegisterUintConstant(temporaryValue.w);
 			}
 			break;
 		default:
@@ -602,10 +626,10 @@ void CSpirvShaderGenerator::DeclareTemporaryValueIds()
 		case CShaderBuilder::SYMBOL_TYPE_UINT4:
 			{
 				auto temporaryValue = m_shaderBuilder.GetTemporaryValueInt(symbol);
-				uint32 valueXId = m_intConstantIds[temporaryValue.x];
-				uint32 valueYId = m_intConstantIds[temporaryValue.y];
-				uint32 valueZId = m_intConstantIds[temporaryValue.z];
-				uint32 valueWId = m_intConstantIds[temporaryValue.w];
+				uint32 valueXId = m_uintConstantIds[temporaryValue.x];
+				uint32 valueYId = m_uintConstantIds[temporaryValue.y];
+				uint32 valueZId = m_uintConstantIds[temporaryValue.z];
+				uint32 valueWId = m_uintConstantIds[temporaryValue.w];
 				WriteOp(spv::OpConstantComposite, m_uint4TypeId, temporaryValueId, valueXId, valueYId, valueZId, valueWId);
 			}
 			break;
@@ -735,6 +759,12 @@ void CSpirvShaderGenerator::RegisterIntConstant(int32 value)
 {
 	if(m_intConstantIds.find(value) != std::end(m_intConstantIds)) return;
 	m_intConstantIds[value] = AllocateId();
+}
+
+void CSpirvShaderGenerator::RegisterUintConstant(uint32 value)
+{
+	if(m_uintConstantIds.find(value) != std::end(m_uintConstantIds)) return;
+	m_uintConstantIds[value] = AllocateId();
 }
 
 uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& srcRef)

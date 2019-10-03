@@ -124,8 +124,9 @@ namespace Nuanceur
 		void DecorateTextureIds();
 		void DeclareTextureIds();
 
-		void RegisterIntConstant(int32);
 		void RegisterFloatConstant(float);
+		void RegisterIntConstant(int32);
+		void RegisterUintConstant(uint32);
 
 		uint32 LoadFromSymbol(const CShaderBuilder::SYMBOLREF&);
 		void StoreToSymbol(const CShaderBuilder::SYMBOLREF&, uint32);
@@ -183,8 +184,9 @@ namespace Nuanceur
 		std::map<uint32, uint32> m_temporaryValueIds;
 		std::map<uint32, uint32> m_uniformStructMemberIndices;
 		std::map<uint32, uint32> m_texturePointerIds;
-		std::map<uint32, uint32> m_intConstantIds;
 		std::map<float, uint32> m_floatConstantIds;
+		std::map<int32, uint32> m_intConstantIds;
+		std::map<uint32, uint32> m_uintConstantIds;
 		uint32 m_nextId = EMPTY_ID + 1;
 		uint32 m_endLabelId = 0;
 	};
