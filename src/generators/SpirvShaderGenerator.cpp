@@ -342,6 +342,15 @@ void CSpirvShaderGenerator::Generate()
 					WriteOp(spv::OpImageWrite, src1Id, src2Id, src3Id);
 				}
 				break;
+			case CShaderBuilder::STATEMENT_OP_TOFLOAT:
+				{
+					auto src1Id = LoadFromSymbol(src1Ref);
+					auto resultId = AllocateId();
+					assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
+					WriteOp(spv::OpConvertUToF, m_float4TypeId, resultId, src1Id);
+					StoreToSymbol(dstRef, resultId);
+				}
+				break;
 			case CShaderBuilder::STATEMENT_OP_TOINT:
 				{
 					auto src1Id = LoadFromSymbol(src1Ref);
@@ -351,12 +360,12 @@ void CSpirvShaderGenerator::Generate()
 					StoreToSymbol(dstRef, resultId);
 				}
 				break;
-			case CShaderBuilder::STATEMENT_OP_TOFLOAT:
+			case CShaderBuilder::STATEMENT_OP_TOUINT:
 				{
 					auto src1Id = LoadFromSymbol(src1Ref);
 					auto resultId = AllocateId();
-					assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
-					WriteOp(spv::OpConvertUToF, m_float4TypeId, resultId, src1Id);
+					assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
+					WriteOp(spv::OpConvertFToU, m_uint4TypeId, resultId, src1Id);
 					StoreToSymbol(dstRef, resultId);
 				}
 				break;
