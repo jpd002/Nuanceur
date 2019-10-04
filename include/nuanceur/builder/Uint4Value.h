@@ -35,6 +35,7 @@ namespace Nuanceur
 	private:
 		friend CUint4Rvalue Load(const CImageUint2DValue&, const CInt2Value&);
 		friend CUint4Rvalue NewUint4(CShaderBuilder&, uint32, uint32, uint32, uint32);
+		friend CUint4Rvalue ToUint(const CFloat4Value&);
 
 		CUint4Rvalue(const CUint4Rvalue&) = default;
 

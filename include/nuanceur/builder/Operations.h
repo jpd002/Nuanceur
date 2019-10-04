@@ -58,8 +58,9 @@ namespace Nuanceur
 	CUint4Rvalue Load(const CImageUint2DValue& image, const CInt2Value& coord);
 	void Store(const CImageUint2DValue& image, const CInt2Value& coord, const CUint4Value&);
 
-	CInt2Rvalue ToInt(const CFloat2Value&);
 	CFloat4Rvalue ToFloat(const CUint4Value&);
+	CInt2Rvalue ToInt(const CFloat2Value&);
+	CUint4Rvalue ToUint(const CFloat4Value&);
 
 	CFloatRvalue Saturate(const CFloatValue& rhs);
 

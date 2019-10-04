@@ -219,6 +219,16 @@ void Nuanceur::Store(const CImageUint2DValue& image, const CInt2Value& coord, co
 	);
 }
 
+CFloat4Rvalue Nuanceur::ToFloat(const CUint4Value& rhs)
+{
+	auto owner = rhs.symbol.owner;
+	auto temp = CFloat4Rvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOFLOAT, temp, rhs)
+	);
+	return temp;
+}
+
 CInt2Rvalue Nuanceur::ToInt(const CFloat2Value& rhs)
 {
 	auto owner = rhs.symbol.owner;
@@ -229,12 +239,12 @@ CInt2Rvalue Nuanceur::ToInt(const CFloat2Value& rhs)
 	return temp;
 }
 
-CFloat4Rvalue Nuanceur::ToFloat(const CUint4Value& rhs)
+CUint4Rvalue Nuanceur::ToUint(const CFloat4Value& rhs)
 {
 	auto owner = rhs.symbol.owner;
-	auto temp = CFloat4Rvalue(owner->CreateTemporary());
+	auto temp = CUint4Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOFLOAT, temp, rhs)
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUINT, temp, rhs)
 	);
 	return temp;
 }
