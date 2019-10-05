@@ -64,6 +64,9 @@ namespace Nuanceur
 
 	CFloatRvalue Saturate(const CFloatValue& rhs);
 
+	void BeginInvocationInterlock(CShaderBuilder& owner);
+	void EndInvocationInterlock(CShaderBuilder& owner);
+
 	void BeginIf(CShaderBuilder& owner, const CBoolValue& condition);
 	void EndIf(CShaderBuilder& owner);
 }

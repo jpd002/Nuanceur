@@ -406,6 +406,12 @@ void CSpirvShaderGenerator::Generate()
 					StoreToSymbol(dstRef, src1Id);
 				}
 				break;
+			case CShaderBuilder::STATEMENT_OP_INVOCATION_INTERLOCK_BEGIN:
+				WriteOp(spv::OpBeginInvocationInterlockEXT);
+				break;
+			case CShaderBuilder::STATEMENT_OP_INVOCATION_INTERLOCK_END:
+				WriteOp(spv::OpEndInvocationInterlockEXT);
+				break;
 			case CShaderBuilder::STATEMENT_OP_IF_BEGIN:
 				{
 					assert(m_endLabelId == 0);

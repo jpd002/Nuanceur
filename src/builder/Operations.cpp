@@ -259,6 +259,20 @@ CFloatRvalue Nuanceur::Saturate(const CFloatValue& rhs)
 	return temp;
 }
 
+void Nuanceur::BeginInvocationInterlock(CShaderBuilder& owner)
+{
+	owner.InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_INVOCATION_INTERLOCK_BEGIN, CShaderBuilder::SYMBOLREF(), CShaderBuilder::SYMBOLREF())
+	);
+}
+
+void Nuanceur::EndInvocationInterlock(CShaderBuilder& owner)
+{
+	owner.InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_INVOCATION_INTERLOCK_END, CShaderBuilder::SYMBOLREF(), CShaderBuilder::SYMBOLREF())
+	);
+}
+
 void Nuanceur::BeginIf(CShaderBuilder& owner, const CBoolValue& condition)
 {
 	owner.InsertStatement(
