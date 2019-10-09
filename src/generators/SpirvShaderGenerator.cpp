@@ -31,7 +31,7 @@ void CSpirvShaderGenerator::Generate()
 	//Mali drivers seem to require a struct to be used for output vertex params
 
 	Write32(spv::MagicNumber);
-	Write32(spv::Version);     //This needs to be 0x10000
+	Write32(0x00010300);       //SPIR-V 1.3 (compatible with Vulkan 1.1)
 	Write32(0);                //Generator
 	Write32(0);                //Bound
 	Write32(0);                //Instruction Schema
@@ -41,6 +41,9 @@ void CSpirvShaderGenerator::Generate()
 
 	m_hasTextures = std::count_if(m_shaderBuilder.GetSymbols().begin(), m_shaderBuilder.GetSymbols().end(),
 		[] (const CShaderBuilder::SYMBOL& symbol) { return symbol.location == CShaderBuilder::SYMBOL_LOCATION_TEXTURE; }) != 0;
+
+	bool hasInvocationInterlock = std::count_if(m_shaderBuilder.GetStatements().begin(), m_shaderBuilder.GetStatements().end(),
+		[] (const CShaderBuilder::STATEMENT& statement) { return statement.op == CShaderBuilder::STATEMENT_OP_INVOCATION_INTERLOCK_BEGIN; }) != 0;
 
 	auto voidTypeId = AllocateId();
 	auto mainFunctionTypeId = AllocateId();
@@ -89,6 +92,11 @@ void CSpirvShaderGenerator::Generate()
 	auto mainFunctionLabelId = AllocateId();
 
 	WriteOp(spv::OpCapability, spv::CapabilityShader);
+	if(hasInvocationInterlock)
+	{
+		WriteOp(spv::OpCapability, spv::CapabilityFragmentShaderPixelInterlockEXT);
+		WriteOp(spv::OpExtension, "SPV_EXT_fragment_shader_interlock");
+	}
 	WriteOp(spv::OpMemoryModel, spv::AddressingModelLogical, spv::MemoryModelGLSL450);
 
 	//Write Entry Point
@@ -134,6 +142,10 @@ void CSpirvShaderGenerator::Generate()
 	if(m_shaderType == SHADER_TYPE_FRAGMENT)
 	{
 		WriteOp(spv::OpExecutionMode, mainFunctionId, spv::ExecutionModeOriginUpperLeft);
+		if(hasInvocationInterlock)
+		{
+			WriteOp(spv::OpExecutionMode, mainFunctionId, spv::ExecutionModePixelInterlockOrderedEXT);
+		}
 	}
 
 	//Names
