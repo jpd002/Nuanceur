@@ -38,12 +38,12 @@ add_library(Nuanceur
 	../include/nuanceur/builder/Float3Value.h
 	../include/nuanceur/builder/Float4Value.h
 	../include/nuanceur/builder/FloatValue.h
+	../include/nuanceur/builder/FloatSwizzleSelector4.h
 	../include/nuanceur/builder/ImageUint2DValue.h
 	../include/nuanceur/builder/Int2Value.h
 	../include/nuanceur/builder/Matrix44Value.h
 	../include/nuanceur/builder/Operations.h
 	../include/nuanceur/builder/ShaderBuilder.h
-	../include/nuanceur/builder/SwizzleSelector4.h
 	../include/nuanceur/builder/Texture2DValue.h
 	../include/nuanceur/builder/Uint4Value.h
 

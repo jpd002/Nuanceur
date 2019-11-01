@@ -11,13 +11,13 @@ namespace Nuanceur
 	class CFloat4Rvalue;
 	class CTexture2DValue;
 	class CMatrix44Value;
-	class CSwizzleSelector4;
+	class CFloatSwizzleSelector4;
 	class CUint4Value;
 
 	class CFloat4Value : public CShaderBuilder::SYMBOLREF
 	{
 	public:
-		CSwizzleSelector4* operator ->()
+		CFloatSwizzleSelector4* operator ->()
 		{
 			return m_swizzleSelector.get();
 		}
@@ -26,11 +26,11 @@ namespace Nuanceur
 		CFloat4Value(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_XYZW)
 			: SYMBOLREF(symbol, swizzle)
 		{
-			m_swizzleSelector = std::make_shared<CSwizzleSelector4>(symbol);
+			m_swizzleSelector = std::make_shared<CFloatSwizzleSelector4>(symbol);
 		}
 
 	private:
-		std::shared_ptr<CSwizzleSelector4> m_swizzleSelector;
+		std::shared_ptr<CFloatSwizzleSelector4> m_swizzleSelector;
 	};
 
 	class CFloat4Lvalue : public CFloat4Value
@@ -49,7 +49,7 @@ namespace Nuanceur
 	class CFloat4Rvalue : public CFloat4Value
 	{
 	private:
-		friend CSwizzleSelector4;
+		friend CFloatSwizzleSelector4;
 		friend CFloat4Rvalue operator +(const CFloat4Value&, const CFloat4Value&);
 		friend CFloat4Rvalue operator -(const CFloat4Value&, const CFloat4Value&);
 		friend CFloat4Rvalue operator *(const CFloat4Value&, const CFloat4Value&);

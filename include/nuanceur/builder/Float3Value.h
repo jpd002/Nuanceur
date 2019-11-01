@@ -5,7 +5,7 @@
 namespace Nuanceur
 {
 	class CFloat3Rvalue;
-	class CSwizzleSelector4;
+	class CFloatSwizzleSelector4;
 
 	class CFloat3Value : public CShaderBuilder::SYMBOLREF
 	{
@@ -32,7 +32,7 @@ namespace Nuanceur
 	class CFloat3Rvalue : public CFloat3Value
 	{
 	private:
-		friend CSwizzleSelector4;
+		friend CFloatSwizzleSelector4;
 		friend CFloat3Rvalue operator +(const CFloat3Value&, const CFloat3Value&);
 		friend CFloat3Rvalue NewFloat3(CShaderBuilder&, float, float, float);
 
