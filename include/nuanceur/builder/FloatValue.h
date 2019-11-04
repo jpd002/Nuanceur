@@ -4,6 +4,7 @@
 
 namespace Nuanceur
 {
+	class CUintValue;
 	class CFloatRvalue;
 	class CFloatSwizzleSelector4;
 
@@ -37,6 +38,7 @@ namespace Nuanceur
 		friend CFloatRvalue operator /(const CFloatValue&, const CFloatValue&);
 		friend CFloatRvalue NewFloat(CShaderBuilder&, float);
 		friend CFloatRvalue Saturate(const CFloatValue&);
+		friend CFloatRvalue ToFloat(const CUintValue&);
 
 		CFloatRvalue(const CFloatRvalue&) = default;
 

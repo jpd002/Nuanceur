@@ -1,5 +1,6 @@
 #include "nuanceur/builder/Operations.h"
 #include "nuanceur/builder/FloatSwizzleSelector4.h"
+#include "nuanceur/builder/UintSwizzleSelector4.h"
 
 using namespace Nuanceur;
 
@@ -12,6 +13,19 @@ using namespace Nuanceur;
 		CHECK_ISOPERANDVALID(rhs); \
 		auto owner = GetCommonOwner(lhs.symbol, rhs.symbol); \
 		auto temp = VectorType##Rvalue(owner->CreateTemporary()); \
+		owner->InsertStatement( \
+			CShaderBuilder::STATEMENT(CShaderBuilder::StatementOp, temp, lhs, rhs) \
+		); \
+		return temp; \
+	}
+
+#define GENERATE_VECTOR_BINARY_UINT_OP(StatementOp, Operator, VectorType) \
+	VectorType##Rvalue Nuanceur::operator Operator(const VectorType##Value& lhs, const VectorType##Value& rhs) \
+	{ \
+		CHECK_ISOPERANDVALID(lhs); \
+		CHECK_ISOPERANDVALID(rhs); \
+		auto owner = GetCommonOwner(lhs.symbol, rhs.symbol); \
+		auto temp = VectorType##Rvalue(owner->CreateTemporaryUint()); \
 		owner->InsertStatement( \
 			CShaderBuilder::STATEMENT(CShaderBuilder::StatementOp, temp, lhs, rhs) \
 		); \
@@ -39,6 +53,12 @@ GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_MULTIPLY, *, CFloat4)
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_DIVIDE, /, CFloat)
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_DIVIDE, /, CFloat2)
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_DIVIDE, /, CFloat4)
+
+GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_LSHIFT, <<, CUint)
+GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_RSHIFT, >>, CUint)
+
+GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_AND, &, CUint)
+GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_OR, |, CUint)
 
 CFloat4Rvalue Nuanceur::operator *(const CMatrix44Value& lhs, const CFloat4Value& rhs)
 {
@@ -159,6 +179,16 @@ CFloat4Rvalue Nuanceur::NewFloat4(const CFloatValue& x, const CFloat3Value& yzw)
 	return temp;
 }
 
+CFloat4Rvalue Nuanceur::NewFloat4(const CFloatValue& x, const CFloatValue& y, const CFloatValue& z, const CFloatValue& w)
+{
+	auto owner = GetCommonOwner(x.symbol, y.symbol);
+	auto temp = CFloat4Rvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, x, y, z, w)
+	);
+	return temp;
+}
+
 CFloat4Rvalue Nuanceur::NewFloat4(const CFloat3Value& xyz, const CFloatValue& w)
 {
 	auto owner = GetCommonOwner(xyz.symbol, w.symbol);
@@ -175,10 +205,32 @@ CInt2Rvalue Nuanceur::NewInt2(CShaderBuilder& owner, int32 x, int32 y)
 	return CInt2Rvalue(literal);
 }
 
+CUintRvalue Nuanceur::NewUint(CShaderBuilder& owner, uint32 x)
+{
+	auto literal = owner.CreateConstantUint(x, 0, 0, 0);
+	return CUintRvalue(literal);
+}
+
+CUint3Rvalue Nuanceur::NewUint3(CShaderBuilder& owner, uint32 x, uint32 y, uint32 z)
+{
+	auto literal = owner.CreateConstantUint(x, y, z, 0);
+	return CUint3Rvalue(literal);
+}
+
 CUint4Rvalue Nuanceur::NewUint4(CShaderBuilder& owner, uint32 x, uint32 y, uint32 z, uint32 w)
 {
 	auto literal = owner.CreateConstantUint(x, y, z, w);
 	return CUint4Rvalue(literal);
+}
+
+CUint4Rvalue Nuanceur::NewUint4(const CUintValue& x, const CUint3Value& yzw)
+{
+	auto owner = GetCommonOwner(x.symbol, yzw.symbol);
+	auto temp = CUint4Rvalue(owner->CreateTemporaryUint());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, x, yzw)
+	);
+	return temp;
 }
 
 CFloat4Rvalue Nuanceur::Normalize(const CFloat4Value& rhs)
@@ -219,6 +271,16 @@ void Nuanceur::Store(const CImageUint2DValue& image, const CInt2Value& coord, co
 	);
 }
 
+CFloatRvalue Nuanceur::ToFloat(const CUintValue& rhs)
+{
+	auto owner = rhs.symbol.owner;
+	auto temp = CFloatRvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOFLOAT, temp, rhs)
+	);
+	return temp;
+}
+
 CFloat4Rvalue Nuanceur::ToFloat(const CUint4Value& rhs)
 {
 	auto owner = rhs.symbol.owner;
@@ -239,10 +301,20 @@ CInt2Rvalue Nuanceur::ToInt(const CFloat2Value& rhs)
 	return temp;
 }
 
+CUintRvalue Nuanceur::ToUint(const CFloatValue& rhs)
+{
+	auto owner = rhs.symbol.owner;
+	auto temp = CUintRvalue(owner->CreateTemporaryUint());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUINT, temp, rhs)
+	);
+	return temp;
+}
+
 CUint4Rvalue Nuanceur::ToUint(const CFloat4Value& rhs)
 {
 	auto owner = rhs.symbol.owner;
-	auto temp = CUint4Rvalue(owner->CreateTemporary());
+	auto temp = CUint4Rvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUINT, temp, rhs)
 	);

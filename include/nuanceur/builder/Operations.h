@@ -12,6 +12,8 @@
 #include "Int2Value.h"
 #include "Matrix44Value.h"
 #include "Texture2DValue.h"
+#include "UintValue.h"
+#include "Uint3Value.h"
 #include "Uint4Value.h"
 
 namespace Nuanceur
@@ -30,6 +32,12 @@ namespace Nuanceur
 	CFloat2Rvalue operator /(const CFloat2Value& lhs, const CFloat2Value& rhs);
 	CFloat4Rvalue operator /(const CFloat4Value& lhs, const CFloat4Value& rhs);
 
+	CUintRvalue operator >>(const CUintValue& lhs, const CUintValue& rhs);
+	CUintRvalue operator <<(const CUintValue& lhs, const CUintValue& rhs);
+
+	CUintRvalue operator &(const CUintValue& lhs, const CUintValue& rhs);
+	CUintRvalue operator |(const CUintValue& lhs, const CUintValue& rhs);
+
 	CFloat4Rvalue operator *(const CMatrix44Value& lhs, const CFloat4Value& rhs);
 
 	CBoolRvalue operator <(const CFloatValue& lhs, const CFloatValue& rhs);
@@ -45,11 +53,17 @@ namespace Nuanceur
 	
 	CFloat4Rvalue NewFloat4(CShaderBuilder& owner, float x, float y, float z, float w);
 	CFloat4Rvalue NewFloat4(const CFloatValue& x, const CFloat3Value& yzw);
+	CFloat4Rvalue NewFloat4(const CFloatValue& x, const CFloatValue& y, const CFloatValue& z, const CFloatValue& w);
 	CFloat4Rvalue NewFloat4(const CFloat3Value& xyz, const CFloatValue& w);
 
 	CInt2Rvalue NewInt2(CShaderBuilder& owner, int32 x, int32 y);
 
+	CUintRvalue NewUint(CShaderBuilder& owner, uint32 x);
+
+	CUint3Rvalue NewUint3(CShaderBuilder& owner, uint32 x, uint32 y, uint32 z);
+
 	CUint4Rvalue NewUint4(CShaderBuilder& owner, uint32 x, uint32 y, uint32 z, uint32 w);
+	CUint4Rvalue NewUint4(const CUintValue& x, const CUint3Value& yzw);
 
 	CFloat4Rvalue Normalize(const CFloat4Value& rhs);
 
@@ -58,8 +72,10 @@ namespace Nuanceur
 	CUint4Rvalue Load(const CImageUint2DValue& image, const CInt2Value& coord);
 	void Store(const CImageUint2DValue& image, const CInt2Value& coord, const CUint4Value&);
 
+	CFloatRvalue ToFloat(const CUintValue&);
 	CFloat4Rvalue ToFloat(const CUint4Value&);
 	CInt2Rvalue ToInt(const CFloat2Value&);
+	CUintRvalue ToUint(const CFloatValue&);
 	CUint4Rvalue ToUint(const CFloat4Value&);
 
 	CFloatRvalue Saturate(const CFloatValue& rhs);

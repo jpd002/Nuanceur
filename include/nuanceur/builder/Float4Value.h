@@ -58,6 +58,7 @@ namespace Nuanceur
 		friend CFloat4Rvalue Clamp(const CFloat4Value&, const CFloat4Value&, const CFloat4Value&);
 		friend CFloat4Rvalue NewFloat4(CShaderBuilder&, float, float, float, float);
 		friend CFloat4Rvalue NewFloat4(const CFloatValue&, const CFloat3Value&);
+		friend CFloat4Rvalue NewFloat4(const CFloatValue&, const CFloatValue&, const CFloatValue&, const CFloatValue&);
 		friend CFloat4Rvalue NewFloat4(const CFloat3Value&, const CFloatValue&);
 		friend CFloat4Rvalue Normalize(const CFloat4Value&);
 		friend CFloat4Rvalue Sample(const CTexture2DValue&, const CFloat2Value&);

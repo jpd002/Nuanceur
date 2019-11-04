@@ -130,6 +130,10 @@ namespace Nuanceur
 			STATEMENT_OP_SUBSTRACT,
 			STATEMENT_OP_MULTIPLY,
 			STATEMENT_OP_DIVIDE,
+			STATEMENT_OP_AND,
+			STATEMENT_OP_OR,
+			STATEMENT_OP_LSHIFT,
+			STATEMENT_OP_RSHIFT,
 			STATEMENT_OP_COMPARE_LT,
 			STATEMENT_OP_MAX,
 			STATEMENT_OP_DOT,
@@ -162,8 +166,8 @@ namespace Nuanceur
 
 			}
 
-			STATEMENT(STATEMENT_OP op, SYMBOLREF dstRef, SYMBOLREF src1Ref, SYMBOLREF src2Ref = SYMBOLREF(), SYMBOLREF src3Ref = SYMBOLREF())
-				: op(op), dstRef(dstRef), src1Ref(src1Ref), src2Ref(src2Ref), src3Ref(src3Ref)
+			STATEMENT(STATEMENT_OP op, SYMBOLREF dstRef, SYMBOLREF src1Ref, SYMBOLREF src2Ref = SYMBOLREF(), SYMBOLREF src3Ref = SYMBOLREF(), SYMBOLREF src4Ref = SYMBOLREF())
+				: op(op), dstRef(dstRef), src1Ref(src1Ref), src2Ref(src2Ref), src3Ref(src3Ref), src4Ref(src4Ref)
 			{
 
 			}
