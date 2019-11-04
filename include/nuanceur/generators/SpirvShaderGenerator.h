@@ -132,6 +132,7 @@ namespace Nuanceur
 		void StoreToSymbol(const CShaderBuilder::SYMBOLREF&, uint32);
 
 		uint32 ExtractFloat4X(uint32);
+		uint32 GetResultType(CShaderBuilder::SYMBOL_TYPE) const;
 
 		static uint32 MapSemanticToLocation(Nuanceur::SEMANTIC, uint32);
 
