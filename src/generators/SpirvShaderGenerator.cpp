@@ -110,6 +110,9 @@ void CSpirvShaderGenerator::Generate()
 		case SHADER_TYPE_FRAGMENT:
 			executionModel = spv::ExecutionModelFragment;
 			break;
+		case SHADER_TYPE_COMPUTE:
+			executionModel = spv::ExecutionModelGLCompute;
+			break;
 		default:
 			assert(false);
 			break;
@@ -146,6 +149,10 @@ void CSpirvShaderGenerator::Generate()
 		{
 			WriteOp(spv::OpExecutionMode, mainFunctionId, spv::ExecutionModePixelInterlockOrderedEXT);
 		}
+	}
+	else if(m_shaderType == SHADER_TYPE_COMPUTE)
+	{
+		WriteOp(spv::OpExecutionMode, mainFunctionId, spv::ExecutionModeLocalSize, 128, 1, 1);
 	}
 
 	//Names

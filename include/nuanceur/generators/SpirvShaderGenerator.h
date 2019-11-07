@@ -76,7 +76,8 @@ namespace Nuanceur
 		enum SHADER_TYPE
 		{
 			SHADER_TYPE_VERTEX,
-			SHADER_TYPE_FRAGMENT
+			SHADER_TYPE_FRAGMENT,
+			SHADER_TYPE_COMPUTE
 		};
 
 		static void Generate(Framework::CStream&, const CShaderBuilder&, SHADER_TYPE);
