@@ -3,13 +3,16 @@
 #include "Types.h"
 #include "ShaderBuilder.h"
 
+#include "ArrayUintValue.h"
 #include "BoolValue.h"
 #include "FloatValue.h"
 #include "Float2Value.h"
 #include "Float3Value.h"
 #include "Float4Value.h"
 #include "ImageUint2DValue.h"
+#include "IntValue.h"
 #include "Int2Value.h"
+#include "Int4Value.h"
 #include "Matrix44Value.h"
 #include "Texture2DValue.h"
 #include "UintValue.h"
@@ -31,6 +34,9 @@ namespace Nuanceur
 	CFloatRvalue operator /(const CFloatValue& lhs, const CFloatValue& rhs);
 	CFloat2Rvalue operator /(const CFloat2Value& lhs, const CFloat2Value& rhs);
 	CFloat4Rvalue operator /(const CFloat4Value& lhs, const CFloat4Value& rhs);
+	CIntRvalue operator /(const CIntValue& lhs, const CIntValue& rhs);
+
+	CIntRvalue operator %(const CIntValue& lhs, const CIntValue& rhs);
 
 	CUintRvalue operator >>(const CUintValue& lhs, const CUintValue& rhs);
 	CUintRvalue operator <<(const CUintValue& lhs, const CUintValue& rhs);
@@ -56,7 +62,11 @@ namespace Nuanceur
 	CFloat4Rvalue NewFloat4(const CFloatValue& x, const CFloatValue& y, const CFloatValue& z, const CFloatValue& w);
 	CFloat4Rvalue NewFloat4(const CFloat3Value& xyz, const CFloatValue& w);
 
-	CInt2Rvalue NewInt2(CShaderBuilder& owner, int32 x, int32 y);
+	CIntRvalue NewInt(CShaderBuilder& owner, int32 x);
+
+	CInt2Rvalue NewInt(CShaderBuilder& owner, int32 x, int32 y);
+
+	CInt2Rvalue NewInt2(const CIntValue& x, const CIntValue& y);
 
 	CUintRvalue NewUint(CShaderBuilder& owner, uint32 x);
 
@@ -71,6 +81,8 @@ namespace Nuanceur
 
 	CUint4Rvalue Load(const CImageUint2DValue& image, const CInt2Value& coord);
 	void Store(const CImageUint2DValue& image, const CInt2Value& coord, const CUint4Value&);
+
+	CUintRvalue Load(const CArrayUintValue& buffer, const CIntValue& index);
 
 	CFloatRvalue ToFloat(const CUintValue&);
 	CFloat4Rvalue ToFloat(const CUint4Value&);

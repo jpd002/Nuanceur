@@ -33,6 +33,9 @@ add_library(Nuanceur
 	../src/generators/HlslShaderGenerator.cpp
 	../src/generators/SpirvShaderGenerator.cpp
 
+	../include/nuanceur/Builder.h
+
+	../include/nuanceur/builder/ArrayUintValue.h
 	../include/nuanceur/builder/BoolValue.h
 	../include/nuanceur/builder/Float2Value.h
 	../include/nuanceur/builder/Float3Value.h
@@ -41,6 +44,9 @@ add_library(Nuanceur
 	../include/nuanceur/builder/FloatSwizzleSelector4.h
 	../include/nuanceur/builder/ImageUint2DValue.h
 	../include/nuanceur/builder/Int2Value.h
+	../include/nuanceur/builder/Int4Value.h
+	../include/nuanceur/builder/IntValue.h
+	../include/nuanceur/builder/IntSwizzleSelector4.h
 	../include/nuanceur/builder/Matrix44Value.h
 	../include/nuanceur/builder/Operations.h
 	../include/nuanceur/builder/ShaderBuilder.h

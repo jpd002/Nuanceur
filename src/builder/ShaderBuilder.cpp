@@ -75,6 +75,20 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateInput(SEMANTIC semantic, unsigned i
 	return sym;
 }
 
+CShaderBuilder::SYMBOL CShaderBuilder::CreateInputInt(SEMANTIC semantic, unsigned int semanticIndex)
+{
+	SYMBOL sym;
+	sym.owner    = this;
+	sym.index    = m_currentInputIndex++;
+	sym.type     = SYMBOL_TYPE_INT4;
+	sym.location = SYMBOL_LOCATION_INPUT;
+	m_symbols.push_back(sym);
+
+	m_inputSemantics.insert(std::make_pair(sym.index, SEMANTIC_INFO(semantic, semanticIndex)));
+
+	return sym;
+}
+
 CShaderBuilder::SYMBOL CShaderBuilder::CreateOutput(SEMANTIC semantic, unsigned int semanticIndex)
 {
 	SYMBOL sym;
@@ -107,6 +121,18 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateTemporaryBool()
 	sym.owner    = this;
 	sym.index    = m_currentTempIndex++;
 	sym.type     = SYMBOL_TYPE_BOOL;
+	sym.location = SYMBOL_LOCATION_TEMPORARY;
+	m_symbols.push_back(sym);
+
+	return sym;
+}
+
+CShaderBuilder::SYMBOL CShaderBuilder::CreateTemporaryInt()
+{
+	SYMBOL sym;
+	sym.owner    = this;
+	sym.index    = m_currentTempIndex++;
+	sym.type     = SYMBOL_TYPE_INT4;
 	sym.location = SYMBOL_LOCATION_TEMPORARY;
 	m_symbols.push_back(sym);
 
@@ -190,13 +216,30 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformFloat4(const std::string& na
 	return sym;
 }
 
-CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformMatrix(const std::string& name)
+CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformMatrix(const std::string& name, unsigned int unit)
 {
 	SYMBOL sym;
 	sym.owner    = this;
 	sym.index    = m_currentTempIndex++;
 	sym.type     = SYMBOL_TYPE_MATRIX;
 	sym.location = SYMBOL_LOCATION_UNIFORM;
+	sym.unit     = unit;
+	m_symbols.push_back(sym);
+
+	m_uniformNames.insert(std::make_pair(sym.index, name));
+
+	return sym;
+}
+
+
+CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUint(const std::string& name, unsigned int unit)
+{
+	SYMBOL sym;
+	sym.owner    = this;
+	sym.index    = m_currentTempIndex++;
+	sym.type     = SYMBOL_TYPE_ARRAYUINT;
+	sym.location = SYMBOL_LOCATION_UNIFORM;
+	sym.unit     = unit;
 	m_symbols.push_back(sym);
 
 	m_uniformNames.insert(std::make_pair(sym.index, name));
@@ -208,9 +251,9 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateTexture2D(unsigned int unit)
 {
 	SYMBOL sym;
 	sym.owner    = this;
-	sym.index    = unit;
 	sym.type     = SYMBOL_TYPE_TEXTURE2D;
 	sym.location = SYMBOL_LOCATION_TEXTURE;
+	sym.unit     = unit;
 	m_symbols.push_back(sym);
 
 	return sym;
@@ -220,9 +263,9 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateImage2DUint(unsigned int unit)
 {
 	SYMBOL sym;
 	sym.owner    = this;
-	sym.index    = unit;
 	sym.type     = SYMBOL_TYPE_IMAGE2DUINT;
 	sym.location = SYMBOL_LOCATION_TEXTURE;
+	sym.unit     = unit;
 	m_symbols.push_back(sym);
 
 	return sym;

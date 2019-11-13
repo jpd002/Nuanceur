@@ -17,8 +17,14 @@ namespace Nuanceur
 		SEMANTIC_NONE,
 		SEMANTIC_SYSTEM_POSITION,
 		SEMANTIC_SYSTEM_COLOR,
+		SEMANTIC_SYSTEM_GIID,
 		SEMANTIC_POSITION,
 		SEMANTIC_TEXCOORD,
+	};
+
+	enum
+	{
+		UNIFORM_UNIT_PUSHCONSTANT = -1,
 	};
 
 	enum SWIZZLE_TYPE
@@ -52,6 +58,7 @@ namespace Nuanceur
 			SYMBOL_TYPE_UINT4,
 			SYMBOL_TYPE_BOOL,
 			SYMBOL_TYPE_MATRIX,
+			SYMBOL_TYPE_ARRAYUINT,
 			SYMBOL_TYPE_TEXTURE2D,
 			SYMBOL_TYPE_IMAGE2DUINT,
 		};
@@ -80,23 +87,18 @@ namespace Nuanceur
 
 		struct SYMBOL
 		{
-			SYMBOL()
-			{
-			
-			}
+			SYMBOL() = default;
 
 			CShaderBuilder*		owner = nullptr;
 			SYMBOL_TYPE			type = SYMBOL_TYPE_NULL;
 			SYMBOL_LOCATION		location = SYMBOL_LOCATION_NULL;
+			unsigned int		unit = 0;
 			unsigned int		index = 0;
 		};
 
 		struct SYMBOLREF
 		{
-			SYMBOLREF()
-			{
-			
-			}
+			SYMBOLREF() = default;
 			
 			SYMBOLREF(const SYMBOL& symbol, const SWIZZLE_TYPE& swizzle)
 				: symbol(symbol), swizzle(swizzle)
@@ -130,6 +132,7 @@ namespace Nuanceur
 			STATEMENT_OP_SUBSTRACT,
 			STATEMENT_OP_MULTIPLY,
 			STATEMENT_OP_DIVIDE,
+			STATEMENT_OP_MODULO,
 			STATEMENT_OP_AND,
 			STATEMENT_OP_OR,
 			STATEMENT_OP_LSHIFT,
@@ -161,10 +164,7 @@ namespace Nuanceur
 
 		struct STATEMENT
 		{
-			STATEMENT()
-			{
-
-			}
+			STATEMENT() = default;
 
 			STATEMENT(STATEMENT_OP op, SYMBOLREF dstRef, SYMBOLREF src1Ref, SYMBOLREF src2Ref = SYMBOLREF(), SYMBOLREF src3Ref = SYMBOLREF(), SYMBOLREF src4Ref = SYMBOLREF())
 				: op(op), dstRef(dstRef), src1Ref(src1Ref), src2Ref(src2Ref), src3Ref(src3Ref), src4Ref(src4Ref)
@@ -228,6 +228,7 @@ namespace Nuanceur
 		void					InsertStatement(const STATEMENT&);
 
 		SYMBOL					CreateInput(SEMANTIC, unsigned int = 0);
+		SYMBOL					CreateInputInt(SEMANTIC, unsigned int = 0);
 		SYMBOL					CreateOutput(SEMANTIC, unsigned int = 0);
 		SYMBOL					CreateConstant(float, float, float, float);
 		SYMBOL					CreateConstantInt(int32, int32, int32, int32);
@@ -235,10 +236,12 @@ namespace Nuanceur
 		
 		SYMBOL					CreateTemporary();
 		SYMBOL					CreateTemporaryBool();
+		SYMBOL					CreateTemporaryInt();
 		SYMBOL					CreateTemporaryUint();
 
 		SYMBOL					CreateUniformFloat4(const std::string&);
-		SYMBOL					CreateUniformMatrix(const std::string&);
+		SYMBOL					CreateUniformMatrix(const std::string&, unsigned int = 0);
+		SYMBOL					CreateUniformArrayUint(const std::string&, unsigned int = 0);
 
 		SYMBOL					CreateTexture2D(unsigned int);
 

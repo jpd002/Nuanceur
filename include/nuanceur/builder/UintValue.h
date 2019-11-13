@@ -5,6 +5,7 @@
 namespace Nuanceur
 {
 	class CUintSwizzleSelector4;
+	class CArrayUintValue;
 	class CUintRvalue;
 
 	class CUintValue : public CShaderBuilder::SYMBOLREF
@@ -33,6 +34,7 @@ namespace Nuanceur
 	{
 	private:
 		friend CUintSwizzleSelector4;
+		friend CUintRvalue Load(const CArrayUintValue&, const CIntValue&);
 		friend CUintRvalue operator <<(const CUintValue&, const CUintValue&);
 		friend CUintRvalue operator >>(const CUintValue&, const CUintValue&);
 		friend CUintRvalue operator &(const CUintValue&, const CUintValue&);
