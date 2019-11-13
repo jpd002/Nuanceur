@@ -118,6 +118,7 @@ namespace Nuanceur
 		void GatherConstantsFromTemps();
 		void DeclareTemporaryValueIds();
 
+		void AllocateUniformStructsIds();
 		void DecorateUniformStructIds();
 		void DeclareUniformStructIds();
 
@@ -144,6 +145,18 @@ namespace Nuanceur
 			EMPTY_ID = 0
 		};
 
+		struct STRUCTINFO
+		{
+			uint32 typeId = EMPTY_ID;
+			uint32 pointerTypeId = EMPTY_ID;
+			uint32 variableId = EMPTY_ID;
+			std::vector<uint32> components;
+			std::map<uint32, uint32> memberIndices;
+			uint32 memberIndex = 0;
+			uint32 currentOffset = 0;
+			bool isBufferBlock = false;
+		};
+
 		//Type Ids
 		uint32 m_boolTypeId = EMPTY_ID;
 		uint32 m_floatTypeId = EMPTY_ID;
@@ -152,19 +165,22 @@ namespace Nuanceur
 
 		uint32 m_intTypeId = EMPTY_ID;
 		uint32 m_uintTypeId = EMPTY_ID;
+		uint32 m_int3TypeId = EMPTY_ID;
 		uint32 m_int4TypeId = EMPTY_ID;
 		uint32 m_uint4TypeId = EMPTY_ID;
 
+		uint32 m_uintArrayTypeId = EMPTY_ID;
+
 		uint32 m_inputFloat4PointerTypeId = EMPTY_ID;
 		uint32 m_outputFloat4PointerTypeId = EMPTY_ID;
+		uint32 m_inputInt3PointerTypeId = EMPTY_ID;
 
 		uint32 m_outputPerVertexVariableId = EMPTY_ID;
 
-		uint32 m_uniformStructTypeId = EMPTY_ID;
-		uint32 m_pushUniformStructPointerTypeId = EMPTY_ID;
 		uint32 m_pushFloat4PointerTypeId = EMPTY_ID;
 		uint32 m_pushMatrix44PointerTypeId = EMPTY_ID;
-		uint32 m_pushUniformVariableId = EMPTY_ID;
+
+		uint32 m_uniformUintPtr = EMPTY_ID;
 
 		//Sampled Image
 		uint32 m_sampledImage2DTypeId = EMPTY_ID;
@@ -179,12 +195,11 @@ namespace Nuanceur
 		const CShaderBuilder& m_shaderBuilder;
 		SHADER_TYPE m_shaderType = SHADER_TYPE_VERTEX;
 
-		bool m_hasUniforms = false;
 		bool m_hasTextures = false;
+		std::map<uint32, STRUCTINFO> m_structInfos;
 		std::map<uint32, uint32> m_inputPointerIds;
 		std::map<uint32, uint32> m_outputPointerIds;
 		std::map<uint32, uint32> m_temporaryValueIds;
-		std::map<uint32, uint32> m_uniformStructMemberIndices;
 		std::map<uint32, uint32> m_texturePointerIds;
 		std::map<float, uint32> m_floatConstantIds;
 		std::map<int32, uint32> m_intConstantIds;
