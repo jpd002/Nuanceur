@@ -87,7 +87,7 @@ namespace Nuanceur
 
 		struct SYMBOL
 		{
-			SYMBOL() = default;
+			SYMBOL() {}
 
 			CShaderBuilder*		owner = nullptr;
 			SYMBOL_TYPE			type = SYMBOL_TYPE_NULL;
@@ -98,7 +98,7 @@ namespace Nuanceur
 
 		struct SYMBOLREF
 		{
-			SYMBOLREF() = default;
+			SYMBOLREF() {}
 			
 			SYMBOLREF(const SYMBOL& symbol, const SWIZZLE_TYPE& swizzle)
 				: symbol(symbol), swizzle(swizzle)
