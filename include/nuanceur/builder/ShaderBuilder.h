@@ -239,7 +239,8 @@ namespace Nuanceur
 		SYMBOL					CreateTemporaryInt();
 		SYMBOL					CreateTemporaryUint();
 
-		SYMBOL					CreateUniformFloat4(const std::string&);
+		SYMBOL					CreateUniformFloat4(const std::string&, unsigned int = 0);
+		SYMBOL					CreateUniformInt4(const std::string&, unsigned int = 0);
 		SYMBOL					CreateUniformMatrix(const std::string&, unsigned int = 0);
 		SYMBOL					CreateUniformArrayUint(const std::string&, unsigned int = 0);
 

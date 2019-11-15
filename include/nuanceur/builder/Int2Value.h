@@ -4,17 +4,27 @@
 
 namespace Nuanceur
 {
+	class CIntSwizzleSelector4;
 	class CFloat2Value;
 	class CInt2Rvalue;
 
 	class CInt2Value : public CShaderBuilder::SYMBOLREF
 	{
+	public:
+		CIntSwizzleSelector4* operator ->()
+		{
+			return m_swizzleSelector.get();
+		}
+
 	protected:
 		CInt2Value(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_XY)
 			: SYMBOLREF(symbol, swizzle)
 		{
-
+			m_swizzleSelector = std::make_shared<CIntSwizzleSelector4>(symbol);
 		}
+
+	private:
+		std::shared_ptr<CIntSwizzleSelector4> m_swizzleSelector;
 	};
 
 	class CInt2Lvalue : public CInt2Value
@@ -32,6 +42,7 @@ namespace Nuanceur
 	class CInt2Rvalue : public CInt2Value
 	{
 	private:
+		friend CIntSwizzleSelector4;
 		friend CInt2Rvalue operator +(const CInt2Value&, const CInt2Value&);
 		friend CInt2Rvalue operator *(const CInt2Value&, const CInt2Value&);
 		friend CInt2Rvalue operator /(const CInt2Value&, const CInt2Value&);
