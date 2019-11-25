@@ -488,8 +488,18 @@ void CSpirvShaderGenerator::Generate()
 				{
 					auto src1Id = LoadFromSymbol(src1Ref);
 					auto resultId = AllocateId();
-					assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
-					WriteOp(spv::OpConvertUToF, m_float4TypeId, resultId, src1Id);
+					switch(src1Ref.symbol.type)
+					{
+					case CShaderBuilder::SYMBOL_TYPE_INT4:
+						WriteOp(spv::OpConvertSToF, m_float4TypeId, resultId, src1Id);
+						break;
+					case CShaderBuilder::SYMBOL_TYPE_UINT4:
+						WriteOp(spv::OpConvertUToF, m_float4TypeId, resultId, src1Id);
+						break;
+					default:
+						assert(false);
+						break;
+					}
 					StoreToSymbol(dstRef, resultId);
 				}
 				break;
@@ -1189,6 +1199,10 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 			break;
 		case SWIZZLE_W:
 			components[0] = 3;
+			break;
+		case SWIZZLE_ZW:
+			components[0] = 2;
+			components[1] = 3;
 			break;
 		case SWIZZLE_WW:
 			components[0] = 3;
