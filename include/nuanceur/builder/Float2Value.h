@@ -6,6 +6,7 @@ namespace Nuanceur
 {
 	class CFloat2Rvalue;
 	class CFloatSwizzleSelector4;
+	class CInt2Value;
 
 	class CFloat2Value : public CShaderBuilder::SYMBOLREF
 	{
@@ -38,6 +39,7 @@ namespace Nuanceur
 		friend CFloat2Rvalue operator /(const CFloat2Value&, const CFloat2Value&);
 		friend CFloat2Rvalue NewFloat2(CShaderBuilder&, float, float);
 		friend CFloat2Rvalue NewFloat2(const CFloatValue&, const CFloatValue&);
+		friend CFloat2Rvalue ToFloat(const CInt2Value&);
 
 		CFloat2Rvalue(const CFloat2Rvalue&) = default;
 

@@ -36,6 +36,11 @@ namespace Nuanceur
 			return CIntRvalue(m_symbol, SWIZZLE_W);
 		}
 
+		CInt2Rvalue zw() const
+		{
+			return CInt2Rvalue(m_symbol, SWIZZLE_ZW);
+		}
+
 	private:
 		CShaderBuilder::SYMBOL m_symbol;
 	};

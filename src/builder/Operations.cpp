@@ -327,6 +327,16 @@ CFloatRvalue Nuanceur::ToFloat(const CUintValue& rhs)
 	return temp;
 }
 
+CFloat2Rvalue Nuanceur::ToFloat(const CInt2Value& rhs)
+{
+	auto owner = rhs.symbol.owner;
+	auto temp = CFloat2Rvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOFLOAT, temp, rhs)
+	);
+	return temp;
+}
+
 CFloat4Rvalue Nuanceur::ToFloat(const CUint4Value& rhs)
 {
 	auto owner = rhs.symbol.owner;

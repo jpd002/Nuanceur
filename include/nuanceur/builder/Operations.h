@@ -88,6 +88,7 @@ namespace Nuanceur
 	CUintRvalue Load(const CArrayUintValue& buffer, const CIntValue& index);
 
 	CFloatRvalue ToFloat(const CUintValue&);
+	CFloat2Rvalue ToFloat(const CInt2Value&);
 	CFloat4Rvalue ToFloat(const CUint4Value&);
 	CInt2Rvalue ToInt(const CFloat2Value&);
 	CUintRvalue ToUint(const CFloatValue&);
