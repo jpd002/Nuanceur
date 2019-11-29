@@ -68,7 +68,7 @@ void CSpirvShaderGenerator::Generate()
 		m_pushMatrix44PointerTypeId = AllocateId();
 
 		m_uniformInt4PointerTypeId = AllocateId();
-		m_uniformUintPtr = AllocateId();
+		m_uniformUintPtrId = AllocateId();
 	}
 
 	if(m_hasTextures)
@@ -461,7 +461,7 @@ void CSpirvShaderGenerator::Generate()
 						auto zeroConstantId = m_uintConstantIds[0];
 
 						WriteOp(spv::OpCompositeExtract, m_intTypeId, indexId, src2Id, 0);
-						WriteOp(spv::OpAccessChain, m_uniformUintPtr, src1Id, structInfo.variableId, memberIdxConstantId, indexId);
+						WriteOp(spv::OpAccessChain, m_uniformUintPtrId, src1Id, structInfo.variableId, memberIdxConstantId, indexId);
 						WriteOp(spv::OpLoad, m_uintTypeId, tempId, src1Id);
 						WriteOp(spv::OpCompositeConstruct, m_uint4TypeId, resultId, tempId, zeroConstantId, zeroConstantId, zeroConstantId);
 						StoreToSymbol(dstRef, resultId);
@@ -997,7 +997,7 @@ void CSpirvShaderGenerator::DeclareUniformStructIds()
 	WriteOp(spv::OpTypePointer, m_pushMatrix44PointerTypeId, spv::StorageClassPushConstant, m_matrix44TypeId);
 
 	WriteOp(spv::OpTypePointer, m_uniformInt4PointerTypeId, spv::StorageClassUniform, m_int4TypeId);
-	WriteOp(spv::OpTypePointer, m_uniformUintPtr, spv::StorageClassUniform, m_uintTypeId);
+	WriteOp(spv::OpTypePointer, m_uniformUintPtrId, spv::StorageClassUniform, m_uintTypeId);
 }
 
 void CSpirvShaderGenerator::AllocateTextureIds()

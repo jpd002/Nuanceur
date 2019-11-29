@@ -182,7 +182,7 @@ namespace Nuanceur
 		uint32 m_pushMatrix44PointerTypeId = EMPTY_ID;
 
 		uint32 m_uniformInt4PointerTypeId = EMPTY_ID;
-		uint32 m_uniformUintPtr = EMPTY_ID;
+		uint32 m_uniformUintPtrId = EMPTY_ID;
 
 		//Sampled Image
 		uint32 m_sampledImage2DTypeId = EMPTY_ID;
