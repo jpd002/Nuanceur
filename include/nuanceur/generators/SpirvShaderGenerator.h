@@ -140,6 +140,9 @@ namespace Nuanceur
 
 		uint32 AllocateId();
 
+		void AtomicImageOp(spv::Op, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, 
+			const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
+
 		enum
 		{
 			EMPTY_ID = 0
@@ -165,6 +168,7 @@ namespace Nuanceur
 
 		uint32 m_intTypeId = EMPTY_ID;
 		uint32 m_uintTypeId = EMPTY_ID;
+		uint32 m_int2TypeId = EMPTY_ID;
 		uint32 m_int3TypeId = EMPTY_ID;
 		uint32 m_int4TypeId = EMPTY_ID;
 		uint32 m_uint4TypeId = EMPTY_ID;
@@ -192,6 +196,7 @@ namespace Nuanceur
 		//Storage Image
 		uint32 m_storageImage2DTypeId = EMPTY_ID;
 		uint32 m_storageImage2DPointerTypeId = EMPTY_ID;
+		uint32 m_imageUintPtrId = EMPTY_ID;
 
 		Framework::CStream& m_outputStream;
 		const CShaderBuilder& m_shaderBuilder;
