@@ -5,6 +5,7 @@
 namespace Nuanceur
 {
 	class CUintSwizzleSelector4;
+	class CImageUint2DValue;
 	class CArrayUintValue;
 	class CUintRvalue;
 
@@ -35,12 +36,17 @@ namespace Nuanceur
 	private:
 		friend CUintSwizzleSelector4;
 		friend CUintRvalue Load(const CArrayUintValue&, const CIntValue&);
+		friend CUintRvalue AtomicAnd(const CImageUint2DValue&, const CInt2Value&, const CUintValue&);
+		friend CUintRvalue AtomicOr(const CImageUint2DValue&, const CInt2Value&, const CUintValue&);
+		friend CUintRvalue operator *(const CUintValue&, const CUintValue&);
 		friend CUintRvalue operator <<(const CUintValue&, const CUintValue&);
 		friend CUintRvalue operator >>(const CUintValue&, const CUintValue&);
 		friend CUintRvalue operator &(const CUintValue&, const CUintValue&);
 		friend CUintRvalue operator |(const CUintValue&, const CUintValue&);
+		friend CUintRvalue operator ^(const CUintValue&, const CUintValue&);
 		friend CUintRvalue NewUint(CShaderBuilder&, uint32);
 		friend CUintRvalue ToUint(const CFloatValue&);
+		friend CUintRvalue ToUint(const CIntValue&);
 
 		CUintRvalue(const CUintRvalue&) = default;
 

@@ -31,8 +31,11 @@ namespace Nuanceur
 	CFloatRvalue operator *(const CFloatValue& lhs, const CFloatValue& rhs);
 	CFloat2Rvalue operator *(const CFloat2Value& lhs, const CFloat2Value& rhs);
 	CFloat4Rvalue operator *(const CFloat4Value& lhs, const CFloat4Value& rhs);
+
 	CIntRvalue operator *(const CIntValue& lhs, const CIntValue& rhs);
 	CInt2Rvalue operator *(const CInt2Value& lhs, const CInt2Value& rhs);
+
+	CUintRvalue operator *(const CUintValue& lhs, const CUintValue& rhs);
 
 	CFloatRvalue operator /(const CFloatValue& lhs, const CFloatValue& rhs);
 	CFloat2Rvalue operator /(const CFloat2Value& lhs, const CFloat2Value& rhs);
@@ -46,6 +49,7 @@ namespace Nuanceur
 
 	CUintRvalue operator &(const CUintValue& lhs, const CUintValue& rhs);
 	CUintRvalue operator |(const CUintValue& lhs, const CUintValue& rhs);
+	CUintRvalue operator ^(const CUintValue& lhs, const CUintValue& rhs);
 
 	CFloat4Rvalue operator *(const CMatrix44Value& lhs, const CFloat4Value& rhs);
 
@@ -85,6 +89,9 @@ namespace Nuanceur
 	CUint4Rvalue Load(const CImageUint2DValue& image, const CInt2Value& coord);
 	void Store(const CImageUint2DValue& image, const CInt2Value& coord, const CUint4Value&);
 
+	CUintRvalue AtomicAnd(const CImageUint2DValue& image, const CInt2Value& coord, const CUintValue&);
+	CUintRvalue AtomicOr(const CImageUint2DValue& image, const CInt2Value& coord, const CUintValue&);
+
 	CUintRvalue Load(const CArrayUintValue& buffer, const CIntValue& index);
 
 	CFloatRvalue ToFloat(const CUintValue&);
@@ -92,6 +99,7 @@ namespace Nuanceur
 	CFloat4Rvalue ToFloat(const CUint4Value&);
 	CInt2Rvalue ToInt(const CFloat2Value&);
 	CUintRvalue ToUint(const CFloatValue&);
+	CUintRvalue ToUint(const CIntValue&);
 	CUint4Rvalue ToUint(const CFloat4Value&);
 
 	CFloatRvalue Saturate(const CFloatValue& rhs);

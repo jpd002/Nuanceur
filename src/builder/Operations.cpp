@@ -66,6 +66,7 @@ GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_MULTIPLY, *, CFloat2)
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_MULTIPLY, *, CFloat4)
 GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_MULTIPLY, *, CInt)
 GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_MULTIPLY, *, CInt2)
+GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_MULTIPLY, *, CUint)
 
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_DIVIDE, /, CFloat)
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_DIVIDE, /, CFloat2)
@@ -79,6 +80,7 @@ GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_RSHIFT, >>, CUint)
 
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_AND, &, CUint)
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_OR, |, CUint)
+GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_XOR, ^, CUint)
 
 CFloat4Rvalue Nuanceur::operator *(const CMatrix44Value& lhs, const CFloat4Value& rhs)
 {
@@ -307,6 +309,26 @@ void Nuanceur::Store(const CImageUint2DValue& image, const CInt2Value& coord, co
 	);
 }
 
+CUintRvalue Nuanceur::AtomicAnd(const CImageUint2DValue& image, const CInt2Value& coord, const CUintValue& value)
+{
+	auto owner = GetCommonOwner(image.symbol, coord.symbol);
+	auto temp = CUintRvalue(owner->CreateTemporaryUint());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ATOMICAND, temp, image, coord, value)
+	);
+	return temp;
+}
+
+CUintRvalue Nuanceur::AtomicOr(const CImageUint2DValue& image, const CInt2Value& coord, const CUintValue& value)
+{
+	auto owner = GetCommonOwner(image.symbol, coord.symbol);
+	auto temp = CUintRvalue(owner->CreateTemporaryUint());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ATOMICOR, temp, image, coord, value)
+	);
+	return temp;
+}
+
 CUintRvalue Nuanceur::Load(const CArrayUintValue& buffer, const CIntValue& index)
 {
 	auto owner = GetCommonOwner(buffer.symbol, index.symbol);
@@ -358,6 +380,16 @@ CInt2Rvalue Nuanceur::ToInt(const CFloat2Value& rhs)
 }
 
 CUintRvalue Nuanceur::ToUint(const CFloatValue& rhs)
+{
+	auto owner = rhs.symbol.owner;
+	auto temp = CUintRvalue(owner->CreateTemporaryUint());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUINT, temp, rhs)
+	);
+	return temp;
+}
+
+CUintRvalue Nuanceur::ToUint(const CIntValue& rhs)
 {
 	auto owner = rhs.symbol.owner;
 	auto temp = CUintRvalue(owner->CreateTemporaryUint());
