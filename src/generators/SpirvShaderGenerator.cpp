@@ -297,30 +297,10 @@ void CSpirvShaderGenerator::Generate()
 			switch(statement.op)
 			{
 			case CShaderBuilder::STATEMENT_OP_ADD:
-				{
-					auto src1Id = LoadFromSymbol(src1Ref);
-					auto src2Id = LoadFromSymbol(src2Ref);
-					auto resultId = AllocateId();
-					if(
-						(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4) &&
-						(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4)
-						)
-					{
-						WriteOp(spv::OpFAdd, m_float4TypeId, resultId, src1Id, src2Id);
-					}
-					else if(
-						(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_INT4) &&
-						(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_INT4)
-						)
-					{
-						WriteOp(spv::OpIAdd, m_int4TypeId, resultId, src1Id, src2Id);
-					}
-					else
-					{
-						assert(false);
-					}
-					StoreToSymbol(dstRef, resultId);
-				}
+				Add(dstRef, src1Ref, src2Ref);
+				break;
+			case CShaderBuilder::STATEMENT_OP_SUBSTRACT:
+				Sub(dstRef, src1Ref, src2Ref);
 				break;
 			case CShaderBuilder::STATEMENT_OP_MULTIPLY:
 				{
@@ -608,6 +588,17 @@ void CSpirvShaderGenerator::Generate()
 							auto src2Id = LoadFromSymbol(src2Ref);
 							auto resultId = AllocateId();
 							WriteOp(spv::OpVectorShuffle, resultType, resultId, src1Id, src2Id, 0, 1, 2, 4);
+							StoreToSymbol(dstRef, resultId);
+						}
+						else if(
+							(statement.src1Ref.swizzle == SWIZZLE_XYZ) &&
+							(statement.src2Ref.swizzle == SWIZZLE_W)
+						)
+						{
+							auto src1Id = LoadFromSymbol(src1Ref);
+							auto src2Id = LoadFromSymbol(src2Ref);
+							auto resultId = AllocateId();
+							WriteOp(spv::OpVectorShuffle, resultType, resultId, src1Id, src2Id, 0, 1, 2, 7);
 							StoreToSymbol(dstRef, resultId);
 						}
 						else if(
@@ -1259,6 +1250,11 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 			components[0] = 3;
 			components[1] = 3;
 			break;
+		case SWIZZLE_WWW:
+			components[0] = 3;
+			components[1] = 3;
+			components[2] = 3;
+			break;
 		default:
 			assert(false);
 			break;
@@ -1346,6 +1342,51 @@ uint32 CSpirvShaderGenerator::MapSemanticToLocation(Nuanceur::SEMANTIC semantic,
 uint32 CSpirvShaderGenerator::AllocateId()
 {
 	return m_nextId++;
+}
+
+void CSpirvShaderGenerator::Add(const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref, const CShaderBuilder::SYMBOLREF& src2Ref)
+{
+	auto src1Id = LoadFromSymbol(src1Ref);
+	auto src2Id = LoadFromSymbol(src2Ref);
+	auto resultId = AllocateId();
+	if(
+		(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4) &&
+		(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4)
+		)
+	{
+		WriteOp(spv::OpFAdd, m_float4TypeId, resultId, src1Id, src2Id);
+	}
+	else if(
+		(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_INT4) &&
+		(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_INT4)
+		)
+	{
+		WriteOp(spv::OpIAdd, m_int4TypeId, resultId, src1Id, src2Id);
+	}
+	else
+	{
+		assert(false);
+	}
+	StoreToSymbol(dstRef, resultId);
+}
+
+void CSpirvShaderGenerator::Sub(const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref, const CShaderBuilder::SYMBOLREF& src2Ref)
+{
+	auto src1Id = LoadFromSymbol(src1Ref);
+	auto src2Id = LoadFromSymbol(src2Ref);
+	auto resultId = AllocateId();
+	if(
+		(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4) &&
+		(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4)
+		)
+	{
+		WriteOp(spv::OpFSub, m_float4TypeId, resultId, src1Id, src2Id);
+	}
+	else
+	{
+		assert(false);
+	}
+	StoreToSymbol(dstRef, resultId);
 }
 
 void CSpirvShaderGenerator::Clamp(const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref,
