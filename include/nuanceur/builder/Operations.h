@@ -26,10 +26,12 @@ namespace Nuanceur
 	CFloat4Rvalue operator +(const CFloat4Value& lhs, const CFloat4Value& rhs);
 	CIntRvalue operator +(const CIntValue& lhs, const CIntValue& rhs);
 
+	CFloat3Rvalue operator -(const CFloat3Value& lhs, const CFloat3Value& rhs);
 	CFloat4Rvalue operator -(const CFloat4Value& lhs, const CFloat4Value& rhs);
 
 	CFloatRvalue operator *(const CFloatValue& lhs, const CFloatValue& rhs);
 	CFloat2Rvalue operator *(const CFloat2Value& lhs, const CFloat2Value& rhs);
+	CFloat3Rvalue operator *(const CFloat3Value& lhs, const CFloat3Value& rhs);
 	CFloat4Rvalue operator *(const CFloat4Value& lhs, const CFloat4Value& rhs);
 
 	CIntRvalue operator *(const CIntValue& lhs, const CIntValue& rhs);
