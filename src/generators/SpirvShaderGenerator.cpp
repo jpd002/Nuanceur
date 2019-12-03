@@ -1,5 +1,6 @@
 #include <cstring>
 #include "nuanceur/generators/SpirvShaderGenerator.h"
+#include "../external/vulkan/GLSL.std.450.h"
 
 using namespace Nuanceur;
 
@@ -44,6 +45,7 @@ void CSpirvShaderGenerator::Generate()
 
 	auto voidTypeId = AllocateId();
 	auto mainFunctionTypeId = AllocateId();
+	m_glslStd450ExtInst = AllocateId();
 	m_boolTypeId = AllocateId();
 	m_floatTypeId = AllocateId();
 	m_float4TypeId = AllocateId();
@@ -101,6 +103,7 @@ void CSpirvShaderGenerator::Generate()
 		WriteOp(spv::OpCapability, spv::CapabilityFragmentShaderPixelInterlockEXT);
 		WriteOp(spv::OpExtension, "SPV_EXT_fragment_shader_interlock");
 	}
+	WriteOp(spv::OpExtInstImport, m_glslStd450ExtInst, "GLSL.std.450");
 	WriteOp(spv::OpMemoryModel, spv::AddressingModelLogical, spv::MemoryModelGLSL450);
 
 	//Write Entry Point
@@ -398,6 +401,9 @@ void CSpirvShaderGenerator::Generate()
 					WriteOp(spv::OpSMod, m_int4TypeId, resultId, src1Id, src2Id);
 					StoreToSymbol(dstRef, resultId);
 				}
+				break;
+			case CShaderBuilder::STATEMENT_OP_CLAMP:
+				Clamp(dstRef, src1Ref, src2Ref, src3Ref);
 				break;
 			case CShaderBuilder::STATEMENT_OP_AND:
 				{
@@ -1340,6 +1346,24 @@ uint32 CSpirvShaderGenerator::MapSemanticToLocation(Nuanceur::SEMANTIC semantic,
 uint32 CSpirvShaderGenerator::AllocateId()
 {
 	return m_nextId++;
+}
+
+void CSpirvShaderGenerator::Clamp(const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref,
+	const CShaderBuilder::SYMBOLREF& src2Ref, const CShaderBuilder::SYMBOLREF& src3Ref)
+{
+	assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
+	assert(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
+	assert(src3Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
+
+	auto src1Id = LoadFromSymbol(src1Ref);
+	auto src2Id = LoadFromSymbol(src2Ref);
+	auto src3Id = LoadFromSymbol(src3Ref);
+	auto resultId = AllocateId();
+
+	WriteOp(spv::OpExtInst, m_float4TypeId, resultId, m_glslStd450ExtInst, GLSLstd450::GLSLstd450FClamp,
+		src1Id, src2Id, src3Id);
+
+	StoreToSymbol(dstRef, resultId);
 }
 
 void CSpirvShaderGenerator::AtomicImageOp(spv::Op op, const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref,

@@ -140,6 +140,8 @@ namespace Nuanceur
 
 		uint32 AllocateId();
 
+		void Clamp(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&,
+			const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void AtomicImageOp(spv::Op, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, 
 			const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 
@@ -159,6 +161,8 @@ namespace Nuanceur
 			uint32 currentOffset = 0;
 			bool isBufferBlock = false;
 		};
+
+		uint32 m_glslStd450ExtInst = EMPTY_ID;
 
 		//Type Ids
 		uint32 m_boolTypeId = EMPTY_ID;
