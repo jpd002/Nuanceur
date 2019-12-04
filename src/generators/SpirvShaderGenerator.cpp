@@ -159,7 +159,10 @@ void CSpirvShaderGenerator::Generate()
 	}
 	else if(m_shaderType == SHADER_TYPE_COMPUTE)
 	{
-		WriteOp(spv::OpExecutionMode, mainFunctionId, spv::ExecutionModeLocalSize, 128, 1, 1);
+		uint32 localSizeX = m_shaderBuilder.GetMetadata(CShaderBuilder::METADATA_LOCALSIZE_X, 1);
+		uint32 localSizeY = m_shaderBuilder.GetMetadata(CShaderBuilder::METADATA_LOCALSIZE_Y, 1);
+		uint32 localSizeZ = m_shaderBuilder.GetMetadata(CShaderBuilder::METADATA_LOCALSIZE_Z, 1);
+		WriteOp(spv::OpExecutionMode, mainFunctionId, spv::ExecutionModeLocalSize, localSizeX, localSizeY, localSizeZ);
 	}
 
 	//Names

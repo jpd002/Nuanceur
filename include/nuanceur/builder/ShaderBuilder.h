@@ -52,6 +52,13 @@ namespace Nuanceur
 	class CShaderBuilder
 	{
 	public:
+		enum METADATA_TYPE
+		{
+			METADATA_LOCALSIZE_X,
+			METADATA_LOCALSIZE_Y,
+			METADATA_LOCALSIZE_Z,
+		};
+
 		enum SYMBOL_TYPE
 		{
 			SYMBOL_TYPE_NULL,
@@ -215,12 +222,16 @@ namespace Nuanceur
 			}
 		};
 
+		typedef std::unordered_map<METADATA_TYPE, uint32> MetadataMap;
 		typedef std::vector<SYMBOL> SymbolArray;
 		typedef std::list<STATEMENT> StatementList;
 
 		//We need a special operator = that will remap symbol owners
 
 		virtual					~CShaderBuilder() = default;
+
+		uint32					GetMetadata(METADATA_TYPE, uint32) const;
+		void					SetMetadata(METADATA_TYPE, uint32);
 
 		const SymbolArray&		GetSymbols() const;
 		SEMANTIC_INFO			GetInputSemantic(const SYMBOL&) const;
@@ -263,6 +274,7 @@ namespace Nuanceur
 		typedef std::unordered_map<unsigned int, CVector4> TemporaryValueMap;
 		typedef std::unordered_map<unsigned int, CIntVector4> TemporaryValueIntMap;
 
+		MetadataMap				m_metadata;
 		SymbolArray				m_symbols;
 		StatementList			m_statements;
 		unsigned int			m_currentTempIndex = 0;

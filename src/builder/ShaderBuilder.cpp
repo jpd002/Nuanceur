@@ -2,6 +2,18 @@
 
 using namespace Nuanceur;
 
+uint32 CShaderBuilder::GetMetadata(METADATA_TYPE type, uint32 defaultValue) const
+{
+	auto iterator = m_metadata.find(type);
+	if(iterator == std::end(m_metadata)) return defaultValue;
+	return iterator->second;
+}
+
+void CShaderBuilder::SetMetadata(METADATA_TYPE type, uint32 value)
+{
+	m_metadata[type] = value;
+}
+
 const CShaderBuilder::SymbolArray& CShaderBuilder::GetSymbols() const
 {
 	return m_symbols;
