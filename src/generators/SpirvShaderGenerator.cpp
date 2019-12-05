@@ -513,8 +513,18 @@ void CSpirvShaderGenerator::Generate()
 				{
 					auto src1Id = LoadFromSymbol(src1Ref);
 					auto resultId = AllocateId();
-					assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
-					WriteOp(spv::OpConvertFToS, m_int4TypeId, resultId, src1Id);
+					switch(src1Ref.symbol.type)
+					{
+					case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
+						WriteOp(spv::OpConvertFToS, m_int4TypeId, resultId, src1Id);
+						break;
+					case CShaderBuilder::SYMBOL_TYPE_UINT4:
+						WriteOp(spv::OpBitcast, m_int4TypeId, resultId, src1Id);
+						break;
+					default:
+						assert(false);
+						break;
+					}
 					StoreToSymbol(dstRef, resultId);
 				}
 				break;
