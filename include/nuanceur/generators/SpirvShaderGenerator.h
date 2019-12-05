@@ -141,6 +141,7 @@ namespace Nuanceur
 		uint32 AllocateId();
 
 		void Add(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
+		void BitwiseOp(spv::Op, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Sub(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Clamp(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&,
 			const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);

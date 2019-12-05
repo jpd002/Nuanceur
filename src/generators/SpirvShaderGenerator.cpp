@@ -26,6 +26,12 @@ static bool IsIdentitySwizzle(SWIZZLE_TYPE swizzle)
 	       (swizzle == SWIZZLE_XYZW);
 }
 
+static CShaderBuilder::SYMBOL_TYPE GetCommonSymbolType(const CShaderBuilder::SYMBOLREF& op1, const CShaderBuilder::SYMBOLREF& op2)
+{
+	assert(op1.symbol.type == op2.symbol.type);
+	return op1.symbol.type;
+}
+
 void CSpirvShaderGenerator::Generate()
 {
 	//Some notes:
@@ -389,37 +395,13 @@ void CSpirvShaderGenerator::Generate()
 				Clamp(dstRef, src1Ref, src2Ref, src3Ref);
 				break;
 			case CShaderBuilder::STATEMENT_OP_AND:
-				{
-					auto src1Id = LoadFromSymbol(src1Ref);
-					auto src2Id = LoadFromSymbol(src2Ref);
-					auto resultId = AllocateId();
-					assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
-					assert(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
-					WriteOp(spv::OpBitwiseAnd, m_uint4TypeId, resultId, src1Id, src2Id);
-					StoreToSymbol(dstRef, resultId);
-				}
+				BitwiseOp(spv::OpBitwiseAnd, dstRef, src1Ref, src2Ref);
 				break;
 			case CShaderBuilder::STATEMENT_OP_OR:
-				{
-					auto src1Id = LoadFromSymbol(src1Ref);
-					auto src2Id = LoadFromSymbol(src2Ref);
-					auto resultId = AllocateId();
-					assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
-					assert(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
-					WriteOp(spv::OpBitwiseOr, m_uint4TypeId, resultId, src1Id, src2Id);
-					StoreToSymbol(dstRef, resultId);
-				}
+				BitwiseOp(spv::OpBitwiseOr, dstRef, src1Ref, src2Ref);
 				break;
 			case CShaderBuilder::STATEMENT_OP_XOR:
-				{
-					auto src1Id = LoadFromSymbol(src1Ref);
-					auto src2Id = LoadFromSymbol(src2Ref);
-					auto resultId = AllocateId();
-					assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
-					assert(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
-					WriteOp(spv::OpBitwiseXor, m_uint4TypeId, resultId, src1Id, src2Id);
-					StoreToSymbol(dstRef, resultId);
-				}
+				BitwiseOp(spv::OpBitwiseXor, dstRef, src1Ref, src2Ref);
 				break;
 			case CShaderBuilder::STATEMENT_OP_LSHIFT:
 				{
@@ -1369,6 +1351,27 @@ void CSpirvShaderGenerator::Add(const CShaderBuilder::SYMBOLREF& dstRef, const C
 	else
 	{
 		assert(false);
+	}
+	StoreToSymbol(dstRef, resultId);
+}
+
+void CSpirvShaderGenerator::BitwiseOp(spv::Op op, const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref, const CShaderBuilder::SYMBOLREF& src2Ref)
+{
+	auto src1Id = LoadFromSymbol(src1Ref);
+	auto src2Id = LoadFromSymbol(src2Ref);
+	auto symbolType = GetCommonSymbolType(src1Ref, src2Ref);
+	auto resultId = AllocateId();
+	switch(symbolType)
+	{
+	case CShaderBuilder::SYMBOL_TYPE_INT4:
+		WriteOp(op, m_int4TypeId, resultId, src1Id, src2Id);
+		break;
+	case CShaderBuilder::SYMBOL_TYPE_UINT4:
+		WriteOp(op, m_uint4TypeId, resultId, src1Id, src2Id);
+		break;
+	default:
+		assert(false);
+		break;
 	}
 	StoreToSymbol(dstRef, resultId);
 }
