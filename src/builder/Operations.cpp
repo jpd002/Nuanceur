@@ -77,11 +77,18 @@ GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_DIVIDE, /, CInt)
 
 GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_MODULO, %, CInt)
 
+GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_LSHIFT, <<, CInt)
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_LSHIFT, <<, CUint)
+
+GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_RSHIFT, >>, CInt)
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_RSHIFT, >>, CUint)
 
+GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_AND, &, CInt)
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_AND, &, CUint)
+
+GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_OR, |, CInt)
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_OR, |, CUint)
+
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_XOR, ^, CUint)
 
 CFloat4Rvalue Nuanceur::operator *(const CMatrix44Value& lhs, const CFloat4Value& rhs)
@@ -137,6 +144,26 @@ void CFloat2Lvalue::operator =(const CFloat2Rvalue& rhs)
 }
 
 void CFloat4Lvalue::operator =(const CFloat4Rvalue& rhs)
+{
+	CHECK_ISOPERANDVALID(*this);
+	CHECK_ISOPERANDVALID(rhs);
+	auto owner = rhs.symbol.owner;
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ASSIGN, *this, rhs)
+	);
+}
+
+void CIntLvalue::operator =(const CIntRvalue& rhs)
+{
+	CHECK_ISOPERANDVALID(*this);
+	CHECK_ISOPERANDVALID(rhs);
+	auto owner = rhs.symbol.owner;
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ASSIGN, *this, rhs)
+	);
+}
+
+void CUintLvalue::operator =(const CUintRvalue& rhs)
 {
 	CHECK_ISOPERANDVALID(*this);
 	CHECK_ISOPERANDVALID(rhs);
@@ -367,6 +394,16 @@ CFloat4Rvalue Nuanceur::ToFloat(const CUint4Value& rhs)
 	auto temp = CFloat4Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOFLOAT, temp, rhs)
+	);
+	return temp;
+}
+
+CIntRvalue Nuanceur::ToInt(const CUintValue& rhs)
+{
+	auto owner = rhs.symbol.owner;
+	auto temp = CIntRvalue(owner->CreateTemporaryInt());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOINT, temp, rhs)
 	);
 	return temp;
 }

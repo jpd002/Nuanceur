@@ -37,7 +37,12 @@ namespace Nuanceur
 		friend CIntRvalue operator *(const CIntValue&, const CIntValue&);
 		friend CIntRvalue operator /(const CIntValue&, const CIntValue&);
 		friend CIntRvalue operator %(const CIntValue&, const CIntValue&);
+		friend CIntRvalue operator <<(const CIntValue&, const CIntValue&);
+		friend CIntRvalue operator >>(const CIntValue&, const CIntValue&);
+		friend CIntRvalue operator &(const CIntValue&, const CIntValue&);
+		friend CIntRvalue operator |(const CIntValue&, const CIntValue&);
 		friend CIntRvalue NewInt(CShaderBuilder& owner, int32 x);
+		friend CIntRvalue ToInt(const CUintValue&);
 
 		CIntRvalue(const CIntRvalue&) = default;
 

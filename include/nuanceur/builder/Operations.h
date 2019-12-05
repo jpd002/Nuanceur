@@ -46,11 +46,18 @@ namespace Nuanceur
 
 	CIntRvalue operator %(const CIntValue& lhs, const CIntValue& rhs);
 
+	CIntRvalue operator >>(const CIntValue& lhs, const CIntValue& rhs);
 	CUintRvalue operator >>(const CUintValue& lhs, const CUintValue& rhs);
+
+	CIntRvalue operator <<(const CIntValue& lhs, const CIntValue& rhs);
 	CUintRvalue operator <<(const CUintValue& lhs, const CUintValue& rhs);
 
+	CIntRvalue operator &(const CIntValue& lhs, const CIntValue& rhs);
 	CUintRvalue operator &(const CUintValue& lhs, const CUintValue& rhs);
+
+	CIntRvalue operator |(const CIntValue& lhs, const CIntValue& rhs);
 	CUintRvalue operator |(const CUintValue& lhs, const CUintValue& rhs);
+
 	CUintRvalue operator ^(const CUintValue& lhs, const CUintValue& rhs);
 
 	CFloat4Rvalue operator *(const CMatrix44Value& lhs, const CFloat4Value& rhs);
@@ -99,6 +106,7 @@ namespace Nuanceur
 	CFloatRvalue ToFloat(const CUintValue&);
 	CFloat2Rvalue ToFloat(const CInt2Value&);
 	CFloat4Rvalue ToFloat(const CUint4Value&);
+	CIntRvalue ToInt(const CUintValue&);
 	CInt2Rvalue ToInt(const CFloat2Value&);
 	CUintRvalue ToUint(const CFloatValue&);
 	CUintRvalue ToUint(const CIntValue&);
