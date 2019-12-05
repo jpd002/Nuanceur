@@ -1032,9 +1032,9 @@ void CSpirvShaderGenerator::AllocateTextureIds()
 	for(const auto& symbol : m_shaderBuilder.GetSymbols())
 	{
 		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_TEXTURE) continue;
-		assert(m_texturePointerIds.find(symbol.index) == std::end(m_texturePointerIds));
+		assert(m_texturePointerIds.find(symbol.unit) == std::end(m_texturePointerIds));
 		auto pointerId = AllocateId();
-		m_texturePointerIds[symbol.index] = pointerId;
+		m_texturePointerIds[symbol.unit] = pointerId;
 	}
 }
 
@@ -1043,10 +1043,10 @@ void CSpirvShaderGenerator::DecorateTextureIds()
 	for(const auto& symbol : m_shaderBuilder.GetSymbols())
 	{
 		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_TEXTURE) continue;
-		assert(m_texturePointerIds.find(symbol.index) != std::end(m_texturePointerIds));
-		auto pointerId = m_texturePointerIds[symbol.index];
+		assert(m_texturePointerIds.find(symbol.unit) != std::end(m_texturePointerIds));
+		auto pointerId = m_texturePointerIds[symbol.unit];
 		WriteOp(spv::OpDecorate, pointerId, spv::DecorationDescriptorSet, 0);
-		WriteOp(spv::OpDecorate, pointerId, spv::DecorationBinding, symbol.index);
+		WriteOp(spv::OpDecorate, pointerId, spv::DecorationBinding, symbol.unit);
 	}
 }
 
@@ -1055,8 +1055,8 @@ void CSpirvShaderGenerator::DeclareTextureIds()
 	for(const auto& symbol : m_shaderBuilder.GetSymbols())
 	{
 		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_TEXTURE) continue;
-		assert(m_texturePointerIds.find(symbol.index) != std::end(m_texturePointerIds));
-		auto pointerId = m_texturePointerIds[symbol.index];
+		assert(m_texturePointerIds.find(symbol.unit) != std::end(m_texturePointerIds));
+		auto pointerId = m_texturePointerIds[symbol.unit];
 		switch(symbol.type)
 		{
 		case CShaderBuilder::SYMBOL_TYPE_TEXTURE2D:
@@ -1182,8 +1182,8 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 				break;
 			}
 			srcId = AllocateId();
-			assert(m_texturePointerIds.find(srcRef.symbol.index) != std::end(m_texturePointerIds));
-			auto pointerId = m_texturePointerIds[srcRef.symbol.index];
+			assert(m_texturePointerIds.find(srcRef.symbol.unit) != std::end(m_texturePointerIds));
+			auto pointerId = m_texturePointerIds[srcRef.symbol.unit];
 			WriteOp(spv::OpLoad, imageTypeId, srcId, pointerId);
 		}
 		break;
@@ -1420,9 +1420,8 @@ void CSpirvShaderGenerator::AtomicImageOp(spv::Op op, const CShaderBuilder::SYMB
 	assert(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_INT4);
 	assert(src3Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
 
-	assert(m_texturePointerIds.find(src1Ref.symbol.index) != std::end(m_texturePointerIds));
-
-	auto imagePointerId = m_texturePointerIds[src1Ref.symbol.index];
+	assert(m_texturePointerIds.find(src1Ref.symbol.unit) != std::end(m_texturePointerIds));
+	auto imagePointerId = m_texturePointerIds[src1Ref.symbol.unit];
 
 	auto coordId = LoadFromSymbol(src2Ref);
 	auto valueId = LoadFromSymbol(src3Ref);
