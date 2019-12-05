@@ -281,6 +281,7 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateTexture2D(unsigned int unit)
 	sym.type     = SYMBOL_TYPE_TEXTURE2D;
 	sym.location = SYMBOL_LOCATION_TEXTURE;
 	sym.unit     = unit;
+	sym.index    = -1;
 	m_symbols.push_back(sym);
 
 	return sym;
@@ -293,6 +294,7 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateImage2DUint(unsigned int unit)
 	sym.type     = SYMBOL_TYPE_IMAGE2DUINT;
 	sym.location = SYMBOL_LOCATION_TEXTURE;
 	sym.unit     = unit;
+	sym.index    = -1;
 	m_symbols.push_back(sym);
 
 	return sym;
