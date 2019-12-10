@@ -404,22 +404,10 @@ void CSpirvShaderGenerator::Generate()
 				BitwiseOp(spv::OpBitwiseXor, dstRef, src1Ref, src2Ref);
 				break;
 			case CShaderBuilder::STATEMENT_OP_LSHIFT:
-				{
-					auto src1Id = LoadFromSymbol(src1Ref);
-					auto src2Id = LoadFromSymbol(src2Ref);
-					auto resultId = AllocateId();
-					WriteOp(spv::OpShiftLeftLogical, m_uint4TypeId, resultId, src1Id, src2Id);
-					StoreToSymbol(dstRef, resultId);
-				}
+				BitwiseOp(spv::OpShiftLeftLogical, dstRef, src1Ref, src2Ref);
 				break;
 			case CShaderBuilder::STATEMENT_OP_RSHIFT:
-				{
-					auto src1Id = LoadFromSymbol(src1Ref);
-					auto src2Id = LoadFromSymbol(src2Ref);
-					auto resultId = AllocateId();
-					WriteOp(spv::OpShiftRightLogical, m_uint4TypeId, resultId, src1Id, src2Id);
-					StoreToSymbol(dstRef, resultId);
-				}
+				BitwiseOp(spv::OpShiftRightLogical, dstRef, src1Ref, src2Ref);
 				break;
 			case CShaderBuilder::STATEMENT_OP_COMPARE_LT:
 				{
