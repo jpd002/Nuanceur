@@ -80,8 +80,7 @@ namespace Nuanceur
 
 	CIntRvalue NewInt(CShaderBuilder& owner, int32 x);
 
-	CInt2Rvalue NewInt(CShaderBuilder& owner, int32 x, int32 y);
-
+	CInt2Rvalue NewInt2(CShaderBuilder& owner, int32 x, int32 y);
 	CInt2Rvalue NewInt2(const CIntValue& x, const CIntValue& y);
 
 	CUintRvalue NewUint(CShaderBuilder& owner, uint32 x);
