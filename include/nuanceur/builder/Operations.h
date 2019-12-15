@@ -25,6 +25,7 @@ namespace Nuanceur
 	CFloat3Rvalue operator +(const CFloat3Value& lhs, const CFloat3Value& rhs);
 	CFloat4Rvalue operator +(const CFloat4Value& lhs, const CFloat4Value& rhs);
 	CIntRvalue operator +(const CIntValue& lhs, const CIntValue& rhs);
+	CUintRvalue operator +(const CUintValue& lhs, const CUintValue& rhs);
 
 	CFloat3Rvalue operator -(const CFloat3Value& lhs, const CFloat3Value& rhs);
 	CFloat4Rvalue operator -(const CFloat4Value& lhs, const CFloat4Value& rhs);

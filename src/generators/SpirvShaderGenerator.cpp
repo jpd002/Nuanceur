@@ -1331,24 +1331,22 @@ void CSpirvShaderGenerator::Add(const CShaderBuilder::SYMBOLREF& dstRef, const C
 {
 	auto src1Id = LoadFromSymbol(src1Ref);
 	auto src2Id = LoadFromSymbol(src2Ref);
+	auto symbolType = GetCommonSymbolType(src1Ref, src2Ref);
 	auto resultId = AllocateId();
-	if(
-		(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4) &&
-		(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4)
-		)
+	switch(symbolType)
 	{
+	case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
 		WriteOp(spv::OpFAdd, m_float4TypeId, resultId, src1Id, src2Id);
-	}
-	else if(
-		(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_INT4) &&
-		(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_INT4)
-		)
-	{
+		break;
+	case CShaderBuilder::SYMBOL_TYPE_INT4:
 		WriteOp(spv::OpIAdd, m_int4TypeId, resultId, src1Id, src2Id);
-	}
-	else
-	{
+		break;
+	case CShaderBuilder::SYMBOL_TYPE_UINT4:
+		WriteOp(spv::OpIAdd, m_uint4TypeId, resultId, src1Id, src2Id);
+		break;
+	default:
 		assert(false);
+		break;
 	}
 	StoreToSymbol(dstRef, resultId);
 }
