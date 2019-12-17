@@ -36,7 +36,9 @@ namespace Nuanceur
 	private:
 		friend CUintSwizzleSelector4;
 		friend CUintRvalue Load(const CArrayUintValue&, const CIntValue&);
+		friend CUintRvalue AtomicAnd(const CArrayUintValue&, const CIntValue&, const CUintValue&);
 		friend CUintRvalue AtomicAnd(const CImageUint2DValue&, const CInt2Value&, const CUintValue&);
+		friend CUintRvalue AtomicOr(const CArrayUintValue&, const CIntValue&, const CUintValue&);
 		friend CUintRvalue AtomicOr(const CImageUint2DValue&, const CInt2Value&, const CUintValue&);
 		friend CUintRvalue operator +(const CUintValue&, const CUintValue&);
 		friend CUintRvalue operator *(const CUintValue&, const CUintValue&);

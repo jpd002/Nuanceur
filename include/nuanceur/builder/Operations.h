@@ -102,6 +102,10 @@ namespace Nuanceur
 	CUintRvalue AtomicOr(const CImageUint2DValue& image, const CInt2Value& coord, const CUintValue&);
 
 	CUintRvalue Load(const CArrayUintValue& buffer, const CIntValue& index);
+	void Store(const CArrayUintValue& buffer, const CIntValue& index, const CUintValue&);
+
+	CUintRvalue AtomicAnd(const CArrayUintValue& image, const CIntValue& index, const CUintValue&);
+	CUintRvalue AtomicOr(const CArrayUintValue& image, const CIntValue& index, const CUintValue&);
 
 	CFloatRvalue ToFloat(const CUintValue&);
 	CFloat2Rvalue ToFloat(const CInt2Value&);

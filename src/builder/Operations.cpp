@@ -369,6 +369,34 @@ CUintRvalue Nuanceur::Load(const CArrayUintValue& buffer, const CIntValue& index
 	return temp;
 }
 
+void Nuanceur::Store(const CArrayUintValue& buffer, const CIntValue& index, const CUintValue& value)
+{
+	auto owner = GetCommonOwner(buffer.symbol, index.symbol);
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_STORE, CShaderBuilder::SYMBOLREF(), buffer, index, value)
+	);
+}
+
+CUintRvalue Nuanceur::AtomicAnd(const CArrayUintValue& buffer, const CIntValue& index, const CUintValue& value)
+{
+	auto owner = GetCommonOwner(buffer.symbol, index.symbol);
+	auto temp = CUintRvalue(owner->CreateTemporaryUint());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ATOMICAND, temp, buffer, index, value)
+	);
+	return temp;
+}
+
+CUintRvalue Nuanceur::AtomicOr(const CArrayUintValue& buffer, const CIntValue& index, const CUintValue& value)
+{
+	auto owner = GetCommonOwner(buffer.symbol, index.symbol);
+	auto temp = CUintRvalue(owner->CreateTemporaryUint());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ATOMICOR, temp, buffer, index, value)
+	);
+	return temp;
+}
+
 CFloatRvalue Nuanceur::ToFloat(const CUintValue& rhs)
 {
 	auto owner = rhs.symbol.owner;
