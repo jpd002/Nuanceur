@@ -132,6 +132,7 @@ namespace Nuanceur
 
 		uint32 LoadFromSymbol(const CShaderBuilder::SYMBOLREF&);
 		void StoreToSymbol(const CShaderBuilder::SYMBOLREF&, uint32);
+		std::pair<uint32, uint32> GetStructAccessChainParams(const CShaderBuilder::SYMBOLREF&);
 
 		uint32 ExtractFloat4X(uint32);
 		uint32 GetResultType(CShaderBuilder::SYMBOL_TYPE) const;
@@ -147,6 +148,8 @@ namespace Nuanceur
 			const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void AtomicImageOp(spv::Op, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, 
 			const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
+		void Load(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
+		void Store(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 
 		enum
 		{
