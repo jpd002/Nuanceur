@@ -253,13 +253,13 @@ CFloat4Rvalue Nuanceur::NewFloat4(const CFloat3Value& xyz, const CFloatValue& w)
 
 CIntRvalue Nuanceur::NewInt(CShaderBuilder& owner, int32 x)
 {
-	auto literal = owner.CreateConstantInt(x, 0, 0, 0);
+	auto literal = owner.CreateConstantInt(x, 1, 1, 1);
 	return CIntRvalue(literal);
 }
 
 CInt2Rvalue Nuanceur::NewInt2(CShaderBuilder& owner, int32 x, int32 y)
 {
-	auto literal = owner.CreateConstantInt(x, y, 0, 0);
+	auto literal = owner.CreateConstantInt(x, y, 1, 1);
 	return CInt2Rvalue(literal);
 }
 
@@ -275,13 +275,13 @@ CInt2Rvalue Nuanceur::NewInt2(const CIntValue& x, const CIntValue& y)
 
 CUintRvalue Nuanceur::NewUint(CShaderBuilder& owner, uint32 x)
 {
-	auto literal = owner.CreateConstantUint(x, 0, 0, 0);
+	auto literal = owner.CreateConstantUint(x, 1, 1, 1);
 	return CUintRvalue(literal);
 }
 
 CUint3Rvalue Nuanceur::NewUint3(CShaderBuilder& owner, uint32 x, uint32 y, uint32 z)
 {
-	auto literal = owner.CreateConstantUint(x, y, z, 0);
+	auto literal = owner.CreateConstantUint(x, y, z, 1);
 	return CUint3Rvalue(literal);
 }
 
