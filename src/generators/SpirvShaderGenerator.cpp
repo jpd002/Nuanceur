@@ -1186,6 +1186,10 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 		case SWIZZLE_W:
 			components[0] = 3;
 			break;
+		case SWIZZLE_ZZ:
+			components[0] = 2;
+			components[1] = 2;
+			break;
 		case SWIZZLE_ZW:
 			components[0] = 2;
 			components[1] = 3;
