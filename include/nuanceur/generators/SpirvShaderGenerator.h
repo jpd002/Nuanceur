@@ -188,6 +188,7 @@ namespace Nuanceur
 		uint32 m_inputFloat4PointerTypeId = EMPTY_ID;
 		uint32 m_outputFloat4PointerTypeId = EMPTY_ID;
 		uint32 m_inputInt3PointerTypeId = EMPTY_ID;
+		uint32 m_inputUint4PointerTypeId = EMPTY_ID;
 
 		uint32 m_outputPerVertexVariableId = EMPTY_ID;
 

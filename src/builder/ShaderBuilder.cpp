@@ -101,6 +101,20 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateInputInt(SEMANTIC semantic, unsigne
 	return sym;
 }
 
+CShaderBuilder::SYMBOL CShaderBuilder::CreateInputUint(SEMANTIC semantic, unsigned int semanticIndex)
+{
+	SYMBOL sym;
+	sym.owner    = this;
+	sym.index    = m_currentInputIndex++;
+	sym.type     = SYMBOL_TYPE_UINT4;
+	sym.location = SYMBOL_LOCATION_INPUT;
+	m_symbols.push_back(sym);
+
+	m_inputSemantics.insert(std::make_pair(sym.index, SEMANTIC_INFO(semantic, semanticIndex)));
+
+	return sym;
+}
+
 CShaderBuilder::SYMBOL CShaderBuilder::CreateOutput(SEMANTIC semantic, unsigned int semanticIndex)
 {
 	SYMBOL sym;

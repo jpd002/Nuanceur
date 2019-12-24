@@ -66,6 +66,7 @@ void CSpirvShaderGenerator::Generate()
 	auto perVertexStructTypeId = AllocateId();
 	m_inputFloat4PointerTypeId = AllocateId();
 	m_inputInt3PointerTypeId = AllocateId();
+	m_inputUint4PointerTypeId = AllocateId();
 	m_outputFloat4PointerTypeId = AllocateId();
 	auto outputPerVertexStructPointerTypeId = AllocateId();
 
@@ -210,6 +211,7 @@ void CSpirvShaderGenerator::Generate()
 	WriteOp(spv::OpTypeVector, m_uint4TypeId, m_uintTypeId, 4);
 	WriteOp(spv::OpTypeRuntimeArray, m_uintArrayTypeId, m_uintTypeId); //Make this optional
 	WriteOp(spv::OpTypePointer, m_inputFloat4PointerTypeId, spv::StorageClassInput, m_float4TypeId);
+	WriteOp(spv::OpTypePointer, m_inputUint4PointerTypeId, spv::StorageClassInput, m_uint4TypeId);
 	WriteOp(spv::OpTypePointer, m_outputFloat4PointerTypeId, spv::StorageClassOutput, m_float4TypeId);
 	
 	if(m_shaderType == SHADER_TYPE_VERTEX)
@@ -695,7 +697,18 @@ void CSpirvShaderGenerator::DeclareInputPointerIds()
 			WriteOp(spv::OpVariable, m_inputInt3PointerTypeId, pointerId, spv::StorageClassInput);
 			break;
 		default:
-			WriteOp(spv::OpVariable, m_inputFloat4PointerTypeId, pointerId, spv::StorageClassInput);
+			switch(symbol.type)
+			{
+			case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
+				WriteOp(spv::OpVariable, m_inputFloat4PointerTypeId, pointerId, spv::StorageClassInput);
+				break;
+			case CShaderBuilder::SYMBOL_TYPE_UINT4:
+				WriteOp(spv::OpVariable, m_inputUint4PointerTypeId, pointerId, spv::StorageClassInput);
+				break;
+			default:
+				assert(false);
+				break;
+			}
 			break;
 		}
 	}
@@ -1073,8 +1086,18 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 				}
 				break;
 			default:
-				assert(srcRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
-				WriteOp(spv::OpLoad, m_float4TypeId, srcId, pointerId);
+				switch(srcRef.symbol.type)
+				{
+				case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
+					WriteOp(spv::OpLoad, m_float4TypeId, srcId, pointerId);
+					break;
+				case CShaderBuilder::SYMBOL_TYPE_UINT4:
+					WriteOp(spv::OpLoad, m_uint4TypeId, srcId, pointerId);
+					break;
+				default:
+					assert(false);
+					break;
+				}
 				break;
 			}
 		}

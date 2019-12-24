@@ -245,6 +245,7 @@ namespace Nuanceur
 
 		SYMBOL					CreateInput(SEMANTIC, unsigned int = 0);
 		SYMBOL					CreateInputInt(SEMANTIC, unsigned int = 0);
+		SYMBOL					CreateInputUint(SEMANTIC, unsigned int = 0);
 		SYMBOL					CreateOutput(SEMANTIC, unsigned int = 0);
 		SYMBOL					CreateConstant(float, float, float, float);
 		SYMBOL					CreateConstantInt(int32, int32, int32, int32);
