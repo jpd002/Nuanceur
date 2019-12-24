@@ -63,6 +63,19 @@ CShaderBuilder::CIntVector4 CShaderBuilder::GetTemporaryValueInt(const SYMBOL& s
 	return result;
 }
 
+bool CShaderBuilder::GetTemporaryValueBool(const SYMBOL& sym) const
+{
+	bool result = false;
+	assert(sym.location == SYMBOL_LOCATION_TEMPORARY);
+	assert(sym.type == SYMBOL_TYPE_BOOL);
+	auto temporaryValueIterator = m_temporaryValuesBool.find(sym.index);
+	if(temporaryValueIterator != std::end(m_temporaryValuesBool))
+	{
+		result = temporaryValueIterator->second;
+	}
+	return result;
+}
+
 const CShaderBuilder::StatementList& CShaderBuilder::GetStatements() const
 {
 	return m_statements;
@@ -224,6 +237,22 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateConstantUint(uint32 v1, uint32 v2, 
 
 	auto tempValue = CIntVector4(v1, v2, v3, v4);
 	m_temporaryValuesInt.insert(std::make_pair(sym.index, tempValue));
+
+	return sym;
+}
+
+CShaderBuilder::SYMBOL CShaderBuilder::CreateConstantBool(bool v1)
+{
+	//TODO: Check if constant already exists
+
+	SYMBOL sym;
+	sym.owner    = this;
+	sym.index    = m_currentTempIndex++;
+	sym.type     = SYMBOL_TYPE_BOOL;
+	sym.location = SYMBOL_LOCATION_TEMPORARY;
+	m_symbols.push_back(sym);
+
+	m_temporaryValuesBool.insert(std::make_pair(sym.index, v1));
 
 	return sym;
 }

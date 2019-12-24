@@ -420,6 +420,10 @@ void CSpirvShaderGenerator::Generate()
 					StoreToSymbol(dstRef, resultId);
 				}
 				break;
+			case CShaderBuilder::STATEMENT_OP_COMPARE_GE:
+			case CShaderBuilder::STATEMENT_OP_COMPARE_GT:
+				Compare(statement.op, dstRef, src1Ref, src2Ref);
+				break;
 			case CShaderBuilder::STATEMENT_OP_SAMPLE:
 				{
 					auto src1Id = LoadFromSymbol(src1Ref);
@@ -822,6 +826,9 @@ void CSpirvShaderGenerator::GatherConstantsFromTemps()
 				RegisterUintConstant(temporaryValue.w);
 			}
 			break;
+		case CShaderBuilder::SYMBOL_TYPE_BOOL:
+			//No need to register components
+			break;
 		default:
 			assert(false);
 			break;
@@ -865,6 +872,19 @@ void CSpirvShaderGenerator::DeclareTemporaryValueIds()
 				uint32 valueZId = m_uintConstantIds[temporaryValue.z];
 				uint32 valueWId = m_uintConstantIds[temporaryValue.w];
 				WriteOp(spv::OpConstantComposite, m_uint4TypeId, temporaryValueId, valueXId, valueYId, valueZId, valueWId);
+			}
+			break;
+		case CShaderBuilder::SYMBOL_TYPE_BOOL:
+			{
+				auto value = m_shaderBuilder.GetTemporaryValueBool(symbol);
+				if(value == false)
+				{
+					WriteOp(spv::OpConstantFalse, m_boolTypeId, temporaryValueId);
+				}
+				else
+				{
+					WriteOp(spv::OpConstantTrue, m_boolTypeId, temporaryValueId);
+				}
 			}
 			break;
 		default:
@@ -1404,6 +1424,37 @@ void CSpirvShaderGenerator::Clamp(const CShaderBuilder::SYMBOLREF& dstRef, const
 	WriteOp(spv::OpExtInst, m_float4TypeId, resultId, m_glslStd450ExtInst, GLSLstd450::GLSLstd450FClamp,
 		src1Id, src2Id, src3Id);
 
+	StoreToSymbol(dstRef, resultId);
+}
+
+void CSpirvShaderGenerator::Compare(CShaderBuilder::STATEMENT_OP op, const CShaderBuilder::SYMBOLREF& dstRef,
+	const CShaderBuilder::SYMBOLREF& src1Ref, const CShaderBuilder::SYMBOLREF& src2Ref)
+{
+	auto src1Id = LoadFromSymbol(src1Ref);
+	auto src2Id = LoadFromSymbol(src2Ref);
+	auto symbolType = GetCommonSymbolType(src1Ref, src2Ref);
+	assert(symbolType == CShaderBuilder::SYMBOL_TYPE_UINT4);
+
+	auto src1ScalarId = AllocateId();
+	auto src2ScalarId = AllocateId();
+	auto resultId = AllocateId();
+
+	WriteOp(spv::OpCompositeExtract, m_uintTypeId, src1ScalarId, src1Id, 0);
+	WriteOp(spv::OpCompositeExtract, m_uintTypeId, src2ScalarId, src2Id, 0);
+
+	switch(op)
+	{
+	case CShaderBuilder::STATEMENT_OP_COMPARE_GT:
+		WriteOp(spv::OpUGreaterThan, m_boolTypeId, resultId, src1ScalarId, src2ScalarId);
+		break;
+	case CShaderBuilder::STATEMENT_OP_COMPARE_GE:
+		WriteOp(spv::OpUGreaterThanEqual, m_boolTypeId, resultId, src1ScalarId, src2ScalarId);
+		break;
+	default:
+		assert(false);
+		break;
+	}
+	
 	StoreToSymbol(dstRef, resultId);
 }
 

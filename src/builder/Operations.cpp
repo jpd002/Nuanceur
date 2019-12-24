@@ -114,6 +114,30 @@ CBoolRvalue Nuanceur::operator <(const CFloatValue& lhs, const CFloatValue& rhs)
 	return temp;
 }
 
+CBoolRvalue Nuanceur::operator >(const CUintValue& lhs, const CUintValue& rhs)
+{
+	CHECK_ISOPERANDVALID(lhs);
+	CHECK_ISOPERANDVALID(rhs);
+	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
+	auto temp = CBoolRvalue(owner->CreateTemporaryBool());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_COMPARE_GT, temp, lhs, rhs)
+	);
+	return temp;
+}
+
+CBoolRvalue Nuanceur::operator >=(const CUintValue& lhs, const CUintValue& rhs)
+{
+	CHECK_ISOPERANDVALID(lhs);
+	CHECK_ISOPERANDVALID(rhs);
+	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
+	auto temp = CBoolRvalue(owner->CreateTemporaryBool());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_COMPARE_GE, temp, lhs, rhs)
+	);
+	return temp;
+}
+
 void CBoolLvalue::operator =(const CBoolRvalue& rhs)
 {
 	CHECK_ISOPERANDVALID(*this);
@@ -299,6 +323,12 @@ CUint4Rvalue Nuanceur::NewUint4(const CUintValue& x, const CUint3Value& yzw)
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, x, yzw)
 	);
 	return temp;
+}
+
+CBoolRvalue Nuanceur::NewBool(CShaderBuilder& owner, bool x)
+{
+	auto literal = owner.CreateConstantBool(x);
+	return CBoolRvalue(literal);
 }
 
 CFloat4Rvalue Nuanceur::Normalize(const CFloat4Value& rhs)

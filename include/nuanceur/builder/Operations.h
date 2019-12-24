@@ -65,6 +65,9 @@ namespace Nuanceur
 
 	CBoolRvalue operator <(const CFloatValue& lhs, const CFloatValue& rhs);
 
+	CBoolRvalue operator >(const CUintValue& lhs, const CUintValue& rhs);
+	CBoolRvalue operator >=(const CUintValue& lhs, const CUintValue& rhs);
+
 	CFloat4Rvalue Clamp(const CFloat4Value&, const CFloat4Value&, const CFloat4Value&);
 
 	CFloatRvalue NewFloat(CShaderBuilder&, float x);
@@ -90,6 +93,8 @@ namespace Nuanceur
 
 	CUint4Rvalue NewUint4(CShaderBuilder& owner, uint32 x, uint32 y, uint32 z, uint32 w);
 	CUint4Rvalue NewUint4(const CUintValue& x, const CUint3Value& yzw);
+
+	CBoolRvalue NewBool(CShaderBuilder& owner, bool x);
 
 	CFloat4Rvalue Normalize(const CFloat4Value& rhs);
 

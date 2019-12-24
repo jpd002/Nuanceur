@@ -148,6 +148,8 @@ namespace Nuanceur
 			STATEMENT_OP_LSHIFT,
 			STATEMENT_OP_RSHIFT,
 			STATEMENT_OP_COMPARE_LT,
+			STATEMENT_OP_COMPARE_GT,
+			STATEMENT_OP_COMPARE_GE,
 			STATEMENT_OP_MAX,
 			STATEMENT_OP_DOT,
 			STATEMENT_OP_POW,
@@ -239,6 +241,7 @@ namespace Nuanceur
 		std::string				GetUniformName(const SYMBOL&) const;
 		CVector4				GetTemporaryValue(const SYMBOL&) const;
 		CIntVector4				GetTemporaryValueInt(const SYMBOL&) const;
+		bool					GetTemporaryValueBool(const SYMBOL&) const;
 
 		const StatementList&	GetStatements() const;
 		void					InsertStatement(const STATEMENT&);
@@ -250,6 +253,7 @@ namespace Nuanceur
 		SYMBOL					CreateConstant(float, float, float, float);
 		SYMBOL					CreateConstantInt(int32, int32, int32, int32);
 		SYMBOL					CreateConstantUint(uint32, uint32, uint32, uint32);
+		SYMBOL					CreateConstantBool(bool);
 		
 		SYMBOL					CreateTemporary();
 		SYMBOL					CreateTemporaryBool();
@@ -274,6 +278,7 @@ namespace Nuanceur
 		typedef std::unordered_map<unsigned int, std::string> UniformNameMap;
 		typedef std::unordered_map<unsigned int, CVector4> TemporaryValueMap;
 		typedef std::unordered_map<unsigned int, CIntVector4> TemporaryValueIntMap;
+		typedef std::unordered_map<unsigned int, bool> TemporaryValueBoolMap;
 
 		MetadataMap				m_metadata;
 		SymbolArray				m_symbols;
@@ -287,5 +292,6 @@ namespace Nuanceur
 		UniformNameMap			m_uniformNames;
 		TemporaryValueMap		m_temporaryValues;
 		TemporaryValueIntMap	m_temporaryValuesInt;
+		TemporaryValueBoolMap	m_temporaryValuesBool;
 	};
 }

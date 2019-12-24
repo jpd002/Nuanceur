@@ -5,6 +5,7 @@
 namespace Nuanceur
 {
 	class CFloatValue;
+	class CUintValue;
 	class CBoolRvalue;
 
 	class CBoolValue : public CShaderBuilder::SYMBOLREF
@@ -33,6 +34,9 @@ namespace Nuanceur
 	{
 	private:
 		friend CBoolRvalue operator <(const CFloatValue&, const CFloatValue&);
+		friend CBoolRvalue operator >(const CUintValue&, const CUintValue&);
+		friend CBoolRvalue operator >=(const CUintValue&, const CUintValue&);
+		friend CBoolRvalue NewBool(CShaderBuilder&, bool);
 
 		CBoolRvalue(const CBoolRvalue&) = default;
 
