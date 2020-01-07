@@ -1,4 +1,5 @@
 #include "nuanceur/builder/Operations.h"
+#include "nuanceur/builder/FloatSwizzleSelector.h"
 #include "nuanceur/builder/FloatSwizzleSelector4.h"
 #include "nuanceur/builder/IntSwizzleSelector4.h"
 #include "nuanceur/builder/UintSwizzleSelector4.h"
@@ -428,6 +429,16 @@ CUintRvalue Nuanceur::AtomicOr(const CArrayUintValue& buffer, const CIntValue& i
 }
 
 CFloatRvalue Nuanceur::ToFloat(const CUintValue& rhs)
+{
+	auto owner = rhs.symbol.owner;
+	auto temp = CFloatRvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOFLOAT, temp, rhs)
+	);
+	return temp;
+}
+
+CFloatRvalue Nuanceur::ToFloat(const CIntValue& rhs)
 {
 	auto owner = rhs.symbol.owner;
 	auto temp = CFloatRvalue(owner->CreateTemporary());

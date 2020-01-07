@@ -113,6 +113,7 @@ namespace Nuanceur
 	CUintRvalue AtomicOr(const CArrayUintValue& image, const CIntValue& index, const CUintValue&);
 
 	CFloatRvalue ToFloat(const CUintValue&);
+	CFloatRvalue ToFloat(const CIntValue&);
 	CFloat2Rvalue ToFloat(const CInt2Value&);
 	CFloat4Rvalue ToFloat(const CUint4Value&);
 	CIntRvalue ToInt(const CUintValue&);

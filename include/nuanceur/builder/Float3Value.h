@@ -32,6 +32,7 @@ namespace Nuanceur
 	class CFloat3Rvalue : public CFloat3Value
 	{
 	private:
+		friend CFloatSwizzleSelector;
 		friend CFloatSwizzleSelector4;
 		friend CFloat3Rvalue operator +(const CFloat3Value&, const CFloat3Value&);
 		friend CFloat3Rvalue operator -(const CFloat3Value&, const CFloat3Value&);
