@@ -293,6 +293,8 @@ void CSpirvShaderGenerator::Generate()
 
 	DeclareTemporaryValueIds();
 
+	bool returnInBlock = false;
+
 	//Write main function
 	{
 		WriteOp(spv::OpFunction, voidTypeId, mainFunctionId, spv::FunctionControlMaskNone, mainFunctionTypeId);
@@ -604,6 +606,11 @@ void CSpirvShaderGenerator::Generate()
 					StoreToSymbol(dstRef, src1Id);
 				}
 				break;
+			case CShaderBuilder::STATEMENT_OP_RETURN:
+				assert(!returnInBlock);
+				returnInBlock = true;
+				WriteOp(spv::OpReturn);
+				break;
 			case CShaderBuilder::STATEMENT_OP_INVOCATION_INTERLOCK_BEGIN:
 				WriteOp(spv::OpBeginInvocationInterlockEXT);
 				break;
@@ -625,9 +632,13 @@ void CSpirvShaderGenerator::Generate()
 			case CShaderBuilder::STATEMENT_OP_IF_END:
 				{
 					assert(m_endLabelId != 0);
-					WriteOp(spv::OpBranch, m_endLabelId);
+					if(!returnInBlock)
+					{
+						WriteOp(spv::OpBranch, m_endLabelId);
+					}
 					WriteOp(spv::OpLabel, m_endLabelId);
 					m_endLabelId = 0;
+					returnInBlock = false;
 				}
 				break;
 			default:
@@ -1251,6 +1262,12 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 			components[1] = 3;
 			components[2] = 3;
 			break;
+		case SWIZZLE_WWWW:
+			components[0] = 3;
+			components[1] = 3;
+			components[2] = 3;
+			components[3] = 3;
+			break;
 		default:
 			assert(false);
 			break;
@@ -1435,31 +1452,63 @@ void CSpirvShaderGenerator::Clamp(const CShaderBuilder::SYMBOLREF& dstRef, const
 void CSpirvShaderGenerator::Compare(CShaderBuilder::STATEMENT_OP op, const CShaderBuilder::SYMBOLREF& dstRef,
 	const CShaderBuilder::SYMBOLREF& src1Ref, const CShaderBuilder::SYMBOLREF& src2Ref)
 {
+	typedef std::pair<CShaderBuilder::STATEMENT_OP, spv::Op> CompareOpPair;
+
+	static const CompareOpPair intCompareOps[] =
+	{
+		{ CShaderBuilder::STATEMENT_OP_COMPARE_GE, spv::OpSGreaterThanEqual },
+	};
+
+	static const CompareOpPair uintCompareOps[] =
+	{
+		{ CShaderBuilder::STATEMENT_OP_COMPARE_GT, spv::OpUGreaterThan },
+		{ CShaderBuilder::STATEMENT_OP_COMPARE_GE, spv::OpUGreaterThanEqual },
+	};
+
+	auto opMatcher = [&](const CompareOpPair& compareOp) { return compareOp.first == op; };
+
 	auto src1Id = LoadFromSymbol(src1Ref);
 	auto src2Id = LoadFromSymbol(src2Ref);
 	auto symbolType = GetCommonSymbolType(src1Ref, src2Ref);
-	assert(symbolType == CShaderBuilder::SYMBOL_TYPE_UINT4);
+
+	uint32 scalarTypeId = 
+		[&]()
+		{
+			switch(symbolType)
+			{
+			default:
+				assert(false);
+			case CShaderBuilder::SYMBOL_TYPE_INT4:
+				return m_intTypeId;
+			case CShaderBuilder::SYMBOL_TYPE_UINT4:
+				return m_uintTypeId;
+			}
+		}();
+
+	const auto compareOp =
+		[&]() -> const CompareOpPair*
+		{
+			switch(symbolType)
+			{
+			case CShaderBuilder::SYMBOL_TYPE_INT4:
+				return std::find_if(std::begin(intCompareOps), std::end(intCompareOps), opMatcher);
+			case CShaderBuilder::SYMBOL_TYPE_UINT4:
+				return std::find_if(std::begin(uintCompareOps), std::end(uintCompareOps), opMatcher);
+			default:
+				assert(false);
+				return nullptr;
+			}
+		}();
+	auto opType = compareOp ? compareOp->second : spv::OpNop;
 
 	auto src1ScalarId = AllocateId();
 	auto src2ScalarId = AllocateId();
 	auto resultId = AllocateId();
 
-	WriteOp(spv::OpCompositeExtract, m_uintTypeId, src1ScalarId, src1Id, 0);
-	WriteOp(spv::OpCompositeExtract, m_uintTypeId, src2ScalarId, src2Id, 0);
+	WriteOp(spv::OpCompositeExtract, scalarTypeId, src1ScalarId, src1Id, 0);
+	WriteOp(spv::OpCompositeExtract, scalarTypeId, src2ScalarId, src2Id, 0);
+	WriteOp(opType, m_boolTypeId, resultId, src1ScalarId, src2ScalarId);
 
-	switch(op)
-	{
-	case CShaderBuilder::STATEMENT_OP_COMPARE_GT:
-		WriteOp(spv::OpUGreaterThan, m_boolTypeId, resultId, src1ScalarId, src2ScalarId);
-		break;
-	case CShaderBuilder::STATEMENT_OP_COMPARE_GE:
-		WriteOp(spv::OpUGreaterThanEqual, m_boolTypeId, resultId, src1ScalarId, src2ScalarId);
-		break;
-	default:
-		assert(false);
-		break;
-	}
-	
 	StoreToSymbol(dstRef, resultId);
 }
 

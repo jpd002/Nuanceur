@@ -65,6 +65,8 @@ namespace Nuanceur
 
 	CBoolRvalue operator <(const CFloatValue& lhs, const CFloatValue& rhs);
 
+	CBoolRvalue operator >=(const CIntValue& lhs, const CIntValue& rhs);
+
 	CBoolRvalue operator >(const CUintValue& lhs, const CUintValue& rhs);
 	CBoolRvalue operator >=(const CUintValue& lhs, const CUintValue& rhs);
 
@@ -124,6 +126,7 @@ namespace Nuanceur
 
 	CFloatRvalue Saturate(const CFloatValue& rhs);
 
+	void Return(CShaderBuilder& owner);
 	void BeginInvocationInterlock(CShaderBuilder& owner);
 	void EndInvocationInterlock(CShaderBuilder& owner);
 

@@ -115,6 +115,18 @@ CBoolRvalue Nuanceur::operator <(const CFloatValue& lhs, const CFloatValue& rhs)
 	return temp;
 }
 
+CBoolRvalue Nuanceur::operator >=(const CIntValue& lhs, const CIntValue& rhs)
+{
+	CHECK_ISOPERANDVALID(lhs);
+	CHECK_ISOPERANDVALID(rhs);
+	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
+	auto temp = CBoolRvalue(owner->CreateTemporaryBool());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_COMPARE_GE, temp, lhs, rhs)
+	);
+	return temp;
+}
+
 CBoolRvalue Nuanceur::operator >(const CUintValue& lhs, const CUintValue& rhs)
 {
 	CHECK_ISOPERANDVALID(lhs);
@@ -526,6 +538,13 @@ CFloatRvalue Nuanceur::Saturate(const CFloatValue& rhs)
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_SATURATE, temp, rhs)
 	);
 	return temp;
+}
+
+void Nuanceur::Return(CShaderBuilder& owner)
+{
+	owner.InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_RETURN, CShaderBuilder::SYMBOLREF(), CShaderBuilder::SYMBOLREF())
+	);
 }
 
 void Nuanceur::BeginInvocationInterlock(CShaderBuilder& owner)
