@@ -47,6 +47,7 @@ namespace Nuanceur
 		friend CUintRvalue operator &(const CUintValue&, const CUintValue&);
 		friend CUintRvalue operator |(const CUintValue&, const CUintValue&);
 		friend CUintRvalue operator ^(const CUintValue&, const CUintValue&);
+		friend CUintRvalue operator ~(const CUintValue&);
 		friend CUintRvalue NewUint(CShaderBuilder&, uint32);
 		friend CUintRvalue ToUint(const CFloatValue&);
 		friend CUintRvalue ToUint(const CIntValue&);

@@ -407,6 +407,9 @@ void CSpirvShaderGenerator::Generate()
 			case CShaderBuilder::STATEMENT_OP_XOR:
 				BitwiseOp(spv::OpBitwiseXor, dstRef, src1Ref, src2Ref);
 				break;
+			case CShaderBuilder::STATEMENT_OP_NOT:
+				BitwiseNot(dstRef, src1Ref);
+				break;
 			case CShaderBuilder::STATEMENT_OP_LSHIFT:
 				BitwiseOp(spv::OpShiftLeftLogical, dstRef, src1Ref, src2Ref);
 				break;
@@ -1409,6 +1412,15 @@ void CSpirvShaderGenerator::BitwiseOp(spv::Op op, const CShaderBuilder::SYMBOLRE
 		assert(false);
 		break;
 	}
+	StoreToSymbol(dstRef, resultId);
+}
+
+void CSpirvShaderGenerator::BitwiseNot(const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref)
+{
+	auto src1Id = LoadFromSymbol(src1Ref);
+	assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
+	auto resultId = AllocateId();
+	WriteOp(spv::OpNot, m_uint4TypeId, resultId, src1Id);
 	StoreToSymbol(dstRef, resultId);
 }
 

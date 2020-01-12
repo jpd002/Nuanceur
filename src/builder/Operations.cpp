@@ -103,6 +103,17 @@ CFloat4Rvalue Nuanceur::operator *(const CMatrix44Value& lhs, const CFloat4Value
 	return temp;
 }
 
+CUintRvalue Nuanceur::operator ~(const CUintValue& lhs)
+{
+	CHECK_ISOPERANDVALID(lhs);
+	auto owner = lhs.symbol.owner;
+	auto temp = CUintRvalue(owner->CreateTemporaryUint());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NOT, temp, lhs)
+	);
+	return temp;
+}
+
 CBoolRvalue Nuanceur::operator <(const CFloatValue& lhs, const CFloatValue& rhs)
 {
 	CHECK_ISOPERANDVALID(lhs);

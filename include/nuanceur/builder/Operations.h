@@ -63,6 +63,8 @@ namespace Nuanceur
 
 	CFloat4Rvalue operator *(const CMatrix44Value& lhs, const CFloat4Value& rhs);
 
+	CUintRvalue operator ~(const CUintValue& lhs);
+
 	CBoolRvalue operator <(const CFloatValue& lhs, const CFloatValue& rhs);
 
 	CBoolRvalue operator >=(const CIntValue& lhs, const CIntValue& rhs);
