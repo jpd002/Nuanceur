@@ -68,6 +68,7 @@ void CSpirvShaderGenerator::Generate()
 	m_inputInt3PointerTypeId = AllocateId();
 	m_inputUint4PointerTypeId = AllocateId();
 	m_outputFloat4PointerTypeId = AllocateId();
+	m_functionFloat4PointerTypeId = AllocateId();
 	auto outputPerVertexStructPointerTypeId = AllocateId();
 
 	AllocateUniformStructsIds();
@@ -98,6 +99,7 @@ void CSpirvShaderGenerator::Generate()
 
 	AllocateInputPointerIds();
 	AllocateOutputPointerIds();
+	AllocateVariablePointerIds();
 
 	m_outputPerVertexVariableId = AllocateId();
 
@@ -176,6 +178,8 @@ void CSpirvShaderGenerator::Generate()
 	//WriteOp(spv::OpSource, spv::SourceLanguageUnknown, 100);
 	//WriteOp(spv::OpName, mainFunctionId, "main");
 
+	WriteVariablePointerNames();
+
 	//Annotations
 	if(m_shaderType == SHADER_TYPE_VERTEX)
 	{
@@ -213,6 +217,7 @@ void CSpirvShaderGenerator::Generate()
 	WriteOp(spv::OpTypePointer, m_inputFloat4PointerTypeId, spv::StorageClassInput, m_float4TypeId);
 	WriteOp(spv::OpTypePointer, m_inputUint4PointerTypeId, spv::StorageClassInput, m_uint4TypeId);
 	WriteOp(spv::OpTypePointer, m_outputFloat4PointerTypeId, spv::StorageClassOutput, m_float4TypeId);
+	WriteOp(spv::OpTypePointer, m_functionFloat4PointerTypeId, spv::StorageClassFunction, m_float4TypeId);
 	
 	if(m_shaderType == SHADER_TYPE_VERTEX)
 	{
@@ -299,6 +304,8 @@ void CSpirvShaderGenerator::Generate()
 	{
 		WriteOp(spv::OpFunction, voidTypeId, mainFunctionId, spv::FunctionControlMaskNone, mainFunctionTypeId);
 		WriteOp(spv::OpLabel, mainFunctionLabelId);
+
+		DeclareVariablePointerIds();
 
 		for(const auto& statement : m_shaderBuilder.GetStatements())
 		{
@@ -909,6 +916,41 @@ void CSpirvShaderGenerator::DeclareTemporaryValueIds()
 	}
 }
 
+void CSpirvShaderGenerator::AllocateVariablePointerIds()
+{
+	for(const auto& symbol : m_shaderBuilder.GetSymbols())
+	{
+		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_VARIABLE) continue;
+		assert(symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
+		assert(m_variablePointerIds.find(symbol.index) == std::end(m_variablePointerIds));
+		auto pointerId = AllocateId();
+		m_variablePointerIds[symbol.index] = pointerId;
+	}
+}
+
+void CSpirvShaderGenerator::WriteVariablePointerNames()
+{
+	for(const auto& symbol : m_shaderBuilder.GetSymbols())
+	{
+		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_VARIABLE) continue;
+		assert(m_variablePointerIds.find(symbol.index) != std::end(m_variablePointerIds));
+		auto pointerId = m_variablePointerIds[symbol.index];
+		auto variableName = m_shaderBuilder.GetVariableName(symbol);
+		WriteOp(spv::OpName, pointerId, variableName.c_str());
+	}
+}
+
+void CSpirvShaderGenerator::DeclareVariablePointerIds()
+{
+	for(const auto& symbol : m_shaderBuilder.GetSymbols())
+	{
+		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_VARIABLE) continue;
+		assert(m_variablePointerIds.find(symbol.index) != std::end(m_variablePointerIds));
+		auto pointerId = m_variablePointerIds[symbol.index];
+		WriteOp(spv::OpVariable, m_functionFloat4PointerTypeId, pointerId, spv::StorageClassFunction);
+	}
+}
+
 void CSpirvShaderGenerator::AllocateUniformStructsIds()
 {
 	for(const auto& symbol : m_shaderBuilder.GetSymbols())
@@ -1209,6 +1251,15 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 			srcId = m_temporaryValueIds[srcRef.symbol.index];
 		}
 		break;
+	case CShaderBuilder::SYMBOL_LOCATION_VARIABLE:
+		{
+			srcId = AllocateId();
+			assert(srcRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
+			assert(m_variablePointerIds.find(srcRef.symbol.index) != std::end(m_variablePointerIds));
+			auto pointerId = m_variablePointerIds[srcRef.symbol.index];
+			WriteOp(spv::OpLoad, m_float4TypeId, srcId, pointerId);
+		}
+		break;
 	default:
 		assert(false);
 		break;
@@ -1297,6 +1348,14 @@ void CSpirvShaderGenerator::StoreToSymbol(const CShaderBuilder::SYMBOLREF& dstRe
 	case CShaderBuilder::SYMBOL_LOCATION_TEMPORARY:
 		//Replace current active id for that temporary symbol.
 		m_temporaryValueIds[dstRef.symbol.index] = dstId;
+		break;
+	case CShaderBuilder::SYMBOL_LOCATION_VARIABLE:
+		{
+			assert(dstRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
+			assert(m_variablePointerIds.find(dstRef.symbol.index) != std::end(m_variablePointerIds));
+			auto pointerId = m_variablePointerIds[dstRef.symbol.index];
+			WriteOp(spv::OpStore, pointerId, dstId);
+		}
 		break;
 	default:
 		assert(false);

@@ -118,6 +118,10 @@ namespace Nuanceur
 		void GatherConstantsFromTemps();
 		void DeclareTemporaryValueIds();
 
+		void AllocateVariablePointerIds();
+		void WriteVariablePointerNames();
+		void DeclareVariablePointerIds();
+
 		void AllocateUniformStructsIds();
 		void DecorateUniformStructIds();
 		void DeclareUniformStructIds();
@@ -189,6 +193,7 @@ namespace Nuanceur
 
 		uint32 m_inputFloat4PointerTypeId = EMPTY_ID;
 		uint32 m_outputFloat4PointerTypeId = EMPTY_ID;
+		uint32 m_functionFloat4PointerTypeId = EMPTY_ID;
 		uint32 m_inputInt3PointerTypeId = EMPTY_ID;
 		uint32 m_inputUint4PointerTypeId = EMPTY_ID;
 
@@ -220,6 +225,7 @@ namespace Nuanceur
 		std::map<uint32, uint32> m_inputPointerIds;
 		std::map<uint32, uint32> m_outputPointerIds;
 		std::map<uint32, uint32> m_temporaryValueIds;
+		std::map<uint32, uint32> m_variablePointerIds;
 		std::map<uint32, uint32> m_texturePointerIds;
 		std::map<float, uint32> m_floatConstantIds;
 		std::map<int32, uint32> m_intConstantIds;
