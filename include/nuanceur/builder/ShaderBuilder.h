@@ -78,6 +78,7 @@ namespace Nuanceur
 		{
 			SYMBOL_LOCATION_NULL,
 			SYMBOL_LOCATION_TEMPORARY,
+			SYMBOL_LOCATION_VARIABLE,
 			SYMBOL_LOCATION_INPUT,
 			SYMBOL_LOCATION_OUTPUT,
 			SYMBOL_LOCATION_UNIFORM,
@@ -242,6 +243,7 @@ namespace Nuanceur
 		const SymbolArray&		GetSymbols() const;
 		SEMANTIC_INFO			GetInputSemantic(const SYMBOL&) const;
 		SEMANTIC_INFO			GetOutputSemantic(const SYMBOL&) const;
+		std::string				GetVariableName(const SYMBOL&) const;
 		std::string				GetUniformName(const SYMBOL&) const;
 		CVector4				GetTemporaryValue(const SYMBOL&) const;
 		CIntVector4				GetTemporaryValueInt(const SYMBOL&) const;
@@ -259,6 +261,8 @@ namespace Nuanceur
 		SYMBOL					CreateConstantUint(uint32, uint32, uint32, uint32);
 		SYMBOL					CreateConstantBool(bool);
 		
+		SYMBOL					CreateVariableFloat(const std::string&);
+
 		SYMBOL					CreateTemporary();
 		SYMBOL					CreateTemporaryBool();
 		SYMBOL					CreateTemporaryInt();
@@ -279,6 +283,7 @@ namespace Nuanceur
 
 	private:
 		typedef std::unordered_map<unsigned int, SEMANTIC_INFO> SemanticMap;
+		typedef std::unordered_map<unsigned int, std::string> VariableNameMap;
 		typedef std::unordered_map<unsigned int, std::string> UniformNameMap;
 		typedef std::unordered_map<unsigned int, CVector4> TemporaryValueMap;
 		typedef std::unordered_map<unsigned int, CIntVector4> TemporaryValueIntMap;
@@ -288,11 +293,13 @@ namespace Nuanceur
 		SymbolArray				m_symbols;
 		StatementList			m_statements;
 		unsigned int			m_currentTempIndex = 0;
+		unsigned int			m_currentVariableIndex = 0;
 		unsigned int			m_currentInputIndex = 0;
 		unsigned int			m_currentOutputIndex = 0;
 
 		SemanticMap				m_inputSemantics;
 		SemanticMap				m_outputSemantics;
+		VariableNameMap			m_variableNames;
 		UniformNameMap			m_uniformNames;
 		TemporaryValueMap		m_temporaryValues;
 		TemporaryValueIntMap	m_temporaryValuesInt;

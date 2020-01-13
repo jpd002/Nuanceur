@@ -31,6 +31,12 @@ CShaderBuilder::SEMANTIC_INFO CShaderBuilder::GetOutputSemantic(const SYMBOL& sy
 	return m_outputSemantics.find(sym.index)->second;
 }
 
+std::string CShaderBuilder::GetVariableName(const SYMBOL& sym) const
+{
+	assert(sym.location == SYMBOL_LOCATION_VARIABLE);
+	return m_variableNames.find(sym.index)->second;
+}
+
 std::string CShaderBuilder::GetUniformName(const SYMBOL& sym) const
 {
 	assert(sym.location == SYMBOL_LOCATION_UNIFORM);
@@ -138,6 +144,20 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateOutput(SEMANTIC semantic, unsigned 
 	m_symbols.push_back(sym);
 
 	m_outputSemantics.insert(std::make_pair(sym.index, SEMANTIC_INFO(semantic, semanticIndex)));
+
+	return sym;
+}
+
+CShaderBuilder::SYMBOL CShaderBuilder::CreateVariableFloat(const std::string& name)
+{
+	SYMBOL sym;
+	sym.owner    = this;
+	sym.index    = m_currentVariableIndex++;
+	sym.type     = SYMBOL_TYPE_FLOAT4;
+	sym.location = SYMBOL_LOCATION_VARIABLE;
+	m_symbols.push_back(sym);
+
+	m_variableNames.insert(std::make_pair(sym.index, name));
 
 	return sym;
 }
