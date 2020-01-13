@@ -123,6 +123,7 @@ namespace Nuanceur
 		void DeclareVariablePointerIds();
 
 		void AllocateUniformStructsIds();
+		void WriteUniformStructNames();
 		void DecorateUniformStructIds();
 		void DeclareUniformStructIds();
 

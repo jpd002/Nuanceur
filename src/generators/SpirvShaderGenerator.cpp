@@ -179,6 +179,7 @@ void CSpirvShaderGenerator::Generate()
 	//WriteOp(spv::OpName, mainFunctionId, "main");
 
 	WriteVariablePointerNames();
+	WriteUniformStructNames();
 
 	//Annotations
 	if(m_shaderType == SHADER_TYPE_VERTEX)
@@ -957,6 +958,8 @@ void CSpirvShaderGenerator::AllocateUniformStructsIds()
 	{
 		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_UNIFORM) continue;
 		auto& structInfo = m_structInfos[symbol.unit];
+		uint32 memberIndex = structInfo.memberIndex++;
+		structInfo.memberIndices[symbol.index] = memberIndex;
 		switch(symbol.type)
 		{
 		case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
@@ -990,20 +993,33 @@ void CSpirvShaderGenerator::AllocateUniformStructsIds()
 	}
 }
 
+void CSpirvShaderGenerator::WriteUniformStructNames()
+{
+	for(auto& symbol : m_shaderBuilder.GetSymbols())
+	{
+		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_UNIFORM) continue;
+		const auto& structInfo = m_structInfos[symbol.unit];
+		auto memberIndexIterator = structInfo.memberIndices.find(symbol.index);
+		assert(memberIndexIterator != std::end(structInfo.memberIndices));
+		auto memberIndex = memberIndexIterator->second;
+		auto uniformName = m_shaderBuilder.GetUniformName(symbol);
+		WriteOp(spv::OpMemberName, structInfo.typeId, memberIndex, uniformName.c_str());
+	}
+}
+
 void CSpirvShaderGenerator::DecorateUniformStructIds()
 {
 	for(auto& symbol : m_shaderBuilder.GetSymbols())
 	{
 		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_UNIFORM) continue;
 		auto& structInfo = m_structInfos[symbol.unit];
-		uint32 memberIndex = structInfo.memberIndex++;
+		auto memberIndex = structInfo.memberIndices[symbol.index];
 		WriteOp(spv::OpMemberDecorate, structInfo.typeId, memberIndex, spv::DecorationOffset, structInfo.currentOffset);
 		if(symbol.type == CShaderBuilder::SYMBOL_TYPE_MATRIX)
 		{
 			WriteOp(spv::OpMemberDecorate, structInfo.typeId, memberIndex, spv::DecorationColMajor);
 			WriteOp(spv::OpMemberDecorate, structInfo.typeId, memberIndex, spv::DecorationMatrixStride, 16);
 		}
-		structInfo.memberIndices[symbol.index] = memberIndex;
 		RegisterIntConstant(memberIndex);
 		//Assuming std430 layout
 		switch(symbol.type)
