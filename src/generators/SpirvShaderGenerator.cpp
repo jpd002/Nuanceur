@@ -553,7 +553,7 @@ void CSpirvShaderGenerator::Generate()
 							auto src1Id = LoadFromSymbol(src1Ref);
 							auto src2Id = LoadFromSymbol(src2Ref);
 							auto resultId = AllocateId();
-							WriteOp(spv::OpVectorShuffle, resultType, resultId, src1Id, src2Id, 0, 1, 2, 7);
+							WriteOp(spv::OpVectorShuffle, resultType, resultId, src1Id, src2Id, 0, 1, 2, 4);
 							StoreToSymbol(dstRef, resultId);
 						}
 						else if(
