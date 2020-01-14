@@ -55,6 +55,7 @@ static CShaderBuilder* GetCommonOwner(const CShaderBuilder::SYMBOL& symbol1, con
 	return symbol1.owner;
 }
 
+GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_ADD, +, CFloat)
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_ADD, +, CFloat2)
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_ADD, +, CFloat3)
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_ADD, +, CFloat4)
@@ -110,6 +111,18 @@ CUintRvalue Nuanceur::operator ~(const CUintValue& lhs)
 	auto temp = CUintRvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NOT, temp, lhs)
+	);
+	return temp;
+}
+
+CBoolRvalue Nuanceur::operator ==(const CFloatValue& lhs, const CFloatValue& rhs)
+{
+	CHECK_ISOPERANDVALID(lhs);
+	CHECK_ISOPERANDVALID(rhs);
+	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
+	auto temp = CBoolRvalue(owner->CreateTemporaryBool());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_COMPARE_EQ, temp, lhs, rhs)
 	);
 	return temp;
 }
@@ -235,6 +248,39 @@ CFloat4Rvalue Nuanceur::Clamp(const CFloat4Value& value, const CFloat4Value& min
 	return temp;
 }
 
+CFloatRvalue Nuanceur::Mix(const CFloatValue& x, const CFloatValue& y, const CFloatValue& a)
+{
+	CHECK_ISOPERANDVALID(x);
+	CHECK_ISOPERANDVALID(y);
+	CHECK_ISOPERANDVALID(a);
+	auto owner = GetCommonOwner(x.symbol, y.symbol);
+	auto temp = CFloatRvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MIX, temp, x, y, a)
+	);
+	return temp;
+}
+
+CFloat4Rvalue Nuanceur::Normalize(const CFloat4Value& rhs)
+{
+	auto owner = rhs.symbol.owner;
+	auto temp = CFloat4Rvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NORMALIZE, temp, rhs)
+	);
+	return temp;
+}
+
+CFloatRvalue Nuanceur::Saturate(const CFloatValue& rhs)
+{
+	auto owner = rhs.symbol.owner;
+	auto temp = CFloatRvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_SATURATE, temp, rhs)
+	);
+	return temp;
+}
+
 CFloatRvalue Nuanceur::NewFloat(CShaderBuilder& owner, float x)
 {
 	auto literal = owner.CreateConstant(x, 0, 0, 0);
@@ -353,16 +399,6 @@ CBoolRvalue Nuanceur::NewBool(CShaderBuilder& owner, bool x)
 {
 	auto literal = owner.CreateConstantBool(x);
 	return CBoolRvalue(literal);
-}
-
-CFloat4Rvalue Nuanceur::Normalize(const CFloat4Value& rhs)
-{
-	auto owner = rhs.symbol.owner;
-	auto temp = CFloat4Rvalue(owner->CreateTemporary());
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NORMALIZE, temp, rhs)
-	);
-	return temp;
 }
 
 CFloat4Rvalue Nuanceur::Sample(const CTexture2DValue& texture, const CFloat2Value& coord)
@@ -537,16 +573,6 @@ CUint4Rvalue Nuanceur::ToUint(const CFloat4Value& rhs)
 	auto temp = CUint4Rvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUINT, temp, rhs)
-	);
-	return temp;
-}
-
-CFloatRvalue Nuanceur::Saturate(const CFloatValue& rhs)
-{
-	auto owner = rhs.symbol.owner;
-	auto temp = CFloatRvalue(owner->CreateTemporary());
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_SATURATE, temp, rhs)
 	);
 	return temp;
 }

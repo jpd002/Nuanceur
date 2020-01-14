@@ -406,6 +406,9 @@ void CSpirvShaderGenerator::Generate()
 			case CShaderBuilder::STATEMENT_OP_CLAMP:
 				Clamp(dstRef, src1Ref, src2Ref, src3Ref);
 				break;
+			case CShaderBuilder::STATEMENT_OP_MIX:
+				Mix(dstRef, src1Ref, src2Ref, src3Ref);
+				break;
 			case CShaderBuilder::STATEMENT_OP_AND:
 				BitwiseOp(spv::OpBitwiseAnd, dstRef, src1Ref, src2Ref);
 				break;
@@ -433,6 +436,7 @@ void CSpirvShaderGenerator::Generate()
 					StoreToSymbol(dstRef, resultId);
 				}
 				break;
+			case CShaderBuilder::STATEMENT_OP_COMPARE_EQ:
 			case CShaderBuilder::STATEMENT_OP_COMPARE_GE:
 			case CShaderBuilder::STATEMENT_OP_COMPARE_GT:
 				Compare(statement.op, dstRef, src1Ref, src2Ref);
@@ -1536,10 +1540,33 @@ void CSpirvShaderGenerator::Clamp(const CShaderBuilder::SYMBOLREF& dstRef, const
 	StoreToSymbol(dstRef, resultId);
 }
 
+void CSpirvShaderGenerator::Mix(const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref,
+	const CShaderBuilder::SYMBOLREF& src2Ref, const CShaderBuilder::SYMBOLREF& src3Ref)
+{
+	assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
+	assert(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
+	assert(src3Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
+
+	auto src1Id = LoadFromSymbol(src1Ref);
+	auto src2Id = LoadFromSymbol(src2Ref);
+	auto src3Id = LoadFromSymbol(src3Ref);
+	auto resultId = AllocateId();
+
+	WriteOp(spv::OpExtInst, m_float4TypeId, resultId, m_glslStd450ExtInst, GLSLstd450::GLSLstd450FMix,
+		src1Id, src2Id, src3Id);
+
+	StoreToSymbol(dstRef, resultId);
+}
+
 void CSpirvShaderGenerator::Compare(CShaderBuilder::STATEMENT_OP op, const CShaderBuilder::SYMBOLREF& dstRef,
 	const CShaderBuilder::SYMBOLREF& src1Ref, const CShaderBuilder::SYMBOLREF& src2Ref)
 {
 	typedef std::pair<CShaderBuilder::STATEMENT_OP, spv::Op> CompareOpPair;
+
+	static const CompareOpPair floatCompareOps[] =
+	{
+		{ CShaderBuilder::STATEMENT_OP_COMPARE_EQ, spv::OpFOrdEqual },
+	};
 
 	static const CompareOpPair intCompareOps[] =
 	{
@@ -1565,6 +1592,8 @@ void CSpirvShaderGenerator::Compare(CShaderBuilder::STATEMENT_OP op, const CShad
 			{
 			default:
 				assert(false);
+			case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
+				return m_floatTypeId;
 			case CShaderBuilder::SYMBOL_TYPE_INT4:
 				return m_intTypeId;
 			case CShaderBuilder::SYMBOL_TYPE_UINT4:
@@ -1577,6 +1606,8 @@ void CSpirvShaderGenerator::Compare(CShaderBuilder::STATEMENT_OP op, const CShad
 		{
 			switch(symbolType)
 			{
+			case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
+				return std::find_if(std::begin(floatCompareOps), std::end(floatCompareOps), opMatcher);
 			case CShaderBuilder::SYMBOL_TYPE_INT4:
 				return std::find_if(std::begin(intCompareOps), std::end(intCompareOps), opMatcher);
 			case CShaderBuilder::SYMBOL_TYPE_UINT4:

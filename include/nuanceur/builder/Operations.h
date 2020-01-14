@@ -21,6 +21,7 @@
 
 namespace Nuanceur
 {
+	CFloatRvalue operator +(const CFloatValue& lhs, const CFloatValue& rhs);
 	CFloat2Rvalue operator +(const CFloat2Value& lhs, const CFloat2Value& rhs);
 	CFloat3Rvalue operator +(const CFloat3Value& lhs, const CFloat3Value& rhs);
 	CFloat4Rvalue operator +(const CFloat4Value& lhs, const CFloat4Value& rhs);
@@ -65,6 +66,8 @@ namespace Nuanceur
 
 	CUintRvalue operator ~(const CUintValue& lhs);
 
+	CBoolRvalue operator ==(const CFloatValue& lhs, const CFloatValue& rhs);
+
 	CBoolRvalue operator <(const CFloatValue& lhs, const CFloatValue& rhs);
 
 	CBoolRvalue operator >=(const CIntValue& lhs, const CIntValue& rhs);
@@ -73,6 +76,9 @@ namespace Nuanceur
 	CBoolRvalue operator >=(const CUintValue& lhs, const CUintValue& rhs);
 
 	CFloat4Rvalue Clamp(const CFloat4Value&, const CFloat4Value&, const CFloat4Value&);
+	CFloatRvalue Mix(const CFloatValue&, const CFloatValue&, const CFloatValue&);
+	CFloat4Rvalue Normalize(const CFloat4Value& rhs);
+	CFloatRvalue Saturate(const CFloatValue& rhs);
 
 	CFloatRvalue NewFloat(CShaderBuilder&, float x);
 
@@ -100,8 +106,6 @@ namespace Nuanceur
 
 	CBoolRvalue NewBool(CShaderBuilder& owner, bool x);
 
-	CFloat4Rvalue Normalize(const CFloat4Value& rhs);
-
 	CFloat4Rvalue Sample(const CTexture2DValue& texture, const CFloat2Value& coord);
 
 	CUint4Rvalue Load(const CImageUint2DValue& image, const CInt2Value& coord);
@@ -125,8 +129,6 @@ namespace Nuanceur
 	CUintRvalue ToUint(const CFloatValue&);
 	CUintRvalue ToUint(const CIntValue&);
 	CUint4Rvalue ToUint(const CFloat4Value&);
-
-	CFloatRvalue Saturate(const CFloatValue& rhs);
 
 	void Return(CShaderBuilder& owner);
 	void BeginInvocationInterlock(CShaderBuilder& owner);
