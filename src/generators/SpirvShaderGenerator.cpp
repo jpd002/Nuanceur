@@ -579,6 +579,17 @@ void CSpirvShaderGenerator::Generate()
 							WriteOp(spv::OpVectorShuffle, resultType, resultId, src1Id, src2Id, 0, 4, 5, 6);
 							StoreToSymbol(dstRef, resultId);
 						}
+						else if(
+							(statement.src1Ref.swizzle == SWIZZLE_XY) &&
+							(statement.src2Ref.swizzle == SWIZZLE_XY)
+						)
+						{
+							auto src1Id = LoadFromSymbol(src1Ref);
+							auto src2Id = LoadFromSymbol(src2Ref);
+							auto resultId = AllocateId();
+							WriteOp(spv::OpVectorShuffle, resultType, resultId, src1Id, src2Id, 0, 1, 4, 5);
+							StoreToSymbol(dstRef, resultId);
+						}
 						else
 						{
 							assert(false);

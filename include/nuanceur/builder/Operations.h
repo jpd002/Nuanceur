@@ -90,6 +90,7 @@ namespace Nuanceur
 	CFloat4Rvalue NewFloat4(CShaderBuilder& owner, float x, float y, float z, float w);
 	CFloat4Rvalue NewFloat4(const CFloatValue& x, const CFloat3Value& yzw);
 	CFloat4Rvalue NewFloat4(const CFloatValue& x, const CFloatValue& y, const CFloatValue& z, const CFloatValue& w);
+	CFloat4Rvalue NewFloat4(const CFloat2Value& xy, const CFloat2Value& zw);
 	CFloat4Rvalue NewFloat4(const CFloat3Value& xyz, const CFloatValue& w);
 
 	CIntRvalue NewInt(CShaderBuilder& owner, int32 x);

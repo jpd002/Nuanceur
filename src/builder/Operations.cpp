@@ -335,6 +335,16 @@ CFloat4Rvalue Nuanceur::NewFloat4(const CFloatValue& x, const CFloatValue& y, co
 	return temp;
 }
 
+CFloat4Rvalue Nuanceur::NewFloat4(const CFloat2Value& xy, const CFloat2Value& zw)
+{
+	auto owner = GetCommonOwner(xy.symbol, zw.symbol);
+	auto temp = CFloat4Rvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, xy, zw)
+	);
+	return temp;
+}
+
 CFloat4Rvalue Nuanceur::NewFloat4(const CFloat3Value& xyz, const CFloatValue& w)
 {
 	auto owner = GetCommonOwner(xyz.symbol, w.symbol);
