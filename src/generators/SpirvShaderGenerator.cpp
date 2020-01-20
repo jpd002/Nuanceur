@@ -18,27 +18,6 @@ void CSpirvShaderGenerator::Generate(Framework::CStream& outputStream, const CSh
 	generator.Generate();
 }
 
-static bool IsIdentitySwizzle(SWIZZLE_TYPE swizzle)
-{
-	return (swizzle == SWIZZLE_X)   ||
-	       (swizzle == SWIZZLE_XY)  ||
-	       (swizzle == SWIZZLE_XYZ) ||
-	       (swizzle == SWIZZLE_XYZW);
-}
-
-static uint32 GetSwizzleElementCount(SWIZZLE_TYPE swizzle)
-{
-	switch(swizzle)
-	{
-	case SWIZZLE_X:
-	case SWIZZLE_Y:
-		return 1;
-	default:
-		assert(false);
-		return 1;
-	}
-}
-
 static CShaderBuilder::SYMBOL_TYPE GetCommonSymbolType(const CShaderBuilder::SYMBOLREF& op1, const CShaderBuilder::SYMBOLREF& op2)
 {
 	assert(op1.symbol.type == op2.symbol.type);

@@ -51,6 +51,10 @@ namespace Nuanceur
 		SWIZZLE_WWWW,
 	};
 
+	bool IsIdentitySwizzle(SWIZZLE_TYPE);
+	uint32 GetSwizzleElementCount(SWIZZLE_TYPE);
+	SWIZZLE_TYPE TransformSwizzle(SWIZZLE_TYPE, SWIZZLE_TYPE);
+
 	class CShaderBuilder
 	{
 	public:

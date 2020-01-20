@@ -2,6 +2,53 @@
 
 using namespace Nuanceur;
 
+bool Nuanceur::IsIdentitySwizzle(SWIZZLE_TYPE swizzle)
+{
+	return (swizzle == SWIZZLE_X)   ||
+	       (swizzle == SWIZZLE_XY)  ||
+	       (swizzle == SWIZZLE_XYZ) ||
+	       (swizzle == SWIZZLE_XYZW);
+}
+
+uint32 Nuanceur::GetSwizzleElementCount(SWIZZLE_TYPE swizzle)
+{
+	switch(swizzle)
+	{
+	case SWIZZLE_X:
+	case SWIZZLE_Y:
+		return 1;
+	default:
+		assert(false);
+		return 1;
+	}
+}
+
+SWIZZLE_TYPE Nuanceur::TransformSwizzle(SWIZZLE_TYPE a, SWIZZLE_TYPE b)
+{
+	switch(a)
+	{
+	default:
+		assert(false);
+	case SWIZZLE_X:
+	case SWIZZLE_XY:
+	case SWIZZLE_XYZ:
+	case SWIZZLE_XYZW:
+		//Return b if identity
+		return b;
+	case SWIZZLE_ZW:
+		switch(b)
+		{
+		default:
+			assert(false);
+		case SWIZZLE_X:
+			return SWIZZLE_Z;
+		case SWIZZLE_Y:
+			return SWIZZLE_W;
+		}
+		break;
+	}
+}
+
 uint32 CShaderBuilder::GetMetadata(METADATA_TYPE type, uint32 defaultValue) const
 {
 	auto iterator = m_metadata.find(type);

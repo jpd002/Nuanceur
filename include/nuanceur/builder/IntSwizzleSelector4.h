@@ -7,32 +7,6 @@
 
 namespace Nuanceur
 {
-	static SWIZZLE_TYPE TransformSwizzle(SWIZZLE_TYPE a, SWIZZLE_TYPE b)
-	{
-		switch(a)
-		{
-		default:
-			assert(false);
-		case SWIZZLE_X:
-		case SWIZZLE_XY:
-		case SWIZZLE_XYZ:
-		case SWIZZLE_XYZW:
-			//Return b if identity
-			return b;
-		case SWIZZLE_ZW:
-			switch(b)
-			{
-			default:
-				assert(false);
-			case SWIZZLE_X:
-				return SWIZZLE_Z;
-			case SWIZZLE_Y:
-				return SWIZZLE_W;
-			}
-			break;
-		}
-	}
-
 	class CIntSwizzleSelector4
 	{
 	public:
