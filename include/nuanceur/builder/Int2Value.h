@@ -20,7 +20,7 @@ namespace Nuanceur
 		CInt2Value(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_XY)
 			: SYMBOLREF(symbol, swizzle)
 		{
-			m_swizzleSelector = std::make_shared<CIntSwizzleSelector4>(symbol);
+			m_swizzleSelector = std::make_shared<CIntSwizzleSelector4>(*this);
 		}
 
 	private:

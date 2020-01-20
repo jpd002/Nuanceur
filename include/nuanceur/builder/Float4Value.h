@@ -19,6 +19,7 @@ namespace Nuanceur
 	public:
 		CFloatSwizzleSelector4* operator ->()
 		{
+			assert(swizzle == SWIZZLE_XYZW);
 			return m_swizzleSelector.get();
 		}
 
