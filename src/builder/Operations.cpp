@@ -64,6 +64,7 @@ GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_ADD, +, CUint)
 
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_SUBSTRACT, -, CFloat3)
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_SUBSTRACT, -, CFloat4)
+GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_SUBSTRACT, -, CInt)
 
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_MULTIPLY, *, CFloat)
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_MULTIPLY, *, CFloat2)
@@ -233,6 +234,19 @@ void CUintLvalue::operator =(const CUintRvalue& rhs)
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ASSIGN, *this, rhs)
 	);
+}
+
+CIntRvalue Nuanceur::Clamp(const CIntValue& value, const CIntValue& min, const CIntValue& max)
+{
+	CHECK_ISOPERANDVALID(value);
+	CHECK_ISOPERANDVALID(min);
+	CHECK_ISOPERANDVALID(max);
+	auto owner = GetCommonOwner(value.symbol, min.symbol);
+	auto temp = CIntRvalue(owner->CreateTemporaryInt());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_CLAMP, temp, value, min, max)
+	);
+	return temp;
 }
 
 CFloat4Rvalue Nuanceur::Clamp(const CFloat4Value& value, const CFloat4Value& min, const CFloat4Value& max)
