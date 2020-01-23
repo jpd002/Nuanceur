@@ -1612,23 +1612,31 @@ void CSpirvShaderGenerator::Compare(CShaderBuilder::STATEMENT_OP op, const CShad
 			}
 		}();
 
+	static const auto find_if_null =
+		[] (auto beginIterator, auto endIterator, auto matcher)
+		{
+			auto result = std::find_if(beginIterator, endIterator, matcher);
+			return (result == endIterator) ? nullptr : result;
+		};
+
 	const auto compareOp =
 		[&]() -> const CompareOpPair*
 		{
 			switch(symbolType)
 			{
 			case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
-				return std::find_if(std::begin(floatCompareOps), std::end(floatCompareOps), opMatcher);
+				return find_if_null(std::begin(floatCompareOps), std::end(floatCompareOps), opMatcher);
 			case CShaderBuilder::SYMBOL_TYPE_INT4:
-				return std::find_if(std::begin(intCompareOps), std::end(intCompareOps), opMatcher);
+				return find_if_null(std::begin(intCompareOps), std::end(intCompareOps), opMatcher);
 			case CShaderBuilder::SYMBOL_TYPE_UINT4:
-				return std::find_if(std::begin(uintCompareOps), std::end(uintCompareOps), opMatcher);
+				return find_if_null(std::begin(uintCompareOps), std::end(uintCompareOps), opMatcher);
 			default:
 				assert(false);
 				return nullptr;
 			}
 		}();
 	auto opType = compareOp ? compareOp->second : spv::OpNop;
+	assert(opType != spv::OpNop);
 
 	auto src1ScalarId = AllocateId();
 	auto src2ScalarId = AllocateId();
