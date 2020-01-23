@@ -47,6 +47,19 @@ using namespace Nuanceur;
 		return temp; \
 	}
 
+#define GENERATE_VECTOR_COMPARE_OP(StatementOp, Operator, VectorType) \
+	CBoolRvalue Nuanceur::operator Operator(const VectorType##Value& lhs, const VectorType##Value& rhs) \
+	{ \
+		CHECK_ISOPERANDVALID(lhs); \
+		CHECK_ISOPERANDVALID(rhs); \
+		auto owner = GetCommonOwner(lhs.symbol, rhs.symbol); \
+		auto temp = CBoolRvalue(owner->CreateTemporaryBool()); \
+		owner->InsertStatement( \
+			CShaderBuilder::STATEMENT(CShaderBuilder::StatementOp, temp, lhs, rhs) \
+		); \
+		return temp; \
+	}
+
 static CShaderBuilder* GetCommonOwner(const CShaderBuilder::SYMBOL& symbol1, const CShaderBuilder::SYMBOL& symbol2)
 {
 	assert(symbol1.owner != nullptr);
@@ -95,6 +108,15 @@ GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_OR, |, CUint)
 
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_XOR, ^, CUint)
 
+GENERATE_VECTOR_COMPARE_OP(STATEMENT_OP_COMPARE_EQ, ==, CFloat)
+GENERATE_VECTOR_COMPARE_OP(STATEMENT_OP_COMPARE_LT, <, CFloat)
+
+GENERATE_VECTOR_COMPARE_OP(STATEMENT_OP_COMPARE_GE, >=, CInt)
+
+GENERATE_VECTOR_COMPARE_OP(STATEMENT_OP_COMPARE_EQ, ==, CUint)
+GENERATE_VECTOR_COMPARE_OP(STATEMENT_OP_COMPARE_GE, >, CUint)
+GENERATE_VECTOR_COMPARE_OP(STATEMENT_OP_COMPARE_GT, >=, CUint)
+
 CFloat4Rvalue Nuanceur::operator *(const CMatrix44Value& lhs, const CFloat4Value& rhs)
 {
 	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
@@ -112,66 +134,6 @@ CUintRvalue Nuanceur::operator ~(const CUintValue& lhs)
 	auto temp = CUintRvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NOT, temp, lhs)
-	);
-	return temp;
-}
-
-CBoolRvalue Nuanceur::operator ==(const CFloatValue& lhs, const CFloatValue& rhs)
-{
-	CHECK_ISOPERANDVALID(lhs);
-	CHECK_ISOPERANDVALID(rhs);
-	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
-	auto temp = CBoolRvalue(owner->CreateTemporaryBool());
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_COMPARE_EQ, temp, lhs, rhs)
-	);
-	return temp;
-}
-
-CBoolRvalue Nuanceur::operator <(const CFloatValue& lhs, const CFloatValue& rhs)
-{
-	CHECK_ISOPERANDVALID(lhs);
-	CHECK_ISOPERANDVALID(rhs);
-	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
-	auto temp = CBoolRvalue(owner->CreateTemporaryBool());
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_COMPARE_LT, temp, lhs, rhs)
-	);
-	return temp;
-}
-
-CBoolRvalue Nuanceur::operator >=(const CIntValue& lhs, const CIntValue& rhs)
-{
-	CHECK_ISOPERANDVALID(lhs);
-	CHECK_ISOPERANDVALID(rhs);
-	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
-	auto temp = CBoolRvalue(owner->CreateTemporaryBool());
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_COMPARE_GE, temp, lhs, rhs)
-	);
-	return temp;
-}
-
-CBoolRvalue Nuanceur::operator >(const CUintValue& lhs, const CUintValue& rhs)
-{
-	CHECK_ISOPERANDVALID(lhs);
-	CHECK_ISOPERANDVALID(rhs);
-	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
-	auto temp = CBoolRvalue(owner->CreateTemporaryBool());
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_COMPARE_GT, temp, lhs, rhs)
-	);
-	return temp;
-}
-
-CBoolRvalue Nuanceur::operator >=(const CUintValue& lhs, const CUintValue& rhs)
-{
-	CHECK_ISOPERANDVALID(lhs);
-	CHECK_ISOPERANDVALID(rhs);
-	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
-	auto temp = CBoolRvalue(owner->CreateTemporaryBool());
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_COMPARE_GE, temp, lhs, rhs)
 	);
 	return temp;
 }

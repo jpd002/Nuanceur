@@ -1586,6 +1586,7 @@ void CSpirvShaderGenerator::Compare(CShaderBuilder::STATEMENT_OP op, const CShad
 
 	static const CompareOpPair uintCompareOps[] =
 	{
+		{ CShaderBuilder::STATEMENT_OP_COMPARE_EQ, spv::OpIEqual },
 		{ CShaderBuilder::STATEMENT_OP_COMPARE_GT, spv::OpUGreaterThan },
 		{ CShaderBuilder::STATEMENT_OP_COMPARE_GE, spv::OpUGreaterThanEqual },
 	};
