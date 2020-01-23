@@ -34,6 +34,9 @@ namespace Nuanceur
 	class CBoolRvalue : public CBoolValue
 	{
 	private:
+		friend CBoolRvalue operator &&(const CBoolValue&, const CBoolValue&);
+		friend CBoolRvalue operator ||(const CBoolValue&, const CBoolValue&);
+		friend CBoolRvalue operator !(const CBoolValue&);
 		friend CBoolRvalue operator ==(const CFloatValue&, const CFloatValue&);
 		friend CBoolRvalue operator <(const CFloatValue&, const CFloatValue&);
 		friend CBoolRvalue operator >=(const CIntValue&, const CIntValue&);

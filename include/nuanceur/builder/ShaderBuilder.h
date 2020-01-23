@@ -155,6 +155,9 @@ namespace Nuanceur
 			STATEMENT_OP_NOT,
 			STATEMENT_OP_LSHIFT,
 			STATEMENT_OP_RSHIFT,
+			STATEMENT_OP_LOGICAL_AND,
+			STATEMENT_OP_LOGICAL_OR,
+			STATEMENT_OP_LOGICAL_NOT,
 			STATEMENT_OP_COMPARE_EQ,
 			STATEMENT_OP_COMPARE_LT,
 			STATEMENT_OP_COMPARE_GT,
@@ -267,6 +270,7 @@ namespace Nuanceur
 		SYMBOL					CreateConstantBool(bool);
 		
 		SYMBOL					CreateVariableFloat(const std::string&);
+		SYMBOL					CreateVariableBool(const std::string&);
 
 		SYMBOL					CreateTemporary();
 		SYMBOL					CreateTemporaryBool();

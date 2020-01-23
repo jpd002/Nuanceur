@@ -138,6 +138,41 @@ CUintRvalue Nuanceur::operator ~(const CUintValue& lhs)
 	return temp;
 }
 
+CBoolRvalue Nuanceur::operator &&(const CBoolValue& lhs, const CBoolValue& rhs)
+{
+	CHECK_ISOPERANDVALID(lhs);
+	CHECK_ISOPERANDVALID(rhs);
+	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
+	auto temp = CBoolRvalue(owner->CreateTemporaryBool());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOGICAL_AND, temp, lhs, rhs)
+	);
+	return temp;
+}
+
+CBoolRvalue Nuanceur::operator ||(const CBoolValue& lhs, const CBoolValue& rhs)
+{
+	CHECK_ISOPERANDVALID(lhs);
+	CHECK_ISOPERANDVALID(rhs);
+	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
+	auto temp = CBoolRvalue(owner->CreateTemporaryBool());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOGICAL_OR, temp, lhs, rhs)
+	);
+	return temp;
+}
+
+CBoolRvalue Nuanceur::operator !(const CBoolValue& lhs)
+{
+	CHECK_ISOPERANDVALID(lhs);
+	auto owner = lhs.symbol.owner;
+	auto temp = CBoolRvalue(owner->CreateTemporaryBool());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOGICAL_NOT, temp, lhs)
+	);
+	return temp;
+}
+
 void CBoolLvalue::operator =(const CBoolRvalue& rhs)
 {
 	CHECK_ISOPERANDVALID(*this);
