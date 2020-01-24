@@ -78,6 +78,7 @@ namespace Nuanceur
 	CBoolRvalue operator >=(const CIntValue& lhs, const CIntValue& rhs);
 
 	CBoolRvalue operator ==(const CUintValue& lhs, const CUintValue& rhs);
+	CBoolRvalue operator !=(const CUintValue& lhs, const CUintValue& rhs);
 	CBoolRvalue operator >(const CUintValue& lhs, const CUintValue& rhs);
 	CBoolRvalue operator >=(const CUintValue& lhs, const CUintValue& rhs);
 
