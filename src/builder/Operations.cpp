@@ -60,6 +60,17 @@ using namespace Nuanceur;
 		return temp; \
 	}
 
+#define GENERATE_VECTOR_ASSIGN(VectorType) \
+	void VectorType##Lvalue::operator =(const VectorType##Rvalue& rhs) \
+	{ \
+		CHECK_ISOPERANDVALID(*this); \
+		CHECK_ISOPERANDVALID(rhs); \
+		auto owner = rhs.symbol.owner; \
+		owner->InsertStatement( \
+			CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ASSIGN, *this, rhs) \
+		); \
+	}
+
 static CShaderBuilder* GetCommonOwner(const CShaderBuilder::SYMBOL& symbol1, const CShaderBuilder::SYMBOL& symbol2)
 {
 	assert(symbol1.owner != nullptr);
@@ -73,6 +84,7 @@ GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_ADD, +, CFloat2)
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_ADD, +, CFloat3)
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_ADD, +, CFloat4)
 GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_ADD, +, CInt)
+GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_ADD, +, CInt2)
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_ADD, +, CUint)
 
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_SUBSTRACT, -, CFloat3)
@@ -117,6 +129,14 @@ GENERATE_VECTOR_COMPARE_OP(STATEMENT_OP_COMPARE_EQ, ==, CUint)
 GENERATE_VECTOR_COMPARE_OP(STATEMENT_OP_COMPARE_NE, !=, CUint)
 GENERATE_VECTOR_COMPARE_OP(STATEMENT_OP_COMPARE_GT, >, CUint)
 GENERATE_VECTOR_COMPARE_OP(STATEMENT_OP_COMPARE_GE, >=, CUint)
+
+GENERATE_VECTOR_ASSIGN(CBool)
+GENERATE_VECTOR_ASSIGN(CFloat)
+GENERATE_VECTOR_ASSIGN(CFloat2)
+GENERATE_VECTOR_ASSIGN(CFloat4)
+GENERATE_VECTOR_ASSIGN(CInt)
+GENERATE_VECTOR_ASSIGN(CInt2)
+GENERATE_VECTOR_ASSIGN(CUint)
 
 CFloat4Rvalue Nuanceur::operator *(const CMatrix44Value& lhs, const CFloat4Value& rhs)
 {
@@ -172,66 +192,6 @@ CBoolRvalue Nuanceur::operator !(const CBoolValue& lhs)
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOGICAL_NOT, temp, lhs)
 	);
 	return temp;
-}
-
-void CBoolLvalue::operator =(const CBoolRvalue& rhs)
-{
-	CHECK_ISOPERANDVALID(*this);
-	CHECK_ISOPERANDVALID(rhs);
-	auto owner = rhs.symbol.owner;
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ASSIGN, *this, rhs)
-	);
-}
-
-void CFloatLvalue::operator =(const CFloatRvalue& rhs)
-{
-	CHECK_ISOPERANDVALID(*this);
-	CHECK_ISOPERANDVALID(rhs);
-	auto owner = rhs.symbol.owner;
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ASSIGN, *this, rhs)
-	);
-}
-
-void CFloat2Lvalue::operator =(const CFloat2Rvalue& rhs)
-{
-	CHECK_ISOPERANDVALID(*this);
-	CHECK_ISOPERANDVALID(rhs);
-	auto owner = rhs.symbol.owner;
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ASSIGN, *this, rhs)
-	);
-}
-
-void CFloat4Lvalue::operator =(const CFloat4Rvalue& rhs)
-{
-	CHECK_ISOPERANDVALID(*this);
-	CHECK_ISOPERANDVALID(rhs);
-	auto owner = rhs.symbol.owner;
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ASSIGN, *this, rhs)
-	);
-}
-
-void CIntLvalue::operator =(const CIntRvalue& rhs)
-{
-	CHECK_ISOPERANDVALID(*this);
-	CHECK_ISOPERANDVALID(rhs);
-	auto owner = rhs.symbol.owner;
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ASSIGN, *this, rhs)
-	);
-}
-
-void CUintLvalue::operator =(const CUintRvalue& rhs)
-{
-	CHECK_ISOPERANDVALID(*this);
-	CHECK_ISOPERANDVALID(rhs);
-	auto owner = rhs.symbol.owner;
-	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ASSIGN, *this, rhs)
-	);
 }
 
 CIntRvalue Nuanceur::Clamp(const CIntValue& value, const CIntValue& min, const CIntValue& max)
