@@ -87,6 +87,7 @@ namespace Nuanceur
 	CFloat4Rvalue Clamp(const CFloat4Value&, const CFloat4Value&, const CFloat4Value&);
 	CIntRvalue Clamp(const CIntValue&, const CIntValue&, const CIntValue&);
 	CFloatRvalue Mix(const CFloatValue&, const CFloatValue&, const CFloatValue&);
+	CFloat3Rvalue Mix(const CFloat3Value&, const CFloat3Value&, const CFloat3Value&);
 	CFloat4Rvalue Normalize(const CFloat4Value& rhs);
 	CFloatRvalue Saturate(const CFloatValue& rhs);
 

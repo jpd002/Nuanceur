@@ -234,6 +234,19 @@ CFloatRvalue Nuanceur::Mix(const CFloatValue& x, const CFloatValue& y, const CFl
 	return temp;
 }
 
+CFloat3Rvalue Nuanceur::Mix(const CFloat3Value& x, const CFloat3Value& y, const CFloat3Value& a)
+{
+	CHECK_ISOPERANDVALID(x);
+	CHECK_ISOPERANDVALID(y);
+	CHECK_ISOPERANDVALID(a);
+	auto owner = GetCommonOwner(x.symbol, y.symbol);
+	auto temp = CFloat3Rvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MIX, temp, x, y, a)
+	);
+	return temp;
+}
+
 CFloat4Rvalue Nuanceur::Normalize(const CFloat4Value& rhs)
 {
 	auto owner = rhs.symbol.owner;
