@@ -440,6 +440,7 @@ void CSpirvShaderGenerator::Generate()
 			case CShaderBuilder::STATEMENT_OP_COMPARE_EQ:
 			case CShaderBuilder::STATEMENT_OP_COMPARE_NE:
 			case CShaderBuilder::STATEMENT_OP_COMPARE_LT:
+			case CShaderBuilder::STATEMENT_OP_COMPARE_LE:
 			case CShaderBuilder::STATEMENT_OP_COMPARE_GT:
 			case CShaderBuilder::STATEMENT_OP_COMPARE_GE:
 				Compare(statement.op, dstRef, src1Ref, src2Ref);
@@ -1633,6 +1634,7 @@ void CSpirvShaderGenerator::Compare(CShaderBuilder::STATEMENT_OP op, const CShad
 		{ CShaderBuilder::STATEMENT_OP_COMPARE_EQ, spv::OpIEqual },
 		{ CShaderBuilder::STATEMENT_OP_COMPARE_NE, spv::OpINotEqual },
 		{ CShaderBuilder::STATEMENT_OP_COMPARE_LT, spv::OpULessThan },
+		{ CShaderBuilder::STATEMENT_OP_COMPARE_LE, spv::OpULessThanEqual },
 		{ CShaderBuilder::STATEMENT_OP_COMPARE_GT, spv::OpUGreaterThan },
 		{ CShaderBuilder::STATEMENT_OP_COMPARE_GE, spv::OpUGreaterThanEqual },
 	};
