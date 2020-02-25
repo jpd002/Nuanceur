@@ -180,14 +180,14 @@ std::string CHlslShaderGenerator::Generate(const std::string& methodName) const
 				assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_TEXTURE2D);
 				result += string_format("\t%s = tex2D(c_sampler%d, %s);\r\n",
 					PrintSymbolRef(dstRef).c_str(),
-					src1Ref.symbol.index,
+					src1Ref.symbol.unit,
 					PrintSymbolRef(src2Ref).c_str());
 			}
 			else
 			{
 				result += string_format("\t%s = c_texture%d.Sample(c_sampler%d, %s);\r\n",
 					PrintSymbolRef(dstRef).c_str(),
-					src1Ref.symbol.index, src1Ref.symbol.index,
+					src1Ref.symbol.unit, src1Ref.symbol.unit,
 					PrintSymbolRef(src2Ref).c_str());
 			}
 			break;
@@ -262,9 +262,9 @@ std::string CHlslShaderGenerator::GenerateSamplers() const
 		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_TEXTURE) continue;
 		result += string_format("%s c_texture%d : register(t%d);\r\n",
 			MakeTypeName(symbol.type).c_str(),
-			symbol.index, symbol.index);
+			symbol.unit, symbol.unit);
 		result += string_format("SamplerState c_sampler%d : register(s%d);\r\n",
-			symbol.index, symbol.index);
+			symbol.unit, symbol.unit);
 	}
 	return result;
 }
