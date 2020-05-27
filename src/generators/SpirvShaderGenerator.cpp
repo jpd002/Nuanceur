@@ -68,6 +68,7 @@ void CSpirvShaderGenerator::Generate()
 	m_inputUint4PointerTypeId = AllocateId();
 	m_outputFloat4PointerTypeId = AllocateId();
 	m_functionFloat4PointerTypeId = AllocateId();
+	m_functionInt4PointerTypeId = AllocateId();
 	m_functionBoolPointerTypeId = AllocateId();
 	auto outputPerVertexStructPointerTypeId = AllocateId();
 
@@ -219,6 +220,7 @@ void CSpirvShaderGenerator::Generate()
 	WriteOp(spv::OpTypePointer, m_inputUint4PointerTypeId, spv::StorageClassInput, m_uint4TypeId);
 	WriteOp(spv::OpTypePointer, m_outputFloat4PointerTypeId, spv::StorageClassOutput, m_float4TypeId);
 	WriteOp(spv::OpTypePointer, m_functionFloat4PointerTypeId, spv::StorageClassFunction, m_float4TypeId);
+	WriteOp(spv::OpTypePointer, m_functionInt4PointerTypeId, spv::StorageClassFunction, m_int4TypeId);
 	WriteOp(spv::OpTypePointer, m_functionBoolPointerTypeId, spv::StorageClassFunction, m_boolTypeId);
 	
 	if(m_shaderType == SHADER_TYPE_VERTEX)
@@ -406,6 +408,9 @@ void CSpirvShaderGenerator::Generate()
 				break;
 			case CShaderBuilder::STATEMENT_OP_CLAMP:
 				Clamp(dstRef, src1Ref, src2Ref, src3Ref);
+				break;
+			case CShaderBuilder::STATEMENT_OP_FRACT:
+				Fract(dstRef, src1Ref);
 				break;
 			case CShaderBuilder::STATEMENT_OP_MIX:
 				Mix(dstRef, src1Ref, src2Ref, src3Ref);
@@ -964,6 +969,9 @@ void CSpirvShaderGenerator::DeclareVariablePointerIds()
 		case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
 			WriteOp(spv::OpVariable, m_functionFloat4PointerTypeId, pointerId, spv::StorageClassFunction);
 			break;
+		case CShaderBuilder::SYMBOL_TYPE_INT4:
+			WriteOp(spv::OpVariable, m_functionInt4PointerTypeId, pointerId, spv::StorageClassFunction);
+			break;
 		case CShaderBuilder::SYMBOL_TYPE_BOOL:
 			WriteOp(spv::OpVariable, m_functionBoolPointerTypeId, pointerId, spv::StorageClassFunction);
 			break;
@@ -1299,6 +1307,9 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 			case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
 				WriteOp(spv::OpLoad, m_float4TypeId, srcId, pointerId);
 				break;
+			case CShaderBuilder::SYMBOL_TYPE_INT4:
+				WriteOp(spv::OpLoad, m_int4TypeId, srcId, pointerId);
+				break;
 			case CShaderBuilder::SYMBOL_TYPE_BOOL:
 				WriteOp(spv::OpLoad, m_boolTypeId, srcId, pointerId);
 				break;
@@ -1363,6 +1374,12 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 			components[0] = 3;
 			components[1] = 3;
 			components[2] = 3;
+			break;
+		case SWIZZLE_XXXX:
+			components[0] = 0;
+			components[1] = 0;
+			components[2] = 0;
+			components[3] = 0;
 			break;
 		case SWIZZLE_WWWW:
 			components[0] = 3;
@@ -1591,6 +1608,18 @@ void CSpirvShaderGenerator::Clamp(const CShaderBuilder::SYMBOLREF& dstRef, const
 		assert(false);
 		break;
 	}
+
+	StoreToSymbol(dstRef, resultId);
+}
+
+void CSpirvShaderGenerator::Fract(const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref)
+{
+	assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
+
+	auto src1Id = LoadFromSymbol(src1Ref);
+	auto resultId = AllocateId();
+
+	WriteOp(spv::OpExtInst, m_float4TypeId, resultId, m_glslStd450ExtInst, GLSLstd450::GLSLstd450Fract, src1Id);
 
 	StoreToSymbol(dstRef, resultId);
 }
