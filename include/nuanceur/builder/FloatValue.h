@@ -49,6 +49,7 @@ namespace Nuanceur
 		friend CFloatSwizzleSelector;
 		friend CFloatSwizzleSelector4;
 		friend CFloatRvalue operator +(const CFloatValue&, const CFloatValue&);
+		friend CFloatRvalue operator -(const CFloatValue&, const CFloatValue&);
 		friend CFloatRvalue operator *(const CFloatValue&, const CFloatValue&);
 		friend CFloatRvalue operator /(const CFloatValue&, const CFloatValue&);
 		friend CFloatRvalue Mix(const CFloatValue&, const CFloatValue&, const CFloatValue&);

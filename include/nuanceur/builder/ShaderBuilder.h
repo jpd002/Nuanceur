@@ -169,6 +169,7 @@ namespace Nuanceur
 			STATEMENT_OP_POW,
 			STATEMENT_OP_NEGATE,
 			STATEMENT_OP_CLAMP,
+			STATEMENT_OP_FRACT,
 			STATEMENT_OP_MIX,
 			STATEMENT_OP_NORMALIZE,
 			STATEMENT_OP_SATURATE,
@@ -272,6 +273,7 @@ namespace Nuanceur
 		SYMBOL					CreateConstantBool(bool);
 		
 		SYMBOL					CreateVariableFloat(const std::string&);
+		SYMBOL					CreateVariableInt(const std::string&);
 		SYMBOL					CreateVariableBool(const std::string&);
 
 		SYMBOL					CreateTemporary();

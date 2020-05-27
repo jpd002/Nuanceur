@@ -29,6 +29,7 @@ namespace Nuanceur
 	CInt2Rvalue operator +(const CInt2Value& lhs, const CInt2Value& rhs);
 	CUintRvalue operator +(const CUintValue& lhs, const CUintValue& rhs);
 
+	CFloatRvalue operator -(const CFloatValue& lhs, const CFloatValue& rhs);
 	CFloat3Rvalue operator -(const CFloat3Value& lhs, const CFloat3Value& rhs);
 	CFloat4Rvalue operator -(const CFloat4Value& lhs, const CFloat4Value& rhs);
 	CIntRvalue operator -(const CIntValue& lhs, const CIntValue& rhs);
@@ -87,6 +88,7 @@ namespace Nuanceur
 
 	CFloat4Rvalue Clamp(const CFloat4Value&, const CFloat4Value&, const CFloat4Value&);
 	CIntRvalue Clamp(const CIntValue&, const CIntValue&, const CIntValue&);
+	CFloat2Rvalue Fract(const CFloat2Value&);
 	CFloatRvalue Mix(const CFloatValue&, const CFloatValue&, const CFloatValue&);
 	CFloat3Rvalue Mix(const CFloat3Value&, const CFloat3Value&, const CFloat3Value&);
 	CFloat4Rvalue Normalize(const CFloat4Value& rhs);

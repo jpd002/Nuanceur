@@ -87,6 +87,7 @@ GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_ADD, +, CInt)
 GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_ADD, +, CInt2)
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_ADD, +, CUint)
 
+GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_SUBSTRACT, -, CFloat)
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_SUBSTRACT, -, CFloat3)
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_SUBSTRACT, -, CFloat4)
 GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_SUBSTRACT, -, CInt)
@@ -219,6 +220,16 @@ CFloat4Rvalue Nuanceur::Clamp(const CFloat4Value& value, const CFloat4Value& min
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_CLAMP, temp, value, min, max)
 	);
+	return temp;
+}
+
+CFloat2Rvalue Nuanceur::Fract(const CFloat2Value& value)
+{
+	CHECK_ISOPERANDVALID(value);
+	auto owner = value.symbol.owner;
+	auto temp = CFloat2Rvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_FRACT, temp, value));
 	return temp;
 }
 

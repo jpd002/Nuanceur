@@ -26,6 +26,11 @@ namespace Nuanceur
 			return CFloat3Rvalue(m_symbol, SWIZZLE_XXX);
 		}
 
+		CFloat4Rvalue xxxx() const
+		{
+			return CFloat4Rvalue(m_symbol, SWIZZLE_XXXX);
+		}
+
 	private:
 		CShaderBuilder::SYMBOL m_symbol;
 	};

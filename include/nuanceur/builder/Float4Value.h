@@ -11,6 +11,7 @@ namespace Nuanceur
 	class CFloat4Rvalue;
 	class CTexture2DValue;
 	class CMatrix44Value;
+	class CFloatSwizzleSelector;
 	class CFloatSwizzleSelector4;
 	class CUint4Value;
 
@@ -50,6 +51,7 @@ namespace Nuanceur
 	class CFloat4Rvalue : public CFloat4Value
 	{
 	private:
+		friend CFloatSwizzleSelector;
 		friend CFloatSwizzleSelector4;
 		friend CFloat4Rvalue operator +(const CFloat4Value&, const CFloat4Value&);
 		friend CFloat4Rvalue operator -(const CFloat4Value&, const CFloat4Value&);
