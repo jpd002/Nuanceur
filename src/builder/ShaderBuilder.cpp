@@ -223,6 +223,20 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateVariableInt(const std::string& name
 	return sym;
 }
 
+CShaderBuilder::SYMBOL CShaderBuilder::CreateVariableUint(const std::string& name)
+{
+	SYMBOL sym;
+	sym.owner = this;
+	sym.index = m_currentVariableIndex++;
+	sym.type = SYMBOL_TYPE_UINT4;
+	sym.location = SYMBOL_LOCATION_VARIABLE;
+	m_symbols.push_back(sym);
+
+	m_variableNames.insert(std::make_pair(sym.index, name));
+
+	return sym;
+}
+
 CShaderBuilder::SYMBOL CShaderBuilder::CreateVariableBool(const std::string& name)
 {
 	SYMBOL sym;

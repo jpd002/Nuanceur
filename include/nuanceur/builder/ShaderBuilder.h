@@ -274,6 +274,7 @@ namespace Nuanceur
 		
 		SYMBOL					CreateVariableFloat(const std::string&);
 		SYMBOL					CreateVariableInt(const std::string&);
+		SYMBOL					CreateVariableUint(const std::string&);
 		SYMBOL					CreateVariableBool(const std::string&);
 
 		SYMBOL					CreateTemporary();

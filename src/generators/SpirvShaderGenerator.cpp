@@ -69,6 +69,7 @@ void CSpirvShaderGenerator::Generate()
 	m_outputFloat4PointerTypeId = AllocateId();
 	m_functionFloat4PointerTypeId = AllocateId();
 	m_functionInt4PointerTypeId = AllocateId();
+	m_functionUint4PointerTypeId = AllocateId();
 	m_functionBoolPointerTypeId = AllocateId();
 	auto outputPerVertexStructPointerTypeId = AllocateId();
 
@@ -221,6 +222,7 @@ void CSpirvShaderGenerator::Generate()
 	WriteOp(spv::OpTypePointer, m_outputFloat4PointerTypeId, spv::StorageClassOutput, m_float4TypeId);
 	WriteOp(spv::OpTypePointer, m_functionFloat4PointerTypeId, spv::StorageClassFunction, m_float4TypeId);
 	WriteOp(spv::OpTypePointer, m_functionInt4PointerTypeId, spv::StorageClassFunction, m_int4TypeId);
+	WriteOp(spv::OpTypePointer, m_functionUint4PointerTypeId, spv::StorageClassFunction, m_uint4TypeId);
 	WriteOp(spv::OpTypePointer, m_functionBoolPointerTypeId, spv::StorageClassFunction, m_boolTypeId);
 	
 	if(m_shaderType == SHADER_TYPE_VERTEX)
@@ -972,6 +974,9 @@ void CSpirvShaderGenerator::DeclareVariablePointerIds()
 		case CShaderBuilder::SYMBOL_TYPE_INT4:
 			WriteOp(spv::OpVariable, m_functionInt4PointerTypeId, pointerId, spv::StorageClassFunction);
 			break;
+		case CShaderBuilder::SYMBOL_TYPE_UINT4:
+			WriteOp(spv::OpVariable, m_functionUint4PointerTypeId, pointerId, spv::StorageClassFunction);
+			break;
 		case CShaderBuilder::SYMBOL_TYPE_BOOL:
 			WriteOp(spv::OpVariable, m_functionBoolPointerTypeId, pointerId, spv::StorageClassFunction);
 			break;
@@ -1309,6 +1314,9 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 				break;
 			case CShaderBuilder::SYMBOL_TYPE_INT4:
 				WriteOp(spv::OpLoad, m_int4TypeId, srcId, pointerId);
+				break;
+			case CShaderBuilder::SYMBOL_TYPE_UINT4:
+				WriteOp(spv::OpLoad, m_uint4TypeId, srcId, pointerId);
 				break;
 			case CShaderBuilder::SYMBOL_TYPE_BOOL:
 				WriteOp(spv::OpLoad, m_boolTypeId, srcId, pointerId);
