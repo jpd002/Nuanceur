@@ -188,8 +188,11 @@ namespace Nuanceur
 		uint32 m_float4TypeId = EMPTY_ID;
 		uint32 m_matrix44TypeId = EMPTY_ID;
 
+		// integer data type
 		uint32 m_intTypeId = EMPTY_ID;
 		uint32 m_uintTypeId = EMPTY_ID;
+
+		// vector data type
 		uint32 m_int2TypeId = EMPTY_ID;
 		uint32 m_int3TypeId = EMPTY_ID;
 		uint32 m_int4TypeId = EMPTY_ID;
