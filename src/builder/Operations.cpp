@@ -475,6 +475,22 @@ void Nuanceur::Store(const CArrayUintValue& buffer, const CIntValue& index, cons
 	);
 }
 
+void Nuanceur::Store(const CArrayUint8Value& buffer, const CIntValue& index, const CUint16Value& value)
+{
+	auto owner = GetCommonOwner(buffer.symbol, index.symbol);
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_STORE16, CShaderBuilder::SYMBOLREF(), buffer, index, value)
+	);
+}
+
+void Nuanceur::Store(const CArrayUint8Value& buffer, const CIntValue& index, const CUint8Value& value)
+{
+	auto owner = GetCommonOwner(buffer.symbol, index.symbol);
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_STORE8, CShaderBuilder::SYMBOLREF(), buffer, index, value)
+	);
+}
+
 CUintRvalue Nuanceur::AtomicAnd(const CArrayUintValue& buffer, const CIntValue& index, const CUintValue& value)
 {
 	auto owner = GetCommonOwner(buffer.symbol, index.symbol);
@@ -571,6 +587,26 @@ CUintRvalue Nuanceur::ToUint(const CIntValue& rhs)
 	auto temp = CUintRvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUINT, temp, rhs)
+	);
+	return temp;
+}
+
+CUint16Rvalue Nuanceur::ToUint16(const CUintValue& rhs)
+{
+	auto owner = rhs.symbol.owner;
+	auto temp = CUint16Rvalue(owner->CreateTemporaryUint());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUINT16, temp, rhs)
+	);
+	return temp;
+}
+
+CUint8Rvalue Nuanceur::ToUint8(const CUintValue& rhs)
+{
+	auto owner = rhs.symbol.owner;
+	auto temp = CUint8Rvalue(owner->CreateTemporaryUint());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUINT8, temp, rhs)
 	);
 	return temp;
 }

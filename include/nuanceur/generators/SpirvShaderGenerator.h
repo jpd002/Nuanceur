@@ -162,6 +162,8 @@ namespace Nuanceur
 			const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Load(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Store(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
+		void Store16(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
+		void Store8(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 
 		enum
 		{
@@ -241,6 +243,7 @@ namespace Nuanceur
 		SHADER_TYPE m_shaderType = SHADER_TYPE_VERTEX;
 
 		bool m_hasTextures = false;
+		bool m_has8BitInt = false;
 		std::map<uint32, STRUCTINFO> m_structInfos;
 		std::map<uint32, uint32> m_inputPointerIds;
 		std::map<uint32, uint32> m_outputPointerIds;
