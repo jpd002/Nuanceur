@@ -54,11 +54,22 @@ void CSpirvShaderGenerator::Generate()
 	m_boolTypeId = AllocateId();
 	m_floatTypeId = AllocateId();
 	m_float4TypeId = AllocateId();
+
 	m_uintTypeId = AllocateId();
+	m_uint16TypeId = AllocateId();
+	m_uint8TypeId = AllocateId();
+
 	m_uint4TypeId = AllocateId();
 	m_matrix44TypeId = AllocateId();
+
 	m_uintArrayTypeId = AllocateId();
+	m_uint16ArrayTypeId = AllocateId();
+	m_uint8ArrayTypeId = AllocateId();
+
 	m_intTypeId = AllocateId();
+	m_int16TypeId = AllocateId();
+	m_int8TypeId = AllocateId();
+
 	m_int2TypeId = AllocateId();
 	m_int3TypeId = AllocateId();
 	m_int4TypeId = AllocateId();
@@ -82,6 +93,8 @@ void CSpirvShaderGenerator::Generate()
 
 		m_uniformInt4PointerTypeId = AllocateId();
 		m_uniformUintPtrId = AllocateId();
+		m_uniformUint16PtrId = AllocateId();
+		m_uniformUint8PtrId = AllocateId();
 	}
 
 	if(m_hasTextures)
@@ -109,11 +122,24 @@ void CSpirvShaderGenerator::Generate()
 	auto mainFunctionLabelId = AllocateId();
 
 	WriteOp(spv::OpCapability, spv::CapabilityShader);
+	WriteOp(spv::OpCapability, spv::CapabilityInt8);
+	WriteOp(spv::OpCapability, spv::CapabilityStorageBuffer8BitAccess);
+	WriteOp(spv::OpCapability, spv::CapabilityUniformAndStorageBuffer8BitAccess);
+	WriteOp(spv::OpCapability, spv::CapabilityStoragePushConstant8);
+
+	WriteOp(spv::OpCapability, spv::CapabilityInt16);
+	WriteOp(spv::OpCapability, spv::CapabilityStorageBuffer16BitAccess);
+	WriteOp(spv::OpCapability, spv::CapabilityUniformAndStorageBuffer16BitAccess);
+	WriteOp(spv::OpCapability, spv::CapabilityStoragePushConstant16);
+
 	if(hasInvocationInterlock)
 	{
 		WriteOp(spv::OpCapability, spv::CapabilityFragmentShaderPixelInterlockEXT);
 		WriteOp(spv::OpExtension, "SPV_EXT_fragment_shader_interlock");
 	}
+	WriteOp(spv::OpExtension, "SPV_KHR_storage_buffer_storage_class");
+	WriteOp(spv::OpExtension, "SPV_KHR_8bit_storage");
+	WriteOp(spv::OpExtension, "SPV_KHR_16bit_storage");
 	WriteOp(spv::OpExtInstImport, m_glslStd450ExtInst, "GLSL.std.450");
 	WriteOp(spv::OpMemoryModel, spv::AddressingModelLogical, spv::MemoryModelGLSL450);
 
@@ -203,6 +229,8 @@ void CSpirvShaderGenerator::Generate()
 	DecorateOutputPointerIds();
 
 	WriteOp(spv::OpDecorate, m_uintArrayTypeId, spv::DecorationArrayStride, 4); //Make this optional
+	WriteOp(spv::OpDecorate, m_uint8ArrayTypeId, spv::DecorationArrayStride, 1);
+	WriteOp(spv::OpDecorate, m_uint16ArrayTypeId, spv::DecorationArrayStride, 2);
 
 	//Type declarations
 	WriteOp(spv::OpTypeVoid, voidTypeId);
@@ -212,11 +240,16 @@ void CSpirvShaderGenerator::Generate()
 	WriteOp(spv::OpTypeVector, m_float4TypeId, m_floatTypeId, 4);
 	WriteOp(spv::OpTypeMatrix, m_matrix44TypeId, m_float4TypeId, 4);
 	WriteOp(spv::OpTypeInt, m_intTypeId, 32, 1);
+	WriteOp(spv::OpTypeInt, m_int16TypeId, 16, 1);
+	WriteOp(spv::OpTypeInt, m_int8TypeId, 8, 1);
 	WriteOp(spv::OpTypeVector, m_int2TypeId, m_intTypeId, 2);
 	WriteOp(spv::OpTypeVector, m_int4TypeId, m_intTypeId, 4);
 	WriteOp(spv::OpTypeInt, m_uintTypeId, 32, 0);
+	WriteOp(spv::OpTypeInt, m_uint16TypeId, 16, 0);
+	WriteOp(spv::OpTypeInt, m_uint8TypeId, 8, 0);
 	WriteOp(spv::OpTypeVector, m_uint4TypeId, m_uintTypeId, 4);
 	WriteOp(spv::OpTypeRuntimeArray, m_uintArrayTypeId, m_uintTypeId); //Make this optional
+	WriteOp(spv::OpTypeRuntimeArray, m_uint8ArrayTypeId, m_uint8TypeId);
 	WriteOp(spv::OpTypePointer, m_inputFloat4PointerTypeId, spv::StorageClassInput, m_float4TypeId);
 	WriteOp(spv::OpTypePointer, m_inputUint4PointerTypeId, spv::StorageClassInput, m_uint4TypeId);
 	WriteOp(spv::OpTypePointer, m_outputFloat4PointerTypeId, spv::StorageClassOutput, m_float4TypeId);
@@ -1124,6 +1157,7 @@ void CSpirvShaderGenerator::DeclareUniformStructIds()
 
 	WriteOp(spv::OpTypePointer, m_uniformInt4PointerTypeId, spv::StorageClassUniform, m_int4TypeId);
 	WriteOp(spv::OpTypePointer, m_uniformUintPtrId, spv::StorageClassUniform, m_uintTypeId);
+	WriteOp(spv::OpTypePointer, m_uniformUint8PtrId, spv::StorageClassUniform, m_uint8TypeId);
 }
 
 void CSpirvShaderGenerator::AllocateTextureIds()

@@ -191,6 +191,10 @@ namespace Nuanceur
 		// integer data type
 		uint32 m_intTypeId = EMPTY_ID;
 		uint32 m_uintTypeId = EMPTY_ID;
+		uint32 m_int16TypeId = EMPTY_ID;
+		uint32 m_uint16TypeId = EMPTY_ID;
+		uint32 m_int8TypeId = EMPTY_ID;
+		uint32 m_uint8TypeId = EMPTY_ID;
 
 		// vector data type
 		uint32 m_int2TypeId = EMPTY_ID;
@@ -199,6 +203,8 @@ namespace Nuanceur
 		uint32 m_uint4TypeId = EMPTY_ID;
 
 		uint32 m_uintArrayTypeId = EMPTY_ID;
+		uint32 m_uint8ArrayTypeId = EMPTY_ID;
+		uint32 m_uint16ArrayTypeId = EMPTY_ID;
 
 		uint32 m_inputFloat4PointerTypeId = EMPTY_ID;
 		uint32 m_outputFloat4PointerTypeId = EMPTY_ID;
@@ -217,6 +223,8 @@ namespace Nuanceur
 
 		uint32 m_uniformInt4PointerTypeId = EMPTY_ID;
 		uint32 m_uniformUintPtrId = EMPTY_ID;
+		uint32 m_uniformUint8PtrId = EMPTY_ID;
+		uint32 m_uniformUint16PtrId = EMPTY_ID;
 
 		//Sampled Image
 		uint32 m_sampledImage2DTypeId = EMPTY_ID;
