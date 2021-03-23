@@ -619,8 +619,7 @@ void CSpirvShaderGenerator::Generate()
 						assert(false);
 						break;
 					}
-					// StoreToSymbol(dstRef, resultId);
-					StoreToSymbol(dstRef, src1Id);
+					StoreToSymbol(dstRef, resultId);
 				}
 				break;
 			case CShaderBuilder::STATEMENT_OP_TOUINT16:
@@ -639,8 +638,7 @@ void CSpirvShaderGenerator::Generate()
 						assert(false);
 						break;
 					}
-					// StoreToSymbol(dstRef, resultId);
-					StoreToSymbol(dstRef, src1Id);
+					StoreToSymbol(dstRef, resultId);
 				}
 				break;
 			case CShaderBuilder::STATEMENT_OP_NEWVECTOR2:
@@ -1981,16 +1979,12 @@ void CSpirvShaderGenerator::Store16(const CShaderBuilder::SYMBOLREF& src1Ref, co
 	auto bufferAccessParams = GetStructAccessChainParams(src1Ref);
 	auto src1Id = AllocateId();
 	auto src2Id = LoadFromSymbol(src2Ref);
-	auto src3Id = LoadFromSymbol(src3Ref);
-	auto valueId = AllocateId();
-	auto value16Id = AllocateId();
+	auto valueId = LoadFromSymbol(src3Ref);
 	auto indexId = AllocateId();
 
 	WriteOp(spv::OpCompositeExtract, m_intTypeId, indexId, src2Id, 0);
-	WriteOp(spv::OpCompositeExtract, m_uint16TypeId, valueId, src3Id, 0);
 	WriteOp(spv::OpAccessChain, m_uniformUint8PtrId, src1Id, bufferAccessParams.first, bufferAccessParams.second, indexId);
-	WriteOp(spv::OpUConvert, m_uint16TypeId, value16Id, valueId);
-	WriteOp(spv::OpStore, src1Id, value16Id);
+	WriteOp(spv::OpStore, src1Id, valueId);
 }
 
 void CSpirvShaderGenerator::Store8(const CShaderBuilder::SYMBOLREF& src1Ref, const CShaderBuilder::SYMBOLREF& src2Ref, const CShaderBuilder::SYMBOLREF& src3Ref)
@@ -2002,16 +1996,10 @@ void CSpirvShaderGenerator::Store8(const CShaderBuilder::SYMBOLREF& src1Ref, con
 	auto bufferAccessParams = GetStructAccessChainParams(src1Ref);
 	auto src1Id = AllocateId();
 	auto src2Id = LoadFromSymbol(src2Ref);
-	auto src3Id = LoadFromSymbol(src3Ref);
-	auto valueId = AllocateId();
-	auto value8bitId = AllocateId();
+	auto valueId = LoadFromSymbol(src3Ref);
 	auto indexId = AllocateId();
 
 	WriteOp(spv::OpCompositeExtract, m_intTypeId, indexId, src2Id, 0);
-	WriteOp(spv::OpCompositeExtract, m_uint8TypeId, valueId, src3Id, 0);
 	WriteOp(spv::OpAccessChain, m_uniformUint8PtrId, src1Id, bufferAccessParams.first, bufferAccessParams.second, indexId);
-
-	WriteOp(spv::OpUConvert, m_uint8TypeId, value8bitId, valueId);
-
-	WriteOp(spv::OpStore, src1Id, value8bitId);
+	WriteOp(spv::OpStore, src1Id, valueId);
 }
