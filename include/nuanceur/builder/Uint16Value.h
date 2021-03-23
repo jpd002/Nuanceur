@@ -25,13 +25,11 @@ namespace Nuanceur
 
 		}
 
-		// void operator =(const CUint16Rvalue& rvalue);
 	};
 
 	class CUint16Rvalue : public CUint16Value
 	{
 	private:
-		// friend CUint16Rvalue NewUint(CShaderBuilder&, uint32);
 		friend CUint16Rvalue ToUint16(const CUintValue&);
 
 		CUint16Rvalue(const CUint16Rvalue&) = default;
