@@ -152,7 +152,7 @@ void CSpirvShaderGenerator::Generate()
 		WriteOp(spv::OpCapability, spv::CapabilityFragmentShaderPixelInterlockEXT);
 		WriteOp(spv::OpExtension, "SPV_EXT_fragment_shader_interlock");
 	}
-	if(m_has8BitInt || m_has8BitInt)
+	if(m_has8BitInt || has16BitInt)
 	{
 		// note: is this needed?
 		WriteOp(spv::OpExtension, "SPV_KHR_storage_buffer_storage_class");
