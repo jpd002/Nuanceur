@@ -54,6 +54,9 @@ void CSpirvShaderGenerator::Generate()
 	bool has16BitInt = std::count_if(m_shaderBuilder.GetStatements().begin(), m_shaderBuilder.GetStatements().end(),
 		[] (const CShaderBuilder::STATEMENT& statement) { return statement.op == CShaderBuilder::STATEMENT_OP_STORE16; }) != 0;
 
+	// 16bit writes requires 8 bits buffer
+	m_has8BitInt |= has16BitInt;
+
 	auto voidTypeId = AllocateId();
 	auto mainFunctionTypeId = AllocateId();
 	m_glslStd450ExtInst = AllocateId();
