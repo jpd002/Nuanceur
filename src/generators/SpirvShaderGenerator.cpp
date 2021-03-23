@@ -611,7 +611,8 @@ void CSpirvShaderGenerator::Generate()
 						assert(false);
 						break;
 					}
-					StoreToSymbol(dstRef, resultId);
+					// StoreToSymbol(dstRef, resultId);
+					StoreToSymbol(dstRef, src1Id);
 				}
 				break;
 			case CShaderBuilder::STATEMENT_OP_TOUINT16:
@@ -630,7 +631,8 @@ void CSpirvShaderGenerator::Generate()
 						assert(false);
 						break;
 					}
-					StoreToSymbol(dstRef, resultId);
+					// StoreToSymbol(dstRef, resultId);
+					StoreToSymbol(dstRef, src1Id);
 				}
 				break;
 			case CShaderBuilder::STATEMENT_OP_NEWVECTOR2:
