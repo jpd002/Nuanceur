@@ -151,6 +151,9 @@ namespace Nuanceur
 	CUintRvalue ToUint(const CIntValue&);
 	CUint4Rvalue ToUint(const CFloat4Value&);
 
+	CUint8Rvalue ToUint8(const CUintValue&);
+	CUint16Rvalue ToUint16(const CUintValue&);
+
 	void Return(CShaderBuilder& owner);
 	void BeginInvocationInterlock(CShaderBuilder& owner);
 	void EndInvocationInterlock(CShaderBuilder& owner);
