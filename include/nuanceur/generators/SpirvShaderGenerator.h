@@ -203,6 +203,8 @@ namespace Nuanceur
 		uint32 m_int3TypeId = EMPTY_ID;
 		uint32 m_int4TypeId = EMPTY_ID;
 		uint32 m_uint4TypeId = EMPTY_ID;
+		uint32 m_uint4_8TypeId = EMPTY_ID;
+		uint32 m_uint4_16TypeId = EMPTY_ID;
 
 		uint32 m_uintArrayTypeId = EMPTY_ID;
 		uint32 m_uint8ArrayTypeId = EMPTY_ID;
