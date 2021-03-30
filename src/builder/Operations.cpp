@@ -477,6 +477,14 @@ void Nuanceur::Store(const CArrayUintValue& buffer, const CIntValue& index, cons
 	);
 }
 
+void Nuanceur::Store(const CArrayUshortValue& buffer, const CIntValue& index, const CUshortValue& value)
+{
+	auto owner = GetCommonOwner(buffer.symbol, index.symbol);
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_STORE16, CShaderBuilder::SYMBOLREF(), buffer, index, value)
+	);
+}
+
 void Nuanceur::Store(const CArrayUcharValue& buffer, const CIntValue& index, const CUshortValue& value)
 {
 	auto owner = GetCommonOwner(buffer.symbol, index.symbol);

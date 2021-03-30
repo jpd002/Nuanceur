@@ -1996,7 +1996,7 @@ void CSpirvShaderGenerator::Store16(const CShaderBuilder::SYMBOLREF& src1Ref, co
 	WriteOp(spv::OpCompositeExtract, m_intTypeId, indexId, src2Id, 0);
 	WriteOp(spv::OpCompositeExtract, m_ushortTypeId, valueId, src3Id, 0);
 
-	WriteOp(spv::OpAccessChain, m_uniformUint8PtrId, src1Id, bufferAccessParams.first, bufferAccessParams.second, indexId);
+	WriteOp(spv::OpAccessChain, m_uniformUint16PtrId, src1Id, bufferAccessParams.first, bufferAccessParams.second, indexId);
 	WriteOp(spv::OpStore, src1Id, valueId);
 }
 

@@ -137,6 +137,7 @@ namespace Nuanceur
 
 	CUintRvalue Load(const CArrayUintValue& buffer, const CIntValue& index);
 	void Store(const CArrayUintValue& buffer, const CIntValue& index, const CUintValue&);
+	void Store(const CArrayUshortValue& buffer, const CIntValue& index, const CUshortValue&);
 	void Store(const CArrayUcharValue& buffer, const CIntValue& index, const CUshortValue&);
 	void Store(const CArrayUcharValue& buffer, const CIntValue& index, const CUcharValue&);
 
