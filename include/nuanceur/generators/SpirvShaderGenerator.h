@@ -193,22 +193,22 @@ namespace Nuanceur
 		// integer data type
 		uint32 m_intTypeId = EMPTY_ID;
 		uint32 m_uintTypeId = EMPTY_ID;
-		uint32 m_int16TypeId = EMPTY_ID;
-		uint32 m_uint16TypeId = EMPTY_ID;
-		uint32 m_int8TypeId = EMPTY_ID;
-		uint32 m_uint8TypeId = EMPTY_ID;
+		uint32 m_shortTypeId = EMPTY_ID;
+		uint32 m_ushortTypeId = EMPTY_ID;
+		uint32 m_charTypeId = EMPTY_ID;
+		uint32 m_ucharTypeId = EMPTY_ID;
 
 		// vector data type
 		uint32 m_int2TypeId = EMPTY_ID;
 		uint32 m_int3TypeId = EMPTY_ID;
 		uint32 m_int4TypeId = EMPTY_ID;
 		uint32 m_uint4TypeId = EMPTY_ID;
-		uint32 m_uint4_8TypeId = EMPTY_ID;
-		uint32 m_uint4_16TypeId = EMPTY_ID;
+		uint32 m_uchar4TypeId = EMPTY_ID;
+		uint32 m_ushort4TypeId = EMPTY_ID;
 
 		uint32 m_uintArrayTypeId = EMPTY_ID;
-		uint32 m_uint8ArrayTypeId = EMPTY_ID;
-		uint32 m_uint16ArrayTypeId = EMPTY_ID;
+		uint32 m_ucharArrayTypeId = EMPTY_ID;
+		uint32 m_ushortArrayTypeId = EMPTY_ID;
 
 		uint32 m_inputFloat4PointerTypeId = EMPTY_ID;
 		uint32 m_outputFloat4PointerTypeId = EMPTY_ID;
@@ -246,6 +246,7 @@ namespace Nuanceur
 
 		bool m_hasTextures = false;
 		bool m_has8BitInt = false;
+		bool m_has16BitInt = false;
 		std::map<uint32, STRUCTINFO> m_structInfos;
 		std::map<uint32, uint32> m_inputPointerIds;
 		std::map<uint32, uint32> m_outputPointerIds;

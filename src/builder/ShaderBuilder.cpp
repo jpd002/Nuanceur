@@ -426,7 +426,7 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUint(const std::string&
 	return sym;
 }
 
-CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUint8(const std::string& name, unsigned int unit)
+CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUchar(const std::string& name, unsigned int unit)
 {
 	SYMBOL sym;
 	sym.owner    = this;

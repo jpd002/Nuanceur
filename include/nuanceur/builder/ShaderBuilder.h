@@ -188,8 +188,8 @@ namespace Nuanceur
 			STATEMENT_OP_TOFLOAT,
 			STATEMENT_OP_TOINT,
 			STATEMENT_OP_TOUINT,
-			STATEMENT_OP_TOUINT16,
-			STATEMENT_OP_TOUINT8,
+			STATEMENT_OP_TOUSHORT,
+			STATEMENT_OP_TOUCHAR,
 			STATEMENT_OP_RETURN,
 			STATEMENT_OP_INVOCATION_INTERLOCK_BEGIN,
 			STATEMENT_OP_INVOCATION_INTERLOCK_END,
@@ -291,7 +291,7 @@ namespace Nuanceur
 		SYMBOL					CreateUniformInt4(const std::string&, unsigned int = 0);
 		SYMBOL					CreateUniformMatrix(const std::string&, unsigned int = 0);
 		SYMBOL					CreateUniformArrayUint(const std::string&, unsigned int = 0);
-		SYMBOL					CreateUniformArrayUint8(const std::string&, unsigned int = 0);
+		SYMBOL					CreateUniformArrayUchar(const std::string&, unsigned int = 0);
 
 		SYMBOL					CreateTexture2D(unsigned int);
 

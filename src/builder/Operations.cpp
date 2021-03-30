@@ -477,7 +477,7 @@ void Nuanceur::Store(const CArrayUintValue& buffer, const CIntValue& index, cons
 	);
 }
 
-void Nuanceur::Store(const CArrayUint8Value& buffer, const CIntValue& index, const CUint16Value& value)
+void Nuanceur::Store(const CArrayUcharValue& buffer, const CIntValue& index, const CUshortValue& value)
 {
 	auto owner = GetCommonOwner(buffer.symbol, index.symbol);
 	owner->InsertStatement(
@@ -485,7 +485,7 @@ void Nuanceur::Store(const CArrayUint8Value& buffer, const CIntValue& index, con
 	);
 }
 
-void Nuanceur::Store(const CArrayUint8Value& buffer, const CIntValue& index, const CUint8Value& value)
+void Nuanceur::Store(const CArrayUcharValue& buffer, const CIntValue& index, const CUcharValue& value)
 {
 	auto owner = GetCommonOwner(buffer.symbol, index.symbol);
 	owner->InsertStatement(
@@ -593,22 +593,22 @@ CUintRvalue Nuanceur::ToUint(const CIntValue& rhs)
 	return temp;
 }
 
-CUint16Rvalue Nuanceur::ToUint16(const CUintValue& rhs)
+CUshortRvalue Nuanceur::ToUshort(const CUintValue& rhs)
 {
 	auto owner = rhs.symbol.owner;
-	auto temp = CUint16Rvalue(owner->CreateTemporaryUint());
+	auto temp = CUshortRvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUINT16, temp, rhs)
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUSHORT, temp, rhs)
 	);
 	return temp;
 }
 
-CUint8Rvalue Nuanceur::ToUint8(const CUintValue& rhs)
+CUcharRvalue Nuanceur::ToUchar(const CUintValue& rhs)
 {
 	auto owner = rhs.symbol.owner;
-	auto temp = CUint8Rvalue(owner->CreateTemporaryUint());
+	auto temp = CUcharRvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUINT8, temp, rhs)
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUCHAR, temp, rhs)
 	);
 	return temp;
 }
