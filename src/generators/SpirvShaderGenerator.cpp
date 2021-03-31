@@ -53,7 +53,7 @@ void CSpirvShaderGenerator::Generate()
 	if(!m_has8BitInt)
 	{
 		m_has8BitInt = std::count_if(m_shaderBuilder.GetSymbols().begin(), m_shaderBuilder.GetSymbols().end(),
-		[] (const CShaderBuilder::SYMBOL& symbol) { return symbol.type == CShaderBuilder::SYMBOL_TYPE_ARRAYUINT8; }) != 0;
+		[] (const CShaderBuilder::SYMBOL& symbol) { return symbol.type == CShaderBuilder::SYMBOL_TYPE_ARRAYUCHAR; }) != 0;
 	}
 
 	m_has16BitInt = std::count_if(m_shaderBuilder.GetStatements().begin(), m_shaderBuilder.GetStatements().end(),
@@ -1129,7 +1129,7 @@ void CSpirvShaderGenerator::AllocateUniformStructsIds()
 			structInfo.components.push_back(m_uintArrayTypeId);
 			structInfo.isBufferBlock = true;
 			break;
-		case CShaderBuilder::SYMBOL_TYPE_ARRAYUINT8:
+		case CShaderBuilder::SYMBOL_TYPE_ARRAYUCHAR:
 			structInfo.components.push_back(m_ucharArrayTypeId);
 			structInfo.isBufferBlock = true;
 			break;
@@ -1190,7 +1190,7 @@ void CSpirvShaderGenerator::DecorateUniformStructIds()
 			structInfo.currentOffset += 64;
 			break;
 		case CShaderBuilder::SYMBOL_TYPE_ARRAYUINT:
-		case CShaderBuilder::SYMBOL_TYPE_ARRAYUINT8:
+		case CShaderBuilder::SYMBOL_TYPE_ARRAYUCHAR:
 			//This needs to be the last element of a struct
 			break;
 		default:
@@ -1984,7 +1984,7 @@ void CSpirvShaderGenerator::Store16(const CShaderBuilder::SYMBOLREF& src1Ref, co
 {
 	assert(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_INT4);
 	assert(src3Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
-	assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_ARRAYUINT8);
+	assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_ARRAYUCHAR);
 
 	auto bufferAccessParams = GetStructAccessChainParams(src1Ref);
 	auto src1Id = AllocateId();
@@ -2004,7 +2004,7 @@ void CSpirvShaderGenerator::Store8(const CShaderBuilder::SYMBOLREF& src1Ref, con
 {
 	assert(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_INT4);
 	assert(src3Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
-	assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_ARRAYUINT8);
+	assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_ARRAYUCHAR);
 
 	auto bufferAccessParams = GetStructAccessChainParams(src1Ref);
 	auto src1Id = AllocateId();

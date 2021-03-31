@@ -431,7 +431,7 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUchar(const std::string
 	SYMBOL sym;
 	sym.owner    = this;
 	sym.index    = m_currentTempIndex++;
-	sym.type     = SYMBOL_TYPE_ARRAYUINT8;
+	sym.type     = SYMBOL_TYPE_ARRAYUCHAR;
 	sym.location = SYMBOL_LOCATION_UNIFORM;
 	sym.unit     = unit;
 	m_symbols.push_back(sym);
