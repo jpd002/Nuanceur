@@ -441,6 +441,22 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUchar(const std::string
 	return sym;
 }
 
+
+CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUshort(const std::string& name, unsigned int unit)
+{
+	SYMBOL sym;
+	sym.owner    = this;
+	sym.index    = m_currentTempIndex++;
+	sym.type     = SYMBOL_TYPE_ARRAYUSHORT;
+	sym.location = SYMBOL_LOCATION_UNIFORM;
+	sym.unit     = unit;
+	m_symbols.push_back(sym);
+
+	m_uniformNames.insert(std::make_pair(sym.index, name));
+
+	return sym;
+}
+
 CShaderBuilder::SYMBOL CShaderBuilder::CreateTexture2D(unsigned int unit)
 {
 	SYMBOL sym;

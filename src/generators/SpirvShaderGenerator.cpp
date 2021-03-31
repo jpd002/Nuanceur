@@ -58,7 +58,11 @@ void CSpirvShaderGenerator::Generate()
 
 	m_has16BitInt = std::count_if(m_shaderBuilder.GetStatements().begin(), m_shaderBuilder.GetStatements().end(),
 		[] (const CShaderBuilder::STATEMENT& statement) { return statement.op == CShaderBuilder::STATEMENT_OP_STORE16; }) != 0;
-
+	if(!m_has16BitInt)
+	{
+		m_has16BitInt = std::count_if(m_shaderBuilder.GetSymbols().begin(), m_shaderBuilder.GetSymbols().end(),
+		[] (const CShaderBuilder::SYMBOL& symbol) { return symbol.type == CShaderBuilder::SYMBOL_TYPE_ARRAYUSHORT; }) != 0;
+	}
 	// 16bit writes requires 8 bits buffer
 	m_has8BitInt |= m_has16BitInt;
 
@@ -1133,6 +1137,10 @@ void CSpirvShaderGenerator::AllocateUniformStructsIds()
 			structInfo.components.push_back(m_ucharArrayTypeId);
 			structInfo.isBufferBlock = true;
 			break;
+		case CShaderBuilder::SYMBOL_TYPE_ARRAYUSHORT:
+			structInfo.components.push_back(m_ushortArrayTypeId);
+			structInfo.isBufferBlock = true;
+			break;
 		default:
 			assert(false);
 			break;
@@ -1191,6 +1199,7 @@ void CSpirvShaderGenerator::DecorateUniformStructIds()
 			break;
 		case CShaderBuilder::SYMBOL_TYPE_ARRAYUINT:
 		case CShaderBuilder::SYMBOL_TYPE_ARRAYUCHAR:
+		case CShaderBuilder::SYMBOL_TYPE_ARRAYUSHORT:
 			//This needs to be the last element of a struct
 			break;
 		default:
@@ -1984,7 +1993,7 @@ void CSpirvShaderGenerator::Store16(const CShaderBuilder::SYMBOLREF& src1Ref, co
 {
 	assert(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_INT4);
 	assert(src3Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
-	assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_ARRAYUCHAR);
+	assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_ARRAYUSHORT);
 
 	auto bufferAccessParams = GetStructAccessChainParams(src1Ref);
 	auto src1Id = AllocateId();

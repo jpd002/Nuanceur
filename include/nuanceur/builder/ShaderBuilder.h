@@ -75,6 +75,7 @@ namespace Nuanceur
 			SYMBOL_TYPE_MATRIX,
 			SYMBOL_TYPE_ARRAYUINT,
 			SYMBOL_TYPE_ARRAYUCHAR,
+			SYMBOL_TYPE_ARRAYUSHORT,
 			SYMBOL_TYPE_TEXTURE2D,
 			SYMBOL_TYPE_IMAGE2DUINT,
 		};
@@ -292,6 +293,7 @@ namespace Nuanceur
 		SYMBOL					CreateUniformMatrix(const std::string&, unsigned int = 0);
 		SYMBOL					CreateUniformArrayUint(const std::string&, unsigned int = 0);
 		SYMBOL					CreateUniformArrayUchar(const std::string&, unsigned int = 0);
+		SYMBOL					CreateUniformArrayUshort(const std::string&, unsigned int = 0);
 
 		SYMBOL					CreateTexture2D(unsigned int);
 
