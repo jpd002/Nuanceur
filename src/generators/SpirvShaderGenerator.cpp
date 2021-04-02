@@ -622,7 +622,7 @@ void CSpirvShaderGenerator::Generate()
 						WriteOp(spv::OpConvertFToU, m_uchar4TypeId, resultId, src1Id);
 						break;
 					case CShaderBuilder::SYMBOL_TYPE_UINT4:
-					    WriteOp(spv::OpUConvert, m_uchar4TypeId, resultId, src1Id);
+						WriteOp(spv::OpUConvert, m_uchar4TypeId, resultId, src1Id);
 						break;
 					default:
 						assert(false);
@@ -641,7 +641,7 @@ void CSpirvShaderGenerator::Generate()
 						WriteOp(spv::OpConvertFToU, m_ushort4TypeId, resultId, src1Id);
 						break;
 					case CShaderBuilder::SYMBOL_TYPE_UINT4:
-					    WriteOp(spv::OpUConvert, m_ushort4TypeId, resultId, src1Id);
+						WriteOp(spv::OpUConvert, m_ushort4TypeId, resultId, src1Id);
 						break;
 					default:
 						assert(false);
