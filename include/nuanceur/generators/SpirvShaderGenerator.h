@@ -2,6 +2,7 @@
 
 #include <set>
 #include <map>
+#include <stack>
 #include <cstring>
 #include "nuanceur/builder/ShaderBuilder.h"
 #include "Stream.h"
@@ -257,6 +258,6 @@ namespace Nuanceur
 		std::map<int32, uint32> m_intConstantIds;
 		std::map<uint32, uint32> m_uintConstantIds;
 		uint32 m_nextId = EMPTY_ID + 1;
-		uint32 m_endLabelId = 0;
+		std::stack<uint32> m_endLabelIds;
 	};
 }
