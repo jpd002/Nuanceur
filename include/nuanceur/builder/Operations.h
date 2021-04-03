@@ -4,6 +4,8 @@
 #include "ShaderBuilder.h"
 
 #include "ArrayUintValue.h"
+#include "ArrayUcharValue.h"
+#include "ArrayUshortValue.h"
 #include "BoolValue.h"
 #include "FloatValue.h"
 #include "Float2Value.h"
@@ -16,6 +18,8 @@
 #include "Matrix44Value.h"
 #include "Texture2DValue.h"
 #include "UintValue.h"
+#include "UshortValue.h"
+#include "UcharValue.h"
 #include "Uint3Value.h"
 #include "Uint4Value.h"
 
@@ -133,6 +137,8 @@ namespace Nuanceur
 
 	CUintRvalue Load(const CArrayUintValue& buffer, const CIntValue& index);
 	void Store(const CArrayUintValue& buffer, const CIntValue& index, const CUintValue&);
+	void Store(const CArrayUshortValue& buffer, const CIntValue& index, const CUshortValue&);
+	void Store(const CArrayUcharValue& buffer, const CIntValue& index, const CUcharValue&);
 
 	CUintRvalue AtomicAnd(const CArrayUintValue& image, const CIntValue& index, const CUintValue&);
 	CUintRvalue AtomicOr(const CArrayUintValue& image, const CIntValue& index, const CUintValue&);
@@ -146,6 +152,9 @@ namespace Nuanceur
 	CUintRvalue ToUint(const CFloatValue&);
 	CUintRvalue ToUint(const CIntValue&);
 	CUint4Rvalue ToUint(const CFloat4Value&);
+
+	CUcharRvalue ToUchar(const CUintValue&);
+	CUshortRvalue ToUshort(const CUintValue&);
 
 	void Return(CShaderBuilder& owner);
 	void BeginInvocationInterlock(CShaderBuilder& owner);

@@ -162,6 +162,8 @@ namespace Nuanceur
 			const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Load(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Store(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
+		void Store16(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
+		void Store8(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 
 		enum
 		{
@@ -188,14 +190,25 @@ namespace Nuanceur
 		uint32 m_float4TypeId = EMPTY_ID;
 		uint32 m_matrix44TypeId = EMPTY_ID;
 
+		// integer data type
 		uint32 m_intTypeId = EMPTY_ID;
 		uint32 m_uintTypeId = EMPTY_ID;
+		uint32 m_shortTypeId = EMPTY_ID;
+		uint32 m_ushortTypeId = EMPTY_ID;
+		uint32 m_charTypeId = EMPTY_ID;
+		uint32 m_ucharTypeId = EMPTY_ID;
+
+		// vector data type
 		uint32 m_int2TypeId = EMPTY_ID;
 		uint32 m_int3TypeId = EMPTY_ID;
 		uint32 m_int4TypeId = EMPTY_ID;
 		uint32 m_uint4TypeId = EMPTY_ID;
+		uint32 m_uchar4TypeId = EMPTY_ID;
+		uint32 m_ushort4TypeId = EMPTY_ID;
 
 		uint32 m_uintArrayTypeId = EMPTY_ID;
+		uint32 m_ucharArrayTypeId = EMPTY_ID;
+		uint32 m_ushortArrayTypeId = EMPTY_ID;
 
 		uint32 m_inputFloat4PointerTypeId = EMPTY_ID;
 		uint32 m_outputFloat4PointerTypeId = EMPTY_ID;
@@ -214,6 +227,8 @@ namespace Nuanceur
 
 		uint32 m_uniformInt4PointerTypeId = EMPTY_ID;
 		uint32 m_uniformUintPtrId = EMPTY_ID;
+		uint32 m_uniformUint8PtrId = EMPTY_ID;
+		uint32 m_uniformUint16PtrId = EMPTY_ID;
 
 		//Sampled Image
 		uint32 m_sampledImage2DTypeId = EMPTY_ID;
@@ -230,6 +245,8 @@ namespace Nuanceur
 		SHADER_TYPE m_shaderType = SHADER_TYPE_VERTEX;
 
 		bool m_hasTextures = false;
+		bool m_has8BitInt = false;
+		bool m_has16BitInt = false;
 		std::map<uint32, STRUCTINFO> m_structInfos;
 		std::map<uint32, uint32> m_inputPointerIds;
 		std::map<uint32, uint32> m_outputPointerIds;

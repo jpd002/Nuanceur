@@ -74,6 +74,8 @@ namespace Nuanceur
 			SYMBOL_TYPE_BOOL,
 			SYMBOL_TYPE_MATRIX,
 			SYMBOL_TYPE_ARRAYUINT,
+			SYMBOL_TYPE_ARRAYUCHAR,
+			SYMBOL_TYPE_ARRAYUSHORT,
 			SYMBOL_TYPE_TEXTURE2D,
 			SYMBOL_TYPE_IMAGE2DUINT,
 		};
@@ -180,11 +182,15 @@ namespace Nuanceur
 			STATEMENT_OP_SAMPLE,
 			STATEMENT_OP_LOAD,
 			STATEMENT_OP_STORE,
+			STATEMENT_OP_STORE16,
+			STATEMENT_OP_STORE8,
 			STATEMENT_OP_ATOMICAND,
 			STATEMENT_OP_ATOMICOR,
 			STATEMENT_OP_TOFLOAT,
 			STATEMENT_OP_TOINT,
 			STATEMENT_OP_TOUINT,
+			STATEMENT_OP_TOUSHORT,
+			STATEMENT_OP_TOUCHAR,
 			STATEMENT_OP_RETURN,
 			STATEMENT_OP_INVOCATION_INTERLOCK_BEGIN,
 			STATEMENT_OP_INVOCATION_INTERLOCK_END,
@@ -286,6 +292,8 @@ namespace Nuanceur
 		SYMBOL					CreateUniformInt4(const std::string&, unsigned int = 0);
 		SYMBOL					CreateUniformMatrix(const std::string&, unsigned int = 0);
 		SYMBOL					CreateUniformArrayUint(const std::string&, unsigned int = 0);
+		SYMBOL					CreateUniformArrayUchar(const std::string&, unsigned int = 0);
+		SYMBOL					CreateUniformArrayUshort(const std::string&, unsigned int = 0);
 
 		SYMBOL					CreateTexture2D(unsigned int);
 
