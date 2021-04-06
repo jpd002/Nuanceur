@@ -769,25 +769,25 @@ void CSpirvShaderGenerator::Generate()
 				break;
 			case CShaderBuilder::STATEMENT_OP_IF_BEGIN:
 				{
-					assert(m_endLabelId == 0);
 					auto src1Id = LoadFromSymbol(src1Ref);
 					auto beginLabelId = AllocateId();
 					auto endLabelId = AllocateId();
 					WriteOp(spv::OpSelectionMerge, endLabelId, spv::SelectionControlMaskNone);
 					WriteOp(spv::OpBranchConditional, src1Id, beginLabelId, endLabelId);
 					WriteOp(spv::OpLabel, beginLabelId);
-					m_endLabelId = endLabelId;
+					m_endLabelIds.push(endLabelId);
 				}
 				break;
 			case CShaderBuilder::STATEMENT_OP_IF_END:
 				{
-					assert(m_endLabelId != 0);
+					assert(m_endLabelIds.size() > 0);
+					auto endLabelId = m_endLabelIds.top();
 					if(!returnInBlock)
 					{
-						WriteOp(spv::OpBranch, m_endLabelId);
+						WriteOp(spv::OpBranch, endLabelId);
 					}
-					WriteOp(spv::OpLabel, m_endLabelId);
-					m_endLabelId = 0;
+					WriteOp(spv::OpLabel, endLabelId);
+					m_endLabelIds.pop();
 					returnInBlock = false;
 				}
 				break;
