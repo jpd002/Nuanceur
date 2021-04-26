@@ -1178,6 +1178,10 @@ void CSpirvShaderGenerator::DecorateUniformStructIds()
 		auto& structInfo = m_structInfos[symbol.unit];
 		auto memberIndex = structInfo.memberIndices[symbol.index];
 		WriteOp(spv::OpMemberDecorate, structInfo.typeId, memberIndex, spv::DecorationOffset, structInfo.currentOffset);
+		if(symbol.attributes & SYMBOL_ATTRIBUTE_COHERENT)
+		{
+			WriteOp(spv::OpMemberDecorate, structInfo.typeId, memberIndex, spv::DecorationCoherent);
+		}
 		if(symbol.type == CShaderBuilder::SYMBOL_TYPE_MATRIX)
 		{
 			WriteOp(spv::OpMemberDecorate, structInfo.typeId, memberIndex, spv::DecorationColMajor);

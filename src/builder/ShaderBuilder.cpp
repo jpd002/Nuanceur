@@ -411,14 +411,15 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformMatrix(const std::string& na
 	return sym;
 }
 
-CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUint(const std::string& name, unsigned int unit)
+CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUint(const std::string& name, unsigned int unit, uint32 attributes)
 {
 	SYMBOL sym;
-	sym.owner    = this;
-	sym.index    = m_currentTempIndex++;
-	sym.type     = SYMBOL_TYPE_ARRAYUINT;
-	sym.location = SYMBOL_LOCATION_UNIFORM;
-	sym.unit     = unit;
+	sym.owner      = this;
+	sym.index      = m_currentTempIndex++;
+	sym.type       = SYMBOL_TYPE_ARRAYUINT;
+	sym.location   = SYMBOL_LOCATION_UNIFORM;
+	sym.unit       = unit;
+	sym.attributes = attributes;
 	m_symbols.push_back(sym);
 
 	m_uniformNames.insert(std::make_pair(sym.index, name));
@@ -426,14 +427,15 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUint(const std::string&
 	return sym;
 }
 
-CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUchar(const std::string& name, unsigned int unit)
+CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUchar(const std::string& name, unsigned int unit, uint32 attributes)
 {
 	SYMBOL sym;
-	sym.owner    = this;
-	sym.index    = m_currentTempIndex++;
-	sym.type     = SYMBOL_TYPE_ARRAYUCHAR;
-	sym.location = SYMBOL_LOCATION_UNIFORM;
-	sym.unit     = unit;
+	sym.owner      = this;
+	sym.index      = m_currentTempIndex++;
+	sym.type       = SYMBOL_TYPE_ARRAYUCHAR;
+	sym.location   = SYMBOL_LOCATION_UNIFORM;
+	sym.unit       = unit;
+	sym.attributes = attributes;
 	m_symbols.push_back(sym);
 
 	m_uniformNames.insert(std::make_pair(sym.index, name));
@@ -442,14 +444,15 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUchar(const std::string
 }
 
 
-CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUshort(const std::string& name, unsigned int unit)
+CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUshort(const std::string& name, unsigned int unit, uint32 attributes)
 {
 	SYMBOL sym;
-	sym.owner    = this;
-	sym.index    = m_currentTempIndex++;
-	sym.type     = SYMBOL_TYPE_ARRAYUSHORT;
-	sym.location = SYMBOL_LOCATION_UNIFORM;
-	sym.unit     = unit;
+	sym.owner      = this;
+	sym.index      = m_currentTempIndex++;
+	sym.type       = SYMBOL_TYPE_ARRAYUSHORT;
+	sym.location   = SYMBOL_LOCATION_UNIFORM;
+	sym.unit       = unit;
+	sym.attributes = attributes;
 	m_symbols.push_back(sym);
 
 	m_uniformNames.insert(std::make_pair(sym.index, name));

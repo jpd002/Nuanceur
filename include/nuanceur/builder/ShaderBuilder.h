@@ -22,6 +22,11 @@ namespace Nuanceur
 		SEMANTIC_TEXCOORD,
 	};
 
+	enum SYMBOL_ATTRIBUTE
+	{
+		SYMBOL_ATTRIBUTE_COHERENT = 0x01,
+	};
+
 	enum
 	{
 		UNIFORM_UNIT_PUSHCONSTANT = -1,
@@ -112,6 +117,7 @@ namespace Nuanceur
 			SYMBOL_LOCATION		location = SYMBOL_LOCATION_NULL;
 			unsigned int		unit = 0;
 			unsigned int		index = 0;
+			uint32				attributes = 0;
 		};
 
 		struct SYMBOLREF
@@ -291,9 +297,9 @@ namespace Nuanceur
 		SYMBOL					CreateUniformFloat4(const std::string&, unsigned int = 0);
 		SYMBOL					CreateUniformInt4(const std::string&, unsigned int = 0);
 		SYMBOL					CreateUniformMatrix(const std::string&, unsigned int = 0);
-		SYMBOL					CreateUniformArrayUint(const std::string&, unsigned int = 0);
-		SYMBOL					CreateUniformArrayUchar(const std::string&, unsigned int = 0);
-		SYMBOL					CreateUniformArrayUshort(const std::string&, unsigned int = 0);
+		SYMBOL					CreateUniformArrayUint(const std::string&, unsigned int = 0, uint32 = 0);
+		SYMBOL					CreateUniformArrayUchar(const std::string&, unsigned int = 0, uint32 = 0);
+		SYMBOL					CreateUniformArrayUshort(const std::string&, unsigned int = 0, uint32 = 0);
 
 		SYMBOL					CreateTexture2D(unsigned int);
 
