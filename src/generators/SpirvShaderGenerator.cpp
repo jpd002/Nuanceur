@@ -147,7 +147,6 @@ void CSpirvShaderGenerator::Generate()
 		WriteOp(spv::OpCapability, spv::CapabilityInt8);
 		WriteOp(spv::OpCapability, spv::CapabilityStorageBuffer8BitAccess);
 		WriteOp(spv::OpCapability, spv::CapabilityUniformAndStorageBuffer8BitAccess);
-		WriteOp(spv::OpCapability, spv::CapabilityStoragePushConstant8);
 	}
 
 	if(m_has16BitInt)
@@ -155,7 +154,6 @@ void CSpirvShaderGenerator::Generate()
 		WriteOp(spv::OpCapability, spv::CapabilityInt16);
 		WriteOp(spv::OpCapability, spv::CapabilityStorageBuffer16BitAccess);
 		WriteOp(spv::OpCapability, spv::CapabilityUniformAndStorageBuffer16BitAccess);
-		WriteOp(spv::OpCapability, spv::CapabilityStoragePushConstant16);
 	}
 
 	if(hasInvocationInterlock)
