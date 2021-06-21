@@ -495,6 +495,19 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateImage2DUint(unsigned int unit)
 	return sym;
 }
 
+CShaderBuilder::SYMBOL CShaderBuilder::CreateSubpassInput(unsigned int unit)
+{
+	SYMBOL sym;
+	sym.owner    = this;
+	sym.type     = SYMBOL_TYPE_SUBPASSINPUT;
+	sym.location = SYMBOL_LOCATION_TEXTURE;
+	sym.unit     = unit;
+	sym.index    = -1;
+	m_symbols.push_back(sym);
+
+	return sym;
+}
+
 CShaderBuilder::SYMBOL CShaderBuilder::CreateOptionalInput(bool available, SEMANTIC semantic, unsigned int semanticIndex)
 {
 	return available ? CreateInput(semantic, semanticIndex) : SYMBOL();

@@ -17,6 +17,7 @@
 #include "Int3Value.h"
 #include "Int4Value.h"
 #include "Matrix44Value.h"
+#include "SubpassInputValue.h"
 #include "Texture2DValue.h"
 #include "UintValue.h"
 #include "UshortValue.h"
@@ -165,6 +166,8 @@ namespace Nuanceur
 
 	CUintRvalue AtomicAnd(const CArrayUintValue& image, const CIntValue& index, const CUintValue&);
 	CUintRvalue AtomicOr(const CArrayUintValue& image, const CIntValue& index, const CUintValue&);
+
+	CFloat4Rvalue Load(const CSubpassInputValue&, const CInt2Value&);
 
 	CFloatRvalue ToFloat(const CUintValue&);
 	CFloatRvalue ToFloat(const CIntValue&);

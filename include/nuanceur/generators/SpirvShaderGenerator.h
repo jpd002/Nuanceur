@@ -226,6 +226,7 @@ namespace Nuanceur
 		uint32 m_functionInt4PointerTypeId = EMPTY_ID;
 		uint32 m_functionUint4PointerTypeId = EMPTY_ID;
 		uint32 m_functionBoolPointerTypeId = EMPTY_ID;
+		uint32 m_inputIntPointerTypeId = EMPTY_ID;
 		uint32 m_inputInt3PointerTypeId = EMPTY_ID;
 		uint32 m_inputUint4PointerTypeId = EMPTY_ID;
 
@@ -249,6 +250,10 @@ namespace Nuanceur
 		uint32 m_storageImage2DTypeId = EMPTY_ID;
 		uint32 m_storageImage2DPointerTypeId = EMPTY_ID;
 		uint32 m_imageUintPtrId = EMPTY_ID;
+
+		//Subpass Input
+		uint32 m_subpassInputTypeId = EMPTY_ID;
+		uint32 m_subpassInputPointerTypeId = EMPTY_ID;
 
 		Framework::CStream& m_outputStream;
 		const CShaderBuilder& m_shaderBuilder;

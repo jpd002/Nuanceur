@@ -10,9 +10,11 @@ namespace Nuanceur
 	class CFloat3Value;
 	class CFloat4Rvalue;
 	class CTexture2DValue;
+	class CSubpassInputValue;
 	class CMatrix44Value;
 	class CFloatSwizzleSelector;
 	class CFloatSwizzleSelector4;
+	class CInt2Value;
 	class CInt4Value;
 	class CUint4Value;
 
@@ -67,6 +69,7 @@ namespace Nuanceur
 		friend CFloat4Rvalue NewFloat4(const CFloat3Value&, const CFloatValue&);
 		friend CFloat4Rvalue Normalize(const CFloat4Value&);
 		friend CFloat4Rvalue Sample(const CTexture2DValue&, const CFloat2Value&);
+		friend CFloat4Rvalue Load(const CSubpassInputValue&, const CInt2Value&);
 		friend CFloat4Rvalue ToFloat(const CInt4Value&);
 		friend CFloat4Rvalue ToFloat(const CUint4Value&);
 

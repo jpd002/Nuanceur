@@ -47,6 +47,7 @@ add_library(Nuanceur
 	../include/nuanceur/builder/Matrix44Value.h
 	../include/nuanceur/builder/Operations.h
 	../include/nuanceur/builder/ShaderBuilder.h
+	../include/nuanceur/builder/SubpassInputValue.h
 	../include/nuanceur/builder/Texture2DValue.h
 	../include/nuanceur/builder/Uint3Value.h
 	../include/nuanceur/builder/Uint4Value.h
