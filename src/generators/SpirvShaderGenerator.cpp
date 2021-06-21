@@ -840,6 +840,10 @@ void CSpirvShaderGenerator::DecorateInputPointerIds()
 			assert(m_shaderType == SHADER_TYPE_FRAGMENT);
 			WriteOp(spv::OpDecorate, pointerId, spv::DecorationBuiltIn, spv::BuiltInFragCoord);
 			break;
+		case Nuanceur::SEMANTIC_SYSTEM_VERTEXINDEX:
+			assert(m_shaderType == SHADER_TYPE_VERTEX);
+			WriteOp(spv::OpDecorate, pointerId, spv::DecorationBuiltIn, spv::BuiltInVertexIndex);
+			break;
 		case Nuanceur::SEMANTIC_SYSTEM_GIID:
 			assert(m_shaderType == SHADER_TYPE_COMPUTE);
 			WriteOp(spv::OpDecorate, pointerId, spv::DecorationBuiltIn, spv::BuiltInGlobalInvocationId);
@@ -864,6 +868,10 @@ void CSpirvShaderGenerator::DeclareInputPointerIds()
 		auto pointerId = m_inputPointerIds[symbol.index];
 		switch(semantic.type)
 		{
+		case Nuanceur::SEMANTIC_SYSTEM_VERTEXINDEX:
+			assert(symbol.type == CShaderBuilder::SYMBOL_TYPE_INT4);
+			WriteOp(spv::OpVariable, m_inputIntPointerTypeId, pointerId, spv::StorageClassInput);
+			break;
 		case Nuanceur::SEMANTIC_SYSTEM_GIID:
 			assert(symbol.type == CShaderBuilder::SYMBOL_TYPE_INT4);
 			WriteOp(spv::OpVariable, m_inputInt3PointerTypeId, pointerId, spv::StorageClassInput);
@@ -1356,6 +1364,14 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 			auto semantic = m_shaderBuilder.GetInputSemantic(srcRef.symbol);
 			switch(semantic.type)
 			{
+			case Nuanceur::SEMANTIC_SYSTEM_VERTEXINDEX:
+				{
+					assert(m_intConstantIds.find(0) != std::end(m_intConstantIds));
+					uint32 tempId = AllocateId();
+					WriteOp(spv::OpLoad, m_intTypeId, tempId, pointerId);
+					WriteOp(spv::OpCompositeConstruct, m_int4TypeId, srcId, tempId, m_intConstantIds[0], m_intConstantIds[0], m_intConstantIds[0]);
+				}
+				break;
 			case Nuanceur::SEMANTIC_SYSTEM_GIID:
 				{
 					assert(m_intConstantIds.find(0) != std::end(m_intConstantIds));
