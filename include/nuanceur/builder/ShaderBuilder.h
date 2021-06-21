@@ -85,6 +85,7 @@ namespace Nuanceur
 			SYMBOL_TYPE_ARRAYUSHORT,
 			SYMBOL_TYPE_TEXTURE2D,
 			SYMBOL_TYPE_IMAGE2DUINT,
+			SYMBOL_TYPE_SUBPASSINPUT,
 		};
 
 		enum SYMBOL_LOCATION
@@ -306,6 +307,8 @@ namespace Nuanceur
 		SYMBOL					CreateTexture2D(unsigned int);
 
 		SYMBOL					CreateImage2DUint(unsigned int);
+
+		SYMBOL					CreateSubpassInput(unsigned int);
 
 		SYMBOL					CreateOptionalInput(bool, SEMANTIC, unsigned int = 0);
 		SYMBOL					CreateOptionalOutput(bool, SEMANTIC, unsigned int = 0);
