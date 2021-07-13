@@ -5,6 +5,7 @@
 namespace Nuanceur
 {
 	class CImageUint2DValue;
+	class CSubpassInputUintValue;
 	class CInt2Value;
 	class CUintSwizzleSelector4;
 	class CUint4Rvalue;
@@ -49,6 +50,7 @@ namespace Nuanceur
 		friend CUint4Rvalue NewUint4(CShaderBuilder&, uint32, uint32, uint32, uint32);
 		friend CUint4Rvalue NewUint4(const CUintValue&, const CUint3Value&);
 		friend CUint4Rvalue ToUint(const CFloat4Value&);
+		friend CUint4Rvalue Load(const CSubpassInputUintValue&, const CInt2Value&);
 
 		CUint4Rvalue(const CUint4Rvalue&) = default;
 
