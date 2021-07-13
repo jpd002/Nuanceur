@@ -168,6 +168,7 @@ namespace Nuanceur
 	CUintRvalue AtomicOr(const CArrayUintValue& image, const CIntValue& index, const CUintValue&);
 
 	CFloat4Rvalue Load(const CSubpassInputValue&, const CInt2Value&);
+	CUint4Rvalue Load(const CSubpassInputUintValue&, const CInt2Value&);
 
 	CFloatRvalue ToFloat(const CUintValue&);
 	CFloatRvalue ToFloat(const CIntValue&);

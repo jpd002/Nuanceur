@@ -133,7 +133,9 @@ void CSpirvShaderGenerator::Generate()
 
 		//Subpass Input
 		m_subpassInputTypeId = AllocateId();
+		m_subpassInputUintTypeId = AllocateId();
 		m_subpassInputPointerTypeId = AllocateId();
+		m_subpassInputUintPointerTypeId = AllocateId();
 
 		AllocateTextureIds();
 	}
@@ -338,6 +340,9 @@ void CSpirvShaderGenerator::Generate()
 		//Subpass input
 		WriteOp(spv::OpTypeImage, m_subpassInputTypeId, m_floatTypeId, spv::DimSubpassData, 2, 0, 0, 2, spv::ImageFormatUnknown);
 		WriteOp(spv::OpTypePointer, m_subpassInputPointerTypeId, spv::StorageClassUniformConstant, m_subpassInputTypeId);
+		
+		WriteOp(spv::OpTypeImage, m_subpassInputUintTypeId, m_uintTypeId, spv::DimSubpassData, 2, 0, 0, 2, spv::ImageFormatUnknown);
+		WriteOp(spv::OpTypePointer, m_subpassInputUintPointerTypeId, spv::StorageClassUniformConstant, m_subpassInputUintTypeId);
 	}
 
 	DeclareInputPointerIds();
@@ -1328,9 +1333,11 @@ void CSpirvShaderGenerator::DecorateTextureIds()
 		auto pointerId = m_texturePointerIds[symbol.unit];
 		WriteOp(spv::OpDecorate, pointerId, spv::DecorationDescriptorSet, 0);
 		WriteOp(spv::OpDecorate, pointerId, spv::DecorationBinding, symbol.unit);
-		if(symbol.type == CShaderBuilder::SYMBOL_TYPE_SUBPASSINPUT)
+		if(
+		   (symbol.type == CShaderBuilder::SYMBOL_TYPE_SUBPASSINPUT) ||
+		   (symbol.type == CShaderBuilder::SYMBOL_TYPE_SUBPASSINPUTUINT))
 		{
-			WriteOp(spv::OpDecorate, pointerId, spv::DecorationInputAttachmentIndex, 0);
+			WriteOp(spv::OpDecorate, pointerId, spv::DecorationInputAttachmentIndex, symbol.index);
 		}
 	}
 }
@@ -1355,6 +1362,10 @@ void CSpirvShaderGenerator::DeclareTextureIds()
 		case CShaderBuilder::SYMBOL_TYPE_SUBPASSINPUT:
 			assert(m_subpassInputPointerTypeId != EMPTY_ID);
 			WriteOp(spv::OpVariable, m_subpassInputPointerTypeId, pointerId, spv::StorageClassUniformConstant);
+			break;
+		case CShaderBuilder::SYMBOL_TYPE_SUBPASSINPUTUINT:
+			assert(m_subpassInputUintPointerTypeId != EMPTY_ID);
+			WriteOp(spv::OpVariable, m_subpassInputUintPointerTypeId, pointerId, spv::StorageClassUniformConstant);
 			break;
 		default:
 			assert(false);
@@ -1487,6 +1498,10 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 			case CShaderBuilder::SYMBOL_TYPE_SUBPASSINPUT:
 				assert(m_subpassInputTypeId != EMPTY_ID);
 				imageTypeId = m_subpassInputTypeId;
+				break;
+			case CShaderBuilder::SYMBOL_TYPE_SUBPASSINPUTUINT:
+				assert(m_subpassInputUintTypeId != EMPTY_ID);
+				imageTypeId = m_subpassInputUintTypeId;
 				break;
 			default:
 				assert(false);
@@ -2085,6 +2100,16 @@ void CSpirvShaderGenerator::Load(const CShaderBuilder::SYMBOLREF& dstRef, const 
 		auto src2Id = LoadFromSymbol(src2Ref);
 		auto resultId = AllocateId();
 		WriteOp(spv::OpImageRead, m_float4TypeId, resultId, src1Id, src2Id);
+		StoreToSymbol(dstRef, resultId);
+	}
+	else if(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_SUBPASSINPUTUINT)
+	{
+		assert(dstRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
+
+		auto src1Id = LoadFromSymbol(src1Ref);
+		auto src2Id = LoadFromSymbol(src2Ref);
+		auto resultId = AllocateId();
+		WriteOp(spv::OpImageRead, m_uint4TypeId, resultId, src1Id, src2Id);
 		StoreToSymbol(dstRef, resultId);
 	}
 	else

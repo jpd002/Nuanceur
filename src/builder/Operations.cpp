@@ -616,6 +616,16 @@ CFloat4Rvalue Nuanceur::Load(const CSubpassInputValue& image, const CInt2Value& 
 	return temp;
 }
 
+CUint4Rvalue Nuanceur::Load(const CSubpassInputUintValue& image, const CInt2Value& coord)
+{
+	auto owner = GetCommonOwner(image.symbol, coord.symbol);
+	auto temp = CUint4Rvalue(owner->CreateTemporaryUint());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOAD, temp, image, coord)
+	);
+	return temp;
+}
+
 CFloatRvalue Nuanceur::ToFloat(const CUintValue& rhs)
 {
 	auto owner = rhs.symbol.owner;

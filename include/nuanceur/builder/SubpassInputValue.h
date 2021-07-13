@@ -13,4 +13,14 @@ namespace Nuanceur
 
 		}
 	};
+
+	class CSubpassInputUintValue : public CShaderBuilder::SYMBOLREF
+	{
+	public:
+		CSubpassInputUintValue(const CShaderBuilder::SYMBOL& symbol)
+			: SYMBOLREF(symbol, SWIZZLE_XYZW)
+		{
+
+		}
+	};
 }

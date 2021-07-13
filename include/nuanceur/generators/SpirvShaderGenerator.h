@@ -254,7 +254,9 @@ namespace Nuanceur
 
 		//Subpass Input
 		uint32 m_subpassInputTypeId = EMPTY_ID;
+		uint32 m_subpassInputUintTypeId = EMPTY_ID;
 		uint32 m_subpassInputPointerTypeId = EMPTY_ID;
+		uint32 m_subpassInputUintPointerTypeId = EMPTY_ID;
 
 		Framework::CStream& m_outputStream;
 		const CShaderBuilder& m_shaderBuilder;

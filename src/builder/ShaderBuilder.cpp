@@ -509,14 +509,27 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateImage2DUint(unsigned int unit)
 	return sym;
 }
 
-CShaderBuilder::SYMBOL CShaderBuilder::CreateSubpassInput(unsigned int unit)
+CShaderBuilder::SYMBOL CShaderBuilder::CreateSubpassInput(unsigned int unit, unsigned int index)
 {
 	SYMBOL sym;
 	sym.owner    = this;
 	sym.type     = SYMBOL_TYPE_SUBPASSINPUT;
 	sym.location = SYMBOL_LOCATION_TEXTURE;
 	sym.unit     = unit;
-	sym.index    = -1;
+	sym.index    = index;
+	m_symbols.push_back(sym);
+
+	return sym;
+}
+
+CShaderBuilder::SYMBOL CShaderBuilder::CreateSubpassInputUint(unsigned int unit, unsigned int index)
+{
+	SYMBOL sym;
+	sym.owner    = this;
+	sym.type     = SYMBOL_TYPE_SUBPASSINPUTUINT;
+	sym.location = SYMBOL_LOCATION_TEXTURE;
+	sym.unit     = unit;
+	sym.index    = index;
 	m_symbols.push_back(sym);
 
 	return sym;
