@@ -204,6 +204,20 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateOutput(SEMANTIC semantic, unsigned 
 	return sym;
 }
 
+CShaderBuilder::SYMBOL CShaderBuilder::CreateOutputUint(SEMANTIC semantic, unsigned int semanticIndex)
+{
+	SYMBOL sym;
+	sym.owner    = this;
+	sym.index    = m_currentOutputIndex++;
+	sym.type     = SYMBOL_TYPE_UINT4;
+	sym.location = SYMBOL_LOCATION_OUTPUT;
+	m_symbols.push_back(sym);
+
+	m_outputSemantics.insert(std::make_pair(sym.index, SEMANTIC_INFO(semantic, semanticIndex)));
+
+	return sym;
+}
+
 CShaderBuilder::SYMBOL CShaderBuilder::CreateVariableFloat(const std::string& name)
 {
 	SYMBOL sym;

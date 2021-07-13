@@ -222,6 +222,7 @@ namespace Nuanceur
 		uint32 m_inputFloat4PointerTypeId = EMPTY_ID;
 		uint32 m_outputFloatPointerTypeId = EMPTY_ID;
 		uint32 m_outputFloat4PointerTypeId = EMPTY_ID;
+		uint32 m_outputUint4PointerTypeId = EMPTY_ID;
 		uint32 m_functionFloat4PointerTypeId = EMPTY_ID;
 		uint32 m_functionInt4PointerTypeId = EMPTY_ID;
 		uint32 m_functionUint4PointerTypeId = EMPTY_ID;

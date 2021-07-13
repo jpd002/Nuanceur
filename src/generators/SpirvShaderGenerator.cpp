@@ -303,6 +303,7 @@ void CSpirvShaderGenerator::Generate()
 	WriteOp(spv::OpTypePointer, m_inputUint4PointerTypeId, spv::StorageClassInput, m_uint4TypeId);
 	WriteOp(spv::OpTypePointer, m_outputFloatPointerTypeId, spv::StorageClassOutput, m_floatTypeId);
 	WriteOp(spv::OpTypePointer, m_outputFloat4PointerTypeId, spv::StorageClassOutput, m_float4TypeId);
+	WriteOp(spv::OpTypePointer, m_outputUint4PointerTypeId, spv::StorageClassOutput, m_uint4TypeId);
 	WriteOp(spv::OpTypePointer, m_functionFloat4PointerTypeId, spv::StorageClassFunction, m_float4TypeId);
 	WriteOp(spv::OpTypePointer, m_functionInt4PointerTypeId, spv::StorageClassFunction, m_int4TypeId);
 	WriteOp(spv::OpTypePointer, m_functionUint4PointerTypeId, spv::StorageClassFunction, m_uint4TypeId);
@@ -912,7 +913,6 @@ void CSpirvShaderGenerator::AllocateOutputPointerIds()
 		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_OUTPUT) continue;
 		auto semantic = m_shaderBuilder.GetOutputSemantic(symbol);
 		if(IsBuiltInOutput(semantic.type)) continue;
-		assert(symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
 		assert(m_outputPointerIds.find(symbol.index) == std::end(m_outputPointerIds));
 		auto pointerId = AllocateId();
 		m_outputPointerIds[symbol.index] = pointerId;
@@ -942,7 +942,18 @@ void CSpirvShaderGenerator::DeclareOutputPointerIds()
 		if(IsBuiltInOutput(semantic.type)) continue;
 		assert(m_outputPointerIds.find(symbol.index) != std::end(m_outputPointerIds));
 		auto pointerId = m_outputPointerIds[symbol.index];
-		WriteOp(spv::OpVariable, m_outputFloat4PointerTypeId, pointerId, spv::StorageClassOutput);
+		switch(symbol.type)
+		{
+		case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
+			WriteOp(spv::OpVariable, m_outputFloat4PointerTypeId, pointerId, spv::StorageClassOutput);
+			break;
+		case CShaderBuilder::SYMBOL_TYPE_UINT4:
+			WriteOp(spv::OpVariable, m_outputUint4PointerTypeId, pointerId, spv::StorageClassOutput);
+			break;
+		default:
+			assert(false);
+			break;
+		}
 	}
 }
 
@@ -1612,7 +1623,6 @@ void CSpirvShaderGenerator::StoreToSymbol(const CShaderBuilder::SYMBOLREF& dstRe
 	{
 	case CShaderBuilder::SYMBOL_LOCATION_OUTPUT:
 		{
-			assert(dstRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
 			auto pointerId = GetOutputPointerId(dstRef);
 			auto outputSemantic = m_shaderBuilder.GetOutputSemantic(dstRef.symbol);
 			if(outputSemantic.type == SEMANTIC_SYSTEM_POINTSIZE)
@@ -1696,7 +1706,7 @@ uint32 CSpirvShaderGenerator::MapSemanticToLocation(Nuanceur::SEMANTIC semantic,
 		return 1 + index;
 		break;
 	case Nuanceur::SEMANTIC_SYSTEM_COLOR:
-		return 0;
+		return index;
 		break;
 	default:
 		assert(false);
