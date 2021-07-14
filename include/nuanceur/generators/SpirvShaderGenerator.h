@@ -144,6 +144,7 @@ namespace Nuanceur
 		uint32 GetResultType(CShaderBuilder::SYMBOL_TYPE) const;
 
 		static uint32 MapSemanticToLocation(Nuanceur::SEMANTIC, uint32);
+		bool IsBuiltInOutput(Nuanceur::SEMANTIC) const;
 
 		uint32 AllocateId();
 
@@ -169,6 +170,12 @@ namespace Nuanceur
 		enum
 		{
 			EMPTY_ID = 0
+		};
+
+		enum
+		{
+			VERTEX_OUTPUT_POSITION_INDEX = 0,
+			VERTEX_OUTPUT_POINTSIZE_INDEX = 1,
 		};
 
 		struct STRUCTINFO
@@ -212,6 +219,7 @@ namespace Nuanceur
 		uint32 m_ushortArrayTypeId = EMPTY_ID;
 
 		uint32 m_inputFloat4PointerTypeId = EMPTY_ID;
+		uint32 m_outputFloatPointerTypeId = EMPTY_ID;
 		uint32 m_outputFloat4PointerTypeId = EMPTY_ID;
 		uint32 m_functionFloat4PointerTypeId = EMPTY_ID;
 		uint32 m_functionInt4PointerTypeId = EMPTY_ID;

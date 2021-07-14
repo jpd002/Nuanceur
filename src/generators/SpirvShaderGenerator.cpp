@@ -97,6 +97,7 @@ void CSpirvShaderGenerator::Generate()
 	m_inputFloat4PointerTypeId = AllocateId();
 	m_inputInt3PointerTypeId = AllocateId();
 	m_inputUint4PointerTypeId = AllocateId();
+	m_outputFloatPointerTypeId = AllocateId();
 	m_outputFloat4PointerTypeId = AllocateId();
 	m_functionFloat4PointerTypeId = AllocateId();
 	m_functionInt4PointerTypeId = AllocateId();
@@ -242,10 +243,11 @@ void CSpirvShaderGenerator::Generate()
 	//Annotations
 	if(m_shaderType == SHADER_TYPE_VERTEX)
 	{
-		WriteOp(spv::OpMemberDecorate, perVertexStructTypeId, 0, spv::DecorationBuiltIn, spv::BuiltInPosition);
-		WriteOp(spv::OpMemberDecorate, perVertexStructTypeId, 1, spv::DecorationBuiltIn, spv::BuiltInPointSize);
+		WriteOp(spv::OpMemberDecorate, perVertexStructTypeId, VERTEX_OUTPUT_POSITION_INDEX, spv::DecorationBuiltIn, spv::BuiltInPosition);
+		WriteOp(spv::OpMemberDecorate, perVertexStructTypeId, VERTEX_OUTPUT_POINTSIZE_INDEX, spv::DecorationBuiltIn, spv::BuiltInPointSize);
 		WriteOp(spv::OpDecorate, perVertexStructTypeId, spv::DecorationBlock);
-		RegisterIntConstant(0);    //Will be required when accessing built-in position
+		RegisterIntConstant(VERTEX_OUTPUT_POSITION_INDEX);    //Will be required when accessing built-in position
+		RegisterIntConstant(VERTEX_OUTPUT_POINTSIZE_INDEX);
 	}
 
 	DecorateUniformStructIds();
@@ -293,6 +295,7 @@ void CSpirvShaderGenerator::Generate()
 	WriteOp(spv::OpTypeRuntimeArray, m_uintArrayTypeId, m_uintTypeId); //Make this optional
 	WriteOp(spv::OpTypePointer, m_inputFloat4PointerTypeId, spv::StorageClassInput, m_float4TypeId);
 	WriteOp(spv::OpTypePointer, m_inputUint4PointerTypeId, spv::StorageClassInput, m_uint4TypeId);
+	WriteOp(spv::OpTypePointer, m_outputFloatPointerTypeId, spv::StorageClassOutput, m_floatTypeId);
 	WriteOp(spv::OpTypePointer, m_outputFloat4PointerTypeId, spv::StorageClassOutput, m_float4TypeId);
 	WriteOp(spv::OpTypePointer, m_functionFloat4PointerTypeId, spv::StorageClassFunction, m_float4TypeId);
 	WriteOp(spv::OpTypePointer, m_functionInt4PointerTypeId, spv::StorageClassFunction, m_int4TypeId);
@@ -883,8 +886,7 @@ void CSpirvShaderGenerator::AllocateOutputPointerIds()
 	{
 		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_OUTPUT) continue;
 		auto semantic = m_shaderBuilder.GetOutputSemantic(symbol);
-		//Don't bother with position for now
-		if(semantic.type == Nuanceur::SEMANTIC_SYSTEM_POSITION) continue;
+		if(IsBuiltInOutput(semantic.type)) continue;
 		assert(symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
 		assert(m_outputPointerIds.find(symbol.index) == std::end(m_outputPointerIds));
 		auto pointerId = AllocateId();
@@ -898,8 +900,7 @@ void CSpirvShaderGenerator::DecorateOutputPointerIds()
 	{
 		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_OUTPUT) continue;
 		auto semantic = m_shaderBuilder.GetOutputSemantic(symbol);
-		//Don't bother with position for now
-		if(semantic.type == Nuanceur::SEMANTIC_SYSTEM_POSITION) continue;
+		if(IsBuiltInOutput(semantic.type)) continue;
 		assert(m_outputPointerIds.find(symbol.index) != std::end(m_outputPointerIds));
 		auto pointerId = m_outputPointerIds[symbol.index];
 		auto location = MapSemanticToLocation(semantic.type, semantic.index);
@@ -913,8 +914,7 @@ void CSpirvShaderGenerator::DeclareOutputPointerIds()
 	{
 		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_OUTPUT) continue;
 		auto semantic = m_shaderBuilder.GetOutputSemantic(symbol);
-		//Don't bother with position for now
-		if(semantic.type == Nuanceur::SEMANTIC_SYSTEM_POSITION) continue;
+		if(IsBuiltInOutput(semantic.type)) continue;
 		assert(m_outputPointerIds.find(symbol.index) != std::end(m_outputPointerIds));
 		auto pointerId = m_outputPointerIds[symbol.index];
 		WriteOp(spv::OpVariable, m_outputFloat4PointerTypeId, pointerId, spv::StorageClassOutput);
@@ -932,9 +932,18 @@ uint32 CSpirvShaderGenerator::GetOutputPointerId(const CShaderBuilder::SYMBOLREF
 		{
 			assert(m_shaderType == SHADER_TYPE_VERTEX);
 			pointerId = AllocateId();
-			assert(m_intConstantIds.find(0) != m_intConstantIds.end());
-			auto intConstantId = m_intConstantIds[0];
+			assert(m_intConstantIds.find(VERTEX_OUTPUT_POSITION_INDEX) != m_intConstantIds.end());
+			auto intConstantId = m_intConstantIds[VERTEX_OUTPUT_POSITION_INDEX];
 			WriteOp(spv::OpAccessChain, m_outputFloat4PointerTypeId, pointerId, m_outputPerVertexVariableId, intConstantId);
+		}
+		break;
+	case Nuanceur::SEMANTIC_SYSTEM_POINTSIZE:
+		{
+			assert(m_shaderType == SHADER_TYPE_VERTEX);
+			pointerId = AllocateId();
+			assert(m_intConstantIds.find(VERTEX_OUTPUT_POINTSIZE_INDEX) != m_intConstantIds.end());
+			auto intConstantId = m_intConstantIds[VERTEX_OUTPUT_POINTSIZE_INDEX];
+			WriteOp(spv::OpAccessChain, m_outputFloatPointerTypeId, pointerId, m_outputPerVertexVariableId, intConstantId);
 		}
 		break;
 	case Nuanceur::SEMANTIC_TEXCOORD:
@@ -1552,7 +1561,17 @@ void CSpirvShaderGenerator::StoreToSymbol(const CShaderBuilder::SYMBOLREF& dstRe
 		{
 			assert(dstRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
 			auto pointerId = GetOutputPointerId(dstRef);
-			WriteOp(spv::OpStore, pointerId, dstId);
+			auto outputSemantic = m_shaderBuilder.GetOutputSemantic(dstRef.symbol);
+			if(outputSemantic.type == SEMANTIC_SYSTEM_POINTSIZE)
+			{
+				//Output is a float and we need to extract the first element from the vector
+				auto scalarDstId = ExtractFloat4X(dstId);
+				WriteOp(spv::OpStore, pointerId, scalarDstId);
+			}
+			else
+			{
+				WriteOp(spv::OpStore, pointerId, dstId);
+			}
 		}
 		break;
 	case CShaderBuilder::SYMBOL_LOCATION_TEMPORARY:
@@ -1631,6 +1650,16 @@ uint32 CSpirvShaderGenerator::MapSemanticToLocation(Nuanceur::SEMANTIC semantic,
 		break;
 	}
 	return 0;
+}
+
+bool CSpirvShaderGenerator::IsBuiltInOutput(Nuanceur::SEMANTIC semantic) const
+{
+	if(m_shaderType == SHADER_TYPE_VERTEX)
+	{
+		if(semantic == Nuanceur::SEMANTIC_SYSTEM_POSITION) return true;
+		if(semantic == Nuanceur::SEMANTIC_SYSTEM_POINTSIZE) return true;
+	}
+	return false;
 }
 
 uint32 CSpirvShaderGenerator::AllocateId()
