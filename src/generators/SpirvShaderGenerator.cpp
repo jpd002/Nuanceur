@@ -2089,7 +2089,9 @@ void CSpirvShaderGenerator::Load(const CShaderBuilder::SYMBOLREF& dstRef, const 
 		auto src1Id = LoadFromSymbol(src1Ref);
 		auto src2Id = LoadFromSymbol(src2Ref);
 		auto resultId = AllocateId();
-		WriteOp(spv::OpImageRead, m_uint4TypeId, resultId, src1Id, src2Id);
+		auto cvtCoordId = AllocateId();
+		WriteOp(spv::OpVectorShuffle, m_int2TypeId, cvtCoordId, src2Id, src2Id, 0, 1);
+		WriteOp(spv::OpImageRead, m_uint4TypeId, resultId, src1Id, cvtCoordId);
 		StoreToSymbol(dstRef, resultId);
 	}
 	else if(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_SUBPASSINPUT)
