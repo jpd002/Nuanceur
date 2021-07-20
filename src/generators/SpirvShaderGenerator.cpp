@@ -338,10 +338,10 @@ void CSpirvShaderGenerator::Generate()
 		WriteOp(spv::OpTypePointer, m_imageUintPtrId, spv::StorageClassImage, m_uintTypeId);
 
 		//Subpass input
-		WriteOp(spv::OpTypeImage, m_subpassInputTypeId, m_floatTypeId, spv::DimSubpassData, 2, 0, 0, 2, spv::ImageFormatUnknown);
+		WriteOp(spv::OpTypeImage, m_subpassInputTypeId, m_floatTypeId, spv::DimSubpassData, 0, 0, 0, 2, spv::ImageFormatUnknown);
 		WriteOp(spv::OpTypePointer, m_subpassInputPointerTypeId, spv::StorageClassUniformConstant, m_subpassInputTypeId);
 		
-		WriteOp(spv::OpTypeImage, m_subpassInputUintTypeId, m_uintTypeId, spv::DimSubpassData, 2, 0, 0, 2, spv::ImageFormatUnknown);
+		WriteOp(spv::OpTypeImage, m_subpassInputUintTypeId, m_uintTypeId, spv::DimSubpassData, 0, 0, 0, 2, spv::ImageFormatUnknown);
 		WriteOp(spv::OpTypePointer, m_subpassInputUintPointerTypeId, spv::StorageClassUniformConstant, m_subpassInputUintTypeId);
 	}
 
