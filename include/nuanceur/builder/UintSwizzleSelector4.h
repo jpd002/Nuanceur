@@ -36,9 +36,19 @@ namespace Nuanceur
 			return CUintRvalue(m_symbol, SWIZZLE_W);
 		}
 
+		CUint3Rvalue xxx() const
+		{
+			return CUint3Rvalue(m_symbol, SWIZZLE_XXX);
+		}
+
 		CUint3Rvalue xyz() const
 		{
 			return CUint3Rvalue(m_symbol, SWIZZLE_XYZ);
+		}
+
+		CUint3Rvalue www() const
+		{
+			return CUint3Rvalue(m_symbol, SWIZZLE_WWW);
 		}
 
 		CUint4Rvalue xxxx() const

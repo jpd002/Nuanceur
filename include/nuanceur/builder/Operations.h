@@ -32,16 +32,19 @@ namespace Nuanceur
 	CIntRvalue operator +(const CIntValue& lhs, const CIntValue& rhs);
 	CInt2Rvalue operator +(const CInt2Value& lhs, const CInt2Value& rhs);
 	CUintRvalue operator +(const CUintValue& lhs, const CUintValue& rhs);
+	CUint3Rvalue operator +(const CUint3Value& lhs, const CUint3Value& rhs);
 
 	CFloatRvalue operator -(const CFloatValue& lhs, const CFloatValue& rhs);
 	CFloat3Rvalue operator -(const CFloat3Value& lhs, const CFloat3Value& rhs);
 	CFloat4Rvalue operator -(const CFloat4Value& lhs, const CFloat4Value& rhs);
 	CIntRvalue operator -(const CIntValue& lhs, const CIntValue& rhs);
+	CUint3Rvalue operator -(const CUint3Value& lhs, const CUint3Value& rhs);
 
 	CFloatRvalue operator *(const CFloatValue& lhs, const CFloatValue& rhs);
 	CFloat2Rvalue operator *(const CFloat2Value& lhs, const CFloat2Value& rhs);
 	CFloat3Rvalue operator *(const CFloat3Value& lhs, const CFloat3Value& rhs);
 	CFloat4Rvalue operator *(const CFloat4Value& lhs, const CFloat4Value& rhs);
+	CUint3Rvalue operator *(const CUint3Value& lhs, const CUint3Value& rhs);
 
 	CIntRvalue operator *(const CIntValue& lhs, const CIntValue& rhs);
 	CInt2Rvalue operator *(const CInt2Value& lhs, const CInt2Value& rhs);
@@ -57,6 +60,7 @@ namespace Nuanceur
 
 	CIntRvalue operator >>(const CIntValue& lhs, const CIntValue& rhs);
 	CUintRvalue operator >>(const CUintValue& lhs, const CUintValue& rhs);
+	CUint3Rvalue operator >>(const CUint3Value& lhs, const CUint3Value& rhs);
 
 	CIntRvalue operator <<(const CIntValue& lhs, const CIntValue& rhs);
 	CUintRvalue operator <<(const CUintValue& lhs, const CUintValue& rhs);
@@ -95,6 +99,7 @@ namespace Nuanceur
 	CFloat4Rvalue Clamp(const CFloat4Value&, const CFloat4Value&, const CFloat4Value&);
 	CIntRvalue Clamp(const CIntValue&, const CIntValue&, const CIntValue&);
 	CFloat2Rvalue Fract(const CFloat2Value&);
+	CUint4Rvalue Min(const CUint4Value&, const CUint4Value&);
 	CFloatRvalue Mix(const CFloatValue&, const CFloatValue&, const CFloatValue&);
 	CFloat3Rvalue Mix(const CFloat3Value&, const CFloat3Value&, const CFloat3Value&);
 	CFloat4Rvalue Normalize(const CFloat4Value& rhs);
@@ -124,6 +129,7 @@ namespace Nuanceur
 
 	CUint4Rvalue NewUint4(CShaderBuilder& owner, uint32 x, uint32 y, uint32 z, uint32 w);
 	CUint4Rvalue NewUint4(const CUintValue& x, const CUint3Value& yzw);
+	CUint4Rvalue NewUint4(const CUint3Value& xyz, const CUintValue& w);
 
 	CBoolRvalue NewBool(CShaderBuilder& owner, bool x);
 

@@ -38,6 +38,7 @@ namespace Nuanceur
 
 		}
 
+		void operator =(const CUint4Lvalue& lvalue) = delete;
 		void operator =(const CUint4Rvalue& rvalue);
 	};
 

@@ -11,12 +11,22 @@ namespace Nuanceur
 
 	class CUintValue : public CShaderBuilder::SYMBOLREF
 	{
+	public:
+		CUintSwizzleSelector4* operator ->()
+		{
+			assert(swizzle == SWIZZLE_X);
+			return m_swizzleSelector.get();
+		}
+
 	protected:
 		CUintValue(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_X)
 			: SYMBOLREF(symbol, swizzle)
 		{
-
+			m_swizzleSelector = std::make_shared<CUintSwizzleSelector4>(symbol);
 		}
+
+	private:
+		std::shared_ptr<CUintSwizzleSelector4> m_swizzleSelector;
 	};
 
 	class CUintLvalue : public CUintValue
