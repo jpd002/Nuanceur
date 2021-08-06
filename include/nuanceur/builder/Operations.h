@@ -137,6 +137,7 @@ namespace Nuanceur
 	CInt3Rvalue NewInt3(CShaderBuilder& owner, int32 x, int32 y, int32 z);
 
 	CInt4Rvalue NewInt4(CShaderBuilder& owner, int32 x, int32 y, int32 z, int32 w);
+	CInt4Rvalue NewInt4(const CIntValue& x, const CIntValue& y, const CIntValue& z, const CIntValue& w);
 	CInt4Rvalue NewInt4(const CInt3Value& xyz, const CIntValue& w);
 
 	CUintRvalue NewUint(CShaderBuilder& owner, uint32 x);

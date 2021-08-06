@@ -440,6 +440,16 @@ CInt4Rvalue Nuanceur::NewInt4(CShaderBuilder& owner, int32 x, int32 y, int32 z, 
 	return CInt4Rvalue(literal);
 }
 
+CInt4Rvalue Nuanceur::NewInt4(const CIntValue& x, const CIntValue& y, const CIntValue& z, const CIntValue& w)
+{
+	auto owner = GetCommonOwner(x.symbol, y.symbol);
+	auto temp = CInt4Rvalue(owner->CreateTemporaryInt());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, x, y, z, w)
+	);
+	return temp;
+}
+
 CInt4Rvalue Nuanceur::NewInt4(const CInt3Value& xyz, const CIntValue& w)
 {
 	auto owner = GetCommonOwner(xyz.symbol, w.symbol);
