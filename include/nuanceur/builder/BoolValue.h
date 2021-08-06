@@ -39,15 +39,21 @@ namespace Nuanceur
 		friend CBoolRvalue operator !(const CBoolValue&);
 		friend CBoolRvalue operator ==(const CFloatValue&, const CFloatValue&);
 		friend CBoolRvalue operator <(const CFloatValue&, const CFloatValue&);
+
 		friend CBoolRvalue operator ==(const CIntValue&, const CIntValue&);
 		friend CBoolRvalue operator !=(const CIntValue&, const CIntValue&);
+		friend CBoolRvalue operator <(const CIntValue&, const CIntValue&);
+		friend CBoolRvalue operator <=(const CIntValue&, const CIntValue&);
+		friend CBoolRvalue operator >(const CIntValue&, const CIntValue&);
 		friend CBoolRvalue operator >=(const CIntValue&, const CIntValue&);
+
 		friend CBoolRvalue operator ==(const CUintValue&, const CUintValue&);
 		friend CBoolRvalue operator !=(const CUintValue&, const CUintValue&);
 		friend CBoolRvalue operator <(const CUintValue&, const CUintValue&);
 		friend CBoolRvalue operator <=(const CUintValue&, const CUintValue&);
 		friend CBoolRvalue operator >(const CUintValue&, const CUintValue&);
 		friend CBoolRvalue operator >=(const CUintValue&, const CUintValue&);
+
 		friend CBoolRvalue NewBool(CShaderBuilder&, bool);
 
 		CBoolRvalue(const CBoolRvalue&) = default;
