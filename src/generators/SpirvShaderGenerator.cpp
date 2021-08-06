@@ -491,6 +491,9 @@ void CSpirvShaderGenerator::Generate()
 			case CShaderBuilder::STATEMENT_OP_FRACT:
 				Fract(dstRef, src1Ref);
 				break;
+			case CShaderBuilder::STATEMENT_OP_MIN:
+				Min(dstRef, src1Ref, src2Ref);
+				break;
 			case CShaderBuilder::STATEMENT_OP_MIX:
 				Mix(dstRef, src1Ref, src2Ref, src3Ref);
 				break;
@@ -1489,6 +1492,9 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 		case CShaderBuilder::SYMBOL_TYPE_INT4:
 			srcType = m_int4TypeId;
 			break;
+		case CShaderBuilder::SYMBOL_TYPE_UINT4:
+			srcType = m_uint4TypeId;
+			break;
 		default:
 			assert(false);
 			break;
@@ -1755,6 +1761,9 @@ void CSpirvShaderGenerator::Sub(const CShaderBuilder::SYMBOLREF& dstRef, const C
 	case CShaderBuilder::SYMBOL_TYPE_INT4:
 		WriteOp(spv::OpISub, m_int4TypeId, resultId, src1Id, src2Id);
 		break;
+	case CShaderBuilder::SYMBOL_TYPE_UINT4:
+		WriteOp(spv::OpISub, m_uint4TypeId, resultId, src1Id, src2Id);
+		break;
 	default:
 		assert(false);
 		break;
@@ -1794,6 +1803,21 @@ void CSpirvShaderGenerator::Fract(const CShaderBuilder::SYMBOLREF& dstRef, const
 	auto resultId = AllocateId();
 
 	WriteOp(spv::OpExtInst, m_float4TypeId, resultId, m_glslStd450ExtInst, GLSLstd450::GLSLstd450Fract, src1Id);
+
+	StoreToSymbol(dstRef, resultId);
+}
+
+void CSpirvShaderGenerator::Min(const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref, const CShaderBuilder::SYMBOLREF& src2Ref)
+{
+	assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
+	assert(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
+
+	auto src1Id = LoadFromSymbol(src1Ref);
+	auto src2Id = LoadFromSymbol(src2Ref);
+	auto resultId = AllocateId();
+
+	WriteOp(spv::OpExtInst, m_uint4TypeId, resultId, m_glslStd450ExtInst, GLSLstd450::GLSLstd450UMin,
+		src1Id, src2Id);
 
 	StoreToSymbol(dstRef, resultId);
 }

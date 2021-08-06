@@ -33,6 +33,10 @@ namespace Nuanceur
 	{
 	private:
 		friend CUintSwizzleSelector4;
+		friend CUint3Rvalue operator +(const CUint3Value&, const CUint3Value&);
+		friend CUint3Rvalue operator -(const CUint3Value&, const CUint3Value&);
+		friend CUint3Rvalue operator *(const CUint3Value&, const CUint3Value&);
+		friend CUint3Rvalue operator >>(const CUint3Value&, const CUint3Value&);
 		friend CUint3Rvalue NewUint3(CShaderBuilder&, uint32, uint32, uint32);
 
 		CUint3Rvalue(const CUint3Rvalue&) = default;

@@ -157,6 +157,7 @@ namespace Nuanceur
 		void Clamp(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&,
 			const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Fract(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
+		void Min(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Mix(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&,
 			const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Compare(CShaderBuilder::STATEMENT_OP, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
