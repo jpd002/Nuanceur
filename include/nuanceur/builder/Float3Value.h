@@ -26,6 +26,7 @@ namespace Nuanceur
 
 		}
 
+		void operator =(const CFloat3Lvalue& lvalue) = delete;
 		void operator =(const CFloat3Rvalue& rvalue);
 	};
 

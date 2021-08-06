@@ -35,6 +35,7 @@ namespace Nuanceur
 
 		}
 
+		void operator =(const CInt4Lvalue& lvalue) = delete;
 		void operator =(const CInt4Rvalue& rvalue);
 	};
 
