@@ -35,6 +35,15 @@ SWIZZLE_TYPE Nuanceur::TransformSwizzle(SWIZZLE_TYPE a, SWIZZLE_TYPE b)
 	case SWIZZLE_XYZW:
 		//Return b if identity
 		return b;
+	case SWIZZLE_Y:
+		switch(b)
+		{
+		default:
+			assert(false);
+		case SWIZZLE_XXX:
+			return SWIZZLE_YYY;
+		}
+		break;
 	case SWIZZLE_ZW:
 		switch(b)
 		{

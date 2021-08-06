@@ -9,12 +9,21 @@ namespace Nuanceur
 
 	class CIntValue : public CShaderBuilder::SYMBOLREF
 	{
+	public:
+		CIntSwizzleSelector4* operator ->()
+		{
+			return m_swizzleSelector.get();
+		}
+
 	protected:
 		CIntValue(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_X)
 			: SYMBOLREF(symbol, swizzle)
 		{
-
+			m_swizzleSelector = std::make_shared<CIntSwizzleSelector4>(*this);
 		}
+
+	private:
+		std::shared_ptr<CIntSwizzleSelector4> m_swizzleSelector;
 	};
 
 	class CIntLvalue : public CIntValue

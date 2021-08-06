@@ -85,6 +85,7 @@ GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_ADD, +, CFloat3)
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_ADD, +, CFloat4)
 GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_ADD, +, CInt)
 GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_ADD, +, CInt2)
+GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_ADD, +, CInt3)
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_ADD, +, CUint)
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_ADD, +, CUint3)
 
@@ -92,6 +93,7 @@ GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_SUBSTRACT, -, CFloat)
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_SUBSTRACT, -, CFloat3)
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_SUBSTRACT, -, CFloat4)
 GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_SUBSTRACT, -, CInt)
+GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_SUBSTRACT, -, CInt3)
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_SUBSTRACT, -, CUint3)
 
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_MULTIPLY, *, CFloat)
@@ -100,6 +102,7 @@ GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_MULTIPLY, *, CFloat3)
 GENERATE_VECTOR_BINARY_OP(STATEMENT_OP_MULTIPLY, *, CFloat4)
 GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_MULTIPLY, *, CInt)
 GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_MULTIPLY, *, CInt2)
+GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_MULTIPLY, *, CInt3)
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_MULTIPLY, *, CUint)
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_MULTIPLY, *, CUint3)
 
@@ -118,7 +121,9 @@ GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_RSHIFT, >>, CUint)
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_RSHIFT, >>, CUint3)
 
 GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_AND, &, CInt)
+GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_AND, &, CInt4)
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_AND, &, CUint)
+GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_AND, &, CUint4)
 
 GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_OR, |, CInt)
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_OR, |, CUint)
@@ -145,6 +150,7 @@ GENERATE_VECTOR_ASSIGN(CFloat2)
 GENERATE_VECTOR_ASSIGN(CFloat4)
 GENERATE_VECTOR_ASSIGN(CInt)
 GENERATE_VECTOR_ASSIGN(CInt2)
+GENERATE_VECTOR_ASSIGN(CInt4)
 GENERATE_VECTOR_ASSIGN(CUint)
 GENERATE_VECTOR_ASSIGN(CUint4)
 
@@ -211,6 +217,19 @@ CIntRvalue Nuanceur::Clamp(const CIntValue& value, const CIntValue& min, const C
 	CHECK_ISOPERANDVALID(max);
 	auto owner = GetCommonOwner(value.symbol, min.symbol);
 	auto temp = CIntRvalue(owner->CreateTemporaryInt());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_CLAMP, temp, value, min, max)
+	);
+	return temp;
+}
+
+CInt4Rvalue Nuanceur::Clamp(const CInt4Value& value, const CInt4Value& min, const CInt4Value& max)
+{
+	CHECK_ISOPERANDVALID(value);
+	CHECK_ISOPERANDVALID(min);
+	CHECK_ISOPERANDVALID(max);
+	auto owner = GetCommonOwner(value.symbol, min.symbol);
+	auto temp = CInt4Rvalue(owner->CreateTemporaryInt());
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_CLAMP, temp, value, min, max)
 	);
@@ -294,6 +313,18 @@ CFloatRvalue Nuanceur::Saturate(const CFloatValue& rhs)
 	auto temp = CFloatRvalue(owner->CreateTemporary());
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_SATURATE, temp, rhs)
+	);
+	return temp;
+}
+
+CInt3Rvalue Nuanceur::ShiftRightArithmetic(const CInt3Value& x, const CInt3Value& y)
+{
+	CHECK_ISOPERANDVALID(x);
+	CHECK_ISOPERANDVALID(y);
+	auto owner = GetCommonOwner(x.symbol, y.symbol);
+	auto temp = CInt3Rvalue(owner->CreateTemporaryInt());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_RSHIFT_ARITHMETIC, temp, x, y)
 	);
 	return temp;
 }
@@ -390,6 +421,28 @@ CInt2Rvalue Nuanceur::NewInt2(const CIntValue& x, const CIntValue& y)
 	auto temp = CInt2Rvalue(owner->CreateTemporaryInt());
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR2, temp, x, y)
+	);
+	return temp;
+}
+
+CInt3Rvalue Nuanceur::NewInt3(CShaderBuilder& owner, int32 x, int32 y, int32 z)
+{
+	auto literal = owner.CreateConstantInt(x, y, z, 1);
+	return CInt3Rvalue(literal);
+}
+
+CInt4Rvalue Nuanceur::NewInt4(CShaderBuilder& owner, int32 x, int32 y, int32 z, int32 w)
+{
+	auto literal = owner.CreateConstantInt(x, y, z, w);
+	return CInt4Rvalue(literal);
+}
+
+CInt4Rvalue Nuanceur::NewInt4(const CInt3Value& xyz, const CIntValue& w)
+{
+	auto owner = GetCommonOwner(xyz.symbol, w.symbol);
+	auto temp = CInt4Rvalue(owner->CreateTemporaryInt());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, xyz, w)
 	);
 	return temp;
 }
@@ -570,6 +623,16 @@ CFloat2Rvalue Nuanceur::ToFloat(const CInt2Value& rhs)
 	return temp;
 }
 
+CFloat4Rvalue Nuanceur::ToFloat(const CInt4Value& rhs)
+{
+	auto owner = rhs.symbol.owner;
+	auto temp = CFloat4Rvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOFLOAT, temp, rhs)
+	);
+	return temp;
+}
+
 CFloat4Rvalue Nuanceur::ToFloat(const CUint4Value& rhs)
 {
 	auto owner = rhs.symbol.owner;
@@ -594,6 +657,16 @@ CInt2Rvalue Nuanceur::ToInt(const CFloat2Value& rhs)
 {
 	auto owner = rhs.symbol.owner;
 	auto temp = CInt2Rvalue(owner->CreateTemporaryInt());
+	owner->InsertStatement(
+		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOINT, temp, rhs)
+	);
+	return temp;
+}
+
+CInt4Rvalue Nuanceur::ToInt(const CFloat4Value& rhs)
+{
+	auto owner = rhs.symbol.owner;
+	auto temp = CInt4Rvalue(owner->CreateTemporaryInt());
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOINT, temp, rhs)
 	);

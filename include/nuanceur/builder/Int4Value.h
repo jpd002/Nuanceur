@@ -6,6 +6,7 @@ namespace Nuanceur
 {
 	class CIntSwizzleSelector4;
 	class CInt4Rvalue;
+	class CFloat4Value;
 
 	class CInt4Value : public CShaderBuilder::SYMBOLREF
 	{
@@ -43,6 +44,11 @@ namespace Nuanceur
 	{
 	private:
 		friend CIntSwizzleSelector4;
+		friend CInt4Rvalue operator &(const CInt4Value&, const CInt4Value&);
+		friend CInt4Rvalue Clamp(const CInt4Value&, const CInt4Value&, const CInt4Value&);
+		friend CInt4Rvalue NewInt4(CShaderBuilder&, int32, int32, int32, int32);
+		friend CInt4Rvalue NewInt4(const CInt3Value&, const CIntValue&);
+		friend CInt4Rvalue ToInt(const CFloat4Value&);
 
 		CInt4Rvalue(const CInt4Rvalue&) = default;
 

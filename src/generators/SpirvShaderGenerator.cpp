@@ -515,6 +515,9 @@ void CSpirvShaderGenerator::Generate()
 			case CShaderBuilder::STATEMENT_OP_RSHIFT:
 				BitwiseOp(spv::OpShiftRightLogical, dstRef, src1Ref, src2Ref);
 				break;
+			case CShaderBuilder::STATEMENT_OP_RSHIFT_ARITHMETIC:
+				BitwiseOp(spv::OpShiftRightArithmetic, dstRef, src1Ref, src2Ref);
+				break;
 			case CShaderBuilder::STATEMENT_OP_LOGICAL_AND:
 				LogicalOp(spv::OpLogicalAnd, dstRef, src1Ref, src2Ref);
 				break;
@@ -1529,6 +1532,11 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 			components[0] = 0;
 			components[1] = 0;
 			components[2] = 0;
+			break;
+		case SWIZZLE_YYY:
+			components[0] = 1;
+			components[1] = 1;
+			components[2] = 1;
 			break;
 		case SWIZZLE_WWW:
 			components[0] = 3;

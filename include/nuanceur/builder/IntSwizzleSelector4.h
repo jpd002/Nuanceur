@@ -2,7 +2,7 @@
 
 #include "IntValue.h"
 #include "Int2Value.h"
-//#include "Int3Value.h"
+#include "Int3Value.h"
 #include "Int4Value.h"
 
 namespace Nuanceur
@@ -44,6 +44,26 @@ namespace Nuanceur
 		CInt2Rvalue zw() const
 		{
 			return CInt2Rvalue(m_symbolRef.symbol, TransformSwizzle(m_symbolRef.swizzle, SWIZZLE_ZW));
+		}
+
+		CInt3Rvalue xxx() const
+		{
+			return CInt3Rvalue(m_symbolRef.symbol, TransformSwizzle(m_symbolRef.swizzle, SWIZZLE_XXX));
+		}
+
+		CInt3Rvalue xyz() const
+		{
+			return CInt3Rvalue(m_symbolRef.symbol, TransformSwizzle(m_symbolRef.swizzle, SWIZZLE_XYZ));
+		}
+
+		CInt3Rvalue www() const
+		{
+			return CInt3Rvalue(m_symbolRef.symbol, TransformSwizzle(m_symbolRef.swizzle, SWIZZLE_WWW));
+		}
+
+		CInt4Rvalue xyzw() const
+		{
+			return CInt4Rvalue(m_symbolRef.symbol, TransformSwizzle(m_symbolRef.swizzle, SWIZZLE_XYZW));
 		}
 
 	private:

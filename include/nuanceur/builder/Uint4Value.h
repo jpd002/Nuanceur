@@ -47,6 +47,7 @@ namespace Nuanceur
 	private:
 		friend CUintSwizzleSelector4;
 		friend CUint4Rvalue Load(const CImageUint2DValue&, const CInt2Value&);
+		friend CUint4Rvalue operator &(const CUint4Value&, const CUint4Value&);
 		friend CUint4Rvalue NewUint4(CShaderBuilder&, uint32, uint32, uint32, uint32);
 		friend CUint4Rvalue NewUint4(const CUintValue&, const CUint3Value&);
 		friend CUint4Rvalue NewUint4(const CUint3Value&, const CUintValue&);

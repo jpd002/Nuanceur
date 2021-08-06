@@ -40,6 +40,7 @@ add_library(Nuanceur
 	../include/nuanceur/builder/FloatSwizzleSelector4.h
 	../include/nuanceur/builder/ImageUint2DValue.h
 	../include/nuanceur/builder/Int2Value.h
+	../include/nuanceur/builder/Int3Value.h
 	../include/nuanceur/builder/Int4Value.h
 	../include/nuanceur/builder/IntValue.h
 	../include/nuanceur/builder/IntSwizzleSelector4.h
