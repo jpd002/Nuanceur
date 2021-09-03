@@ -100,6 +100,7 @@ void CSpirvShaderGenerator::Generate()
 	m_inputUint4PointerTypeId = AllocateId();
 	m_outputFloatPointerTypeId = AllocateId();
 	m_outputFloat4PointerTypeId = AllocateId();
+	m_outputUint4PointerTypeId = AllocateId();
 	m_functionFloat4PointerTypeId = AllocateId();
 	m_functionInt4PointerTypeId = AllocateId();
 	m_functionUint4PointerTypeId = AllocateId();
