@@ -1,4 +1,5 @@
 #include <cstring>
+#include <array>
 #include "nuanceur/generators/SpirvShaderGenerator.h"
 #include "../external/vulkan/GLSL.std.450.h"
 
@@ -1569,58 +1570,24 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 			break;
 		}
 		auto prevId = srcId;
-		uint32 components[4] = { 0, 0, 0, 0 };
+		std::array<uint32, 4> components = { 0, 0, 0, 0 };
 		srcId = AllocateId();
 		switch(srcRef.swizzle)
 		{
-		case SWIZZLE_Y:
-			components[0] = 1;
-			break;
-		case SWIZZLE_Z:
-			components[0] = 2;
-			break;
-		case SWIZZLE_W:
-			components[0] = 3;
-			break;
-		case SWIZZLE_ZZ:
-			components[0] = 2;
-			components[1] = 2;
-			break;
-		case SWIZZLE_ZW:
-			components[0] = 2;
-			components[1] = 3;
-			break;
-		case SWIZZLE_WW:
-			components[0] = 3;
-			components[1] = 3;
-			break;
-		case SWIZZLE_XXX:
-			components[0] = 0;
-			components[1] = 0;
-			components[2] = 0;
-			break;
-		case SWIZZLE_YYY:
-			components[0] = 1;
-			components[1] = 1;
-			components[2] = 1;
-			break;
-		case SWIZZLE_WWW:
-			components[0] = 3;
-			components[1] = 3;
-			components[2] = 3;
-			break;
-		case SWIZZLE_XXXX:
-			components[0] = 0;
-			components[1] = 0;
-			components[2] = 0;
-			components[3] = 0;
-			break;
-		case SWIZZLE_WWWW:
-			components[0] = 3;
-			components[1] = 3;
-			components[2] = 3;
-			components[3] = 3;
-			break;
+		case SWIZZLE_Y: components = {1}; break;
+		case SWIZZLE_Z: components = {2}; break;
+		case SWIZZLE_W: components = {3}; break;
+		case SWIZZLE_ZZ: components = {2, 2}; break;
+		case SWIZZLE_ZW: components = {2, 3}; break;
+		case SWIZZLE_WW: components = {3, 3}; break;
+		case SWIZZLE_XXX: components = {0, 0, 0}; break;
+		case SWIZZLE_YYY: components = {1, 1, 1}; break;
+		case SWIZZLE_WWW: components = {3, 3, 3}; break;
+		case SWIZZLE_XXXX: components = {0, 0, 0, 0}; break;
+		case SWIZZLE_YZWX: components = {1, 2, 3, 0}; break;
+		case SWIZZLE_WXYZ: components = {3, 0, 1, 2}; break;
+		case SWIZZLE_WZYX: components = {3, 2, 1, 0}; break;
+		case SWIZZLE_WWWW: components = {3, 3, 3, 3}; break;
 		default:
 			assert(false);
 			break;

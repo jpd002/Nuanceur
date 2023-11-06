@@ -76,6 +76,21 @@ namespace Nuanceur
 			return CFloat4Rvalue(m_symbol, SWIZZLE_XYZW);
 		}
 
+		CFloat4Rvalue yzwx() const
+		{
+			return CFloat4Rvalue(m_symbol, SWIZZLE_YZWX);
+		}
+
+		CFloat4Rvalue wxyz() const
+		{
+			return CFloat4Rvalue(m_symbol, SWIZZLE_WXYZ);
+		}
+
+		CFloat4Rvalue wzyx() const
+		{
+			return CFloat4Rvalue(m_symbol, SWIZZLE_WZYX);
+		}
+
 		CFloat4Rvalue wwww() const
 		{
 			return CFloat4Rvalue(m_symbol, SWIZZLE_WWWW);
