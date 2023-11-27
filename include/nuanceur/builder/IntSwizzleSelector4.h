@@ -36,6 +36,11 @@ namespace Nuanceur
 			return CIntRvalue(m_symbolRef.symbol, TransformSwizzle(m_symbolRef.swizzle, SWIZZLE_W));
 		}
 
+		CInt2Rvalue xx() const
+		{
+			return CInt2Rvalue(m_symbolRef.symbol, TransformSwizzle(m_symbolRef.swizzle, SWIZZLE_XX));
+		}
+
 		CInt2Rvalue xy() const
 		{
 			return CInt2Rvalue(m_symbolRef.symbol, TransformSwizzle(m_symbolRef.swizzle, SWIZZLE_XY));

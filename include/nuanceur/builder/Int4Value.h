@@ -44,6 +44,7 @@ namespace Nuanceur
 	{
 	private:
 		friend CIntSwizzleSelector4;
+		friend CInt4Rvalue operator +(const CInt4Value&, const CInt4Value&);
 		friend CInt4Rvalue operator &(const CInt4Value&, const CInt4Value&);
 		friend CInt4Rvalue Clamp(const CInt4Value&, const CInt4Value&, const CInt4Value&);
 		friend CInt4Rvalue NewInt4(CShaderBuilder&, int32, int32, int32, int32);

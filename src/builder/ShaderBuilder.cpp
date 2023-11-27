@@ -40,6 +40,8 @@ SWIZZLE_TYPE Nuanceur::TransformSwizzle(SWIZZLE_TYPE a, SWIZZLE_TYPE b)
 		{
 		default:
 			assert(false);
+		case SWIZZLE_XX:
+			return SWIZZLE_YY;
 		case SWIZZLE_XXX:
 			return SWIZZLE_YYY;
 		}

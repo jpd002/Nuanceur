@@ -1570,13 +1570,15 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 			break;
 		}
 		auto prevId = srcId;
-		std::array<uint32, 4> components = { 0, 0, 0, 0 };
+		std::array<uint32, 4> components = {0, 0, 0, 0};
 		srcId = AllocateId();
 		switch(srcRef.swizzle)
 		{
 		case SWIZZLE_Y: components = {1}; break;
 		case SWIZZLE_Z: components = {2}; break;
 		case SWIZZLE_W: components = {3}; break;
+		case SWIZZLE_XX: components = {0, 0}; break;
+		case SWIZZLE_YY: components = {1, 1}; break;
 		case SWIZZLE_ZZ: components = {2, 2}; break;
 		case SWIZZLE_ZW: components = {2, 3}; break;
 		case SWIZZLE_WW: components = {3, 3}; break;
