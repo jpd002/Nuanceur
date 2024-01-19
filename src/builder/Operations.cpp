@@ -216,6 +216,16 @@ CBoolRvalue Nuanceur::operator !(const CBoolValue& lhs)
 	return temp;
 }
 
+CFloatRvalue Nuanceur::Abs(const CFloatValue& value)
+{
+	CHECK_ISOPERANDVALID(value);
+	auto owner = value.symbol.owner;
+	auto temp = CFloatRvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ABS, temp, value));
+	return temp;
+}
+
 CIntRvalue Nuanceur::Clamp(const CIntValue& value, const CIntValue& min, const CIntValue& max)
 {
 	CHECK_ISOPERANDVALID(value);
@@ -265,12 +275,33 @@ CFloat2Rvalue Nuanceur::Fract(const CFloat2Value& value)
 	return temp;
 }
 
+CFloatRvalue Nuanceur::Log2(const CFloatValue& value)
+{
+	CHECK_ISOPERANDVALID(value);
+	auto owner = value.symbol.owner;
+	auto temp = CFloatRvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOG2, temp, value));
+	return temp;
+}
+
+CIntRvalue Nuanceur::Min(const CIntValue& x, const CIntValue& y)
+{
+	CHECK_ISOPERANDVALID(x);
+	CHECK_ISOPERANDVALID(y);
+	auto owner = GetCommonOwner(x.symbol, y.symbol);
+	auto temp = CIntRvalue(owner->CreateTemporaryInt());
+	owner->InsertStatement(
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MIN, temp, x, y));
+	return temp;
+}
+
 CUint4Rvalue Nuanceur::Min(const CUint4Value& x, const CUint4Value& y)
 {
 	CHECK_ISOPERANDVALID(x);
 	CHECK_ISOPERANDVALID(y);
 	auto owner = GetCommonOwner(x.symbol, y.symbol);
-	auto temp = CUint4Rvalue(owner->CreateTemporary());
+	auto temp = CUint4Rvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MIN, temp, x, y)
 	);
@@ -332,6 +363,16 @@ CInt3Rvalue Nuanceur::ShiftRightArithmetic(const CInt3Value& x, const CInt3Value
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_RSHIFT_ARITHMETIC, temp, x, y)
 	);
+	return temp;
+}
+
+CFloatRvalue Nuanceur::Trunc(const CFloatValue& rhs)
+{
+	CHECK_ISOPERANDVALID(rhs);
+	auto owner = rhs.symbol.owner;
+	auto temp = CFloatRvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TRUNC, temp, rhs));
 	return temp;
 }
 
@@ -676,6 +717,15 @@ CFloat4Rvalue Nuanceur::ToFloat(const CUint4Value& rhs)
 	owner->InsertStatement(
 		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOFLOAT, temp, rhs)
 	);
+	return temp;
+}
+
+CIntRvalue Nuanceur::ToInt(const CFloatValue& rhs)
+{
+	auto owner = rhs.symbol.owner;
+	auto temp = CIntRvalue(owner->CreateTemporaryInt());
+	owner->InsertStatement(
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOINT, temp, rhs));
 	return temp;
 }
 

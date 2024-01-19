@@ -1,7 +1,6 @@
 #include <cstring>
 #include <array>
 #include "nuanceur/generators/SpirvShaderGenerator.h"
-#include "../external/vulkan/GLSL.std.450.h"
 
 using namespace Nuanceur;
 
@@ -115,6 +114,7 @@ void CSpirvShaderGenerator::Generate()
 		m_pushInt4PointerTypeId = AllocateId();
 		m_pushMatrix44PointerTypeId = AllocateId();
 
+		m_uniformFloat4PointerTypeId = AllocateId();
 		m_uniformInt4PointerTypeId = AllocateId();
 		m_uniformUintPtrId = AllocateId();
 		m_uniformUint16PtrId = AllocateId();
@@ -504,11 +504,20 @@ void CSpirvShaderGenerator::Generate()
 					StoreToSymbol(dstRef, resultId);
 				}
 				break;
+			case CShaderBuilder::STATEMENT_OP_ABS:
+				GlslStdOp(GLSLstd450FAbs, dstRef, src1Ref);
+				break;
 			case CShaderBuilder::STATEMENT_OP_CLAMP:
 				Clamp(dstRef, src1Ref, src2Ref, src3Ref);
 				break;
 			case CShaderBuilder::STATEMENT_OP_FRACT:
-				Fract(dstRef, src1Ref);
+				GlslStdOp(GLSLstd450Fract, dstRef, src1Ref);
+				break;
+			case CShaderBuilder::STATEMENT_OP_TRUNC:
+				GlslStdOp(GLSLstd450Trunc, dstRef, src1Ref);
+				break;
+			case CShaderBuilder::STATEMENT_OP_LOG2:
+				GlslStdOp(GLSLstd450Log2, dstRef, src1Ref);
 				break;
 			case CShaderBuilder::STATEMENT_OP_MIN:
 				Min(dstRef, src1Ref, src2Ref);
@@ -1306,6 +1315,7 @@ void CSpirvShaderGenerator::DeclareUniformStructIds()
 	WriteOp(spv::OpTypePointer, m_pushInt4PointerTypeId, spv::StorageClassPushConstant, m_int4TypeId);
 	WriteOp(spv::OpTypePointer, m_pushMatrix44PointerTypeId, spv::StorageClassPushConstant, m_matrix44TypeId);
 
+	WriteOp(spv::OpTypePointer, m_uniformFloat4PointerTypeId, spv::StorageClassUniform, m_float4TypeId);
 	WriteOp(spv::OpTypePointer, m_uniformInt4PointerTypeId, spv::StorageClassUniform, m_int4TypeId);
 	WriteOp(spv::OpTypePointer, m_uniformUintPtrId, spv::StorageClassUniform, m_uintTypeId);
 	if(m_has8BitInt)
@@ -1464,8 +1474,7 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 			switch(srcRef.symbol.type)
 			{
 			case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
-				assert(pushCstPtr);
-				WriteOp(spv::OpAccessChain, m_pushFloat4PointerTypeId, memberPointerId, structInfo.variableId, memberIdxConstantId);
+				WriteOp(spv::OpAccessChain, pushCstPtr ? m_pushFloat4PointerTypeId : m_uniformFloat4PointerTypeId, memberPointerId, structInfo.variableId, memberIdxConstantId);
 				WriteOp(spv::OpLoad, m_float4TypeId, srcId, memberPointerId);
 				break;
 			case CShaderBuilder::SYMBOL_TYPE_INT4:
@@ -1837,29 +1846,33 @@ void CSpirvShaderGenerator::Clamp(const CShaderBuilder::SYMBOLREF& dstRef, const
 	StoreToSymbol(dstRef, resultId);
 }
 
-void CSpirvShaderGenerator::Fract(const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref)
+void CSpirvShaderGenerator::GlslStdOp(GLSLstd450 op, const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref)
 {
 	assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
 
 	auto src1Id = LoadFromSymbol(src1Ref);
 	auto resultId = AllocateId();
 
-	WriteOp(spv::OpExtInst, m_float4TypeId, resultId, m_glslStd450ExtInst, GLSLstd450::GLSLstd450Fract, src1Id);
+	WriteOp(spv::OpExtInst, m_float4TypeId, resultId, m_glslStd450ExtInst, op, src1Id);
 
 	StoreToSymbol(dstRef, resultId);
 }
 
 void CSpirvShaderGenerator::Min(const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref, const CShaderBuilder::SYMBOLREF& src2Ref)
 {
-	assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
-	assert(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
-
 	auto src1Id = LoadFromSymbol(src1Ref);
 	auto src2Id = LoadFromSymbol(src2Ref);
 	auto resultId = AllocateId();
-
-	WriteOp(spv::OpExtInst, m_uint4TypeId, resultId, m_glslStd450ExtInst, GLSLstd450::GLSLstd450UMin,
-		src1Id, src2Id);
+	auto symbolType = GetCommonSymbolType(src1Ref, src2Ref);
+	switch(symbolType)
+	{
+	case CShaderBuilder::SYMBOL_TYPE_INT4:
+		WriteOp(spv::OpExtInst, m_int4TypeId, resultId, m_glslStd450ExtInst, GLSLstd450::GLSLstd450SMin, src1Id, src2Id);
+		break;
+	case CShaderBuilder::SYMBOL_TYPE_UINT4:
+		WriteOp(spv::OpExtInst, m_uint4TypeId, resultId, m_glslStd450ExtInst, GLSLstd450::GLSLstd450UMin, src1Id, src2Id);
+		break;
+	}
 
 	StoreToSymbol(dstRef, resultId);
 }

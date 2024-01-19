@@ -52,11 +52,14 @@ namespace Nuanceur
 		friend CFloatRvalue operator -(const CFloatValue&, const CFloatValue&);
 		friend CFloatRvalue operator *(const CFloatValue&, const CFloatValue&);
 		friend CFloatRvalue operator /(const CFloatValue&, const CFloatValue&);
+		friend CFloatRvalue Abs(const CFloatValue&);
+		friend CFloatRvalue Log2(const CFloatValue&);
 		friend CFloatRvalue Mix(const CFloatValue&, const CFloatValue&, const CFloatValue&);
 		friend CFloatRvalue NewFloat(CShaderBuilder&, float);
 		friend CFloatRvalue Saturate(const CFloatValue&);
 		friend CFloatRvalue ToFloat(const CIntValue&);
 		friend CFloatRvalue ToFloat(const CUintValue&);
+		friend CFloatRvalue Trunc(const CFloatValue&);
 
 		CFloatRvalue(const CFloatRvalue&) = default;
 

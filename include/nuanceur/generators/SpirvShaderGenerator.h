@@ -7,6 +7,7 @@
 #include "nuanceur/builder/ShaderBuilder.h"
 #include "Stream.h"
 #include "../external/vulkan/spirv.hpp"
+#include "../external/vulkan/GLSL.std.450.h"
 
 namespace Nuanceur
 {
@@ -156,7 +157,7 @@ namespace Nuanceur
 		void Sub(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Clamp(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&,
 			const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
-		void Fract(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
+		void GlslStdOp(GLSLstd450, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Min(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Mix(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&,
 			const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
@@ -237,6 +238,7 @@ namespace Nuanceur
 		uint32 m_pushInt4PointerTypeId = EMPTY_ID;
 		uint32 m_pushMatrix44PointerTypeId = EMPTY_ID;
 
+		uint32 m_uniformFloat4PointerTypeId = EMPTY_ID;
 		uint32 m_uniformInt4PointerTypeId = EMPTY_ID;
 		uint32 m_uniformUintPtrId = EMPTY_ID;
 		uint32 m_uniformUint8PtrId = EMPTY_ID;
