@@ -29,6 +29,7 @@ namespace Nuanceur
 			convertedParams.push_back(static_cast<uint32>(param));
 		}
 
+		FRAMEWORK_MAYBE_UNUSED
 		static void ConvertParam(ConvertedParamArray& convertedParams, const char* param)
 		{
 			uint32 stringLength = static_cast<uint32>(strlen(param)) + 1;
@@ -47,11 +48,13 @@ namespace Nuanceur
 			}
 		}
 
+		FRAMEWORK_MAYBE_UNUSED
 		static void ConvertParam(ConvertedParamArray& convertedParams, const std::vector<uint32>& param)
 		{
 			convertedParams.insert(convertedParams.end(), param.begin(), param.end());
 		}
 
+		FRAMEWORK_MAYBE_UNUSED
 		static void ConvertParam(ConvertedParamArray& convertedParams, float param)
 		{
 			uint32 convertedValue = *reinterpret_cast<uint32*>(&param);
