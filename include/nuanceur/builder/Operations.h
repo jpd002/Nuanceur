@@ -7,6 +7,7 @@
 #include "ArrayUcharValue.h"
 #include "ArrayUshortValue.h"
 #include "BoolValue.h"
+#include "Bool2Value.h"
 #include "FloatValue.h"
 #include "Float2Value.h"
 #include "Float3Value.h"
@@ -115,11 +116,13 @@ namespace Nuanceur
 	CIntRvalue Min(const CIntValue&, const CIntValue&);
 	CUint4Rvalue Min(const CUint4Value&, const CUint4Value&);
 	CFloatRvalue Mix(const CFloatValue&, const CFloatValue&, const CFloatValue&);
+	CFloat2Rvalue Mix(const CFloat2Value&, const CFloat2Value&, const CBool2Value&);
 	CFloat3Rvalue Mix(const CFloat3Value&, const CFloat3Value&, const CFloat3Value&);
 	CFloat4Rvalue Normalize(const CFloat4Value& rhs);
 	CFloatRvalue Saturate(const CFloatValue& rhs);
 	CInt3Rvalue ShiftRightArithmetic(const CInt3Value&, const CInt3Value&);
 	CFloatRvalue Trunc(const CFloatValue&);
+	CBool2Rvalue IsInf(const CFloat2Value&);
 
 	CFloatRvalue NewFloat(CShaderBuilder&, float x);
 

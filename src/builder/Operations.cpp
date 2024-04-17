@@ -321,6 +321,18 @@ CFloatRvalue Nuanceur::Mix(const CFloatValue& x, const CFloatValue& y, const CFl
 	return temp;
 }
 
+CFloat2Rvalue Nuanceur::Mix(const CFloat2Value& x, const CFloat2Value& y, const CBool2Value& a)
+{
+	CHECK_ISOPERANDVALID(x);
+	CHECK_ISOPERANDVALID(y);
+	CHECK_ISOPERANDVALID(a);
+	auto owner = GetCommonOwner(x.symbol, y.symbol);
+	auto temp = CFloat2Rvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MIX, temp, x, y, a));
+	return temp;
+}
+
 CFloat3Rvalue Nuanceur::Mix(const CFloat3Value& x, const CFloat3Value& y, const CFloat3Value& a)
 {
 	CHECK_ISOPERANDVALID(x);
@@ -373,6 +385,16 @@ CFloatRvalue Nuanceur::Trunc(const CFloatValue& rhs)
 	auto temp = CFloatRvalue(owner->CreateTemporary());
 	owner->InsertStatement(
 	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TRUNC, temp, rhs));
+	return temp;
+}
+
+CBool2Rvalue Nuanceur::IsInf(const CFloat2Value& rhs)
+{
+	CHECK_ISOPERANDVALID(rhs);
+	auto owner = rhs.symbol.owner;
+	auto temp = CBool2Rvalue(owner->CreateTemporaryBool());
+	owner->InsertStatement(
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ISINF, temp, rhs));
 	return temp;
 }
 
@@ -544,7 +566,7 @@ CUint4Rvalue Nuanceur::NewUint4(const CUint3Value& xyz, const CUintValue& w)
 
 CBoolRvalue Nuanceur::NewBool(CShaderBuilder& owner, bool x)
 {
-	auto literal = owner.CreateConstantBool(x);
+	auto literal = owner.CreateConstantBool(x, false, false, false);
 	return CBoolRvalue(literal);
 }
 

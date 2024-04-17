@@ -127,11 +127,11 @@ CShaderBuilder::CIntVector4 CShaderBuilder::GetTemporaryValueInt(const SYMBOL& s
 	return result;
 }
 
-bool CShaderBuilder::GetTemporaryValueBool(const SYMBOL& sym) const
+CShaderBuilder::CBoolVector4 CShaderBuilder::GetTemporaryValueBool(const SYMBOL& sym) const
 {
-	bool result = false;
+	CBoolVector4 result(false, false, false, false);
 	assert(sym.location == SYMBOL_LOCATION_TEMPORARY);
-	assert(sym.type == SYMBOL_TYPE_BOOL);
+	assert(sym.type == SYMBOL_TYPE_BOOL4);
 	auto temporaryValueIterator = m_temporaryValuesBool.find(sym.index);
 	if(temporaryValueIterator != std::end(m_temporaryValuesBool))
 	{
@@ -267,7 +267,7 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateVariableBool(const std::string& nam
 	SYMBOL sym;
 	sym.owner    = this;
 	sym.index    = m_currentVariableIndex++;
-	sym.type     = SYMBOL_TYPE_BOOL;
+	sym.type     = SYMBOL_TYPE_BOOL4;
 	sym.location = SYMBOL_LOCATION_VARIABLE;
 	m_symbols.push_back(sym);
 
@@ -293,7 +293,7 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateTemporaryBool()
 	SYMBOL sym;
 	sym.owner    = this;
 	sym.index    = m_currentTempIndex++;
-	sym.type     = SYMBOL_TYPE_BOOL;
+	sym.type     = SYMBOL_TYPE_BOOL4;
 	sym.location = SYMBOL_LOCATION_TEMPORARY;
 	m_symbols.push_back(sym);
 
@@ -375,18 +375,19 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateConstantUint(uint32 v1, uint32 v2, 
 	return sym;
 }
 
-CShaderBuilder::SYMBOL CShaderBuilder::CreateConstantBool(bool v1)
+CShaderBuilder::SYMBOL CShaderBuilder::CreateConstantBool(bool v1, bool v2, bool v3, bool v4)
 {
 	//TODO: Check if constant already exists
 
 	SYMBOL sym;
 	sym.owner    = this;
 	sym.index    = m_currentTempIndex++;
-	sym.type     = SYMBOL_TYPE_BOOL;
+	sym.type     = SYMBOL_TYPE_BOOL4;
 	sym.location = SYMBOL_LOCATION_TEMPORARY;
 	m_symbols.push_back(sym);
 
-	m_temporaryValuesBool.insert(std::make_pair(sym.index, v1));
+	auto tempValue = CBoolVector4(v1, v2, v3, v4);
+	m_temporaryValuesBool.insert(std::make_pair(sym.index, tempValue));
 
 	return sym;
 }

@@ -85,7 +85,7 @@ namespace Nuanceur
 			SYMBOL_TYPE_FLOAT4,
 			SYMBOL_TYPE_INT4,
 			SYMBOL_TYPE_UINT4,
-			SYMBOL_TYPE_BOOL,
+			SYMBOL_TYPE_BOOL4,
 			SYMBOL_TYPE_MATRIX,
 			SYMBOL_TYPE_ARRAYUINT,
 			SYMBOL_TYPE_ARRAYUCHAR,
@@ -160,6 +160,23 @@ namespace Nuanceur
 			int32 w;
 		};
 
+		class CBoolVector4
+		{
+		public:
+			CBoolVector4(bool x, bool y, bool z, bool w)
+			    : x(x)
+			    , y(y)
+			    , z(z)
+			    , w(w)
+			{
+			}
+
+			bool x;
+			bool y;
+			bool z;
+			bool w;
+		};
+
 		enum STATEMENT_OP
 		{
 			STATEMENT_OP_NOP,
@@ -197,6 +214,7 @@ namespace Nuanceur
 			STATEMENT_OP_NORMALIZE,
 			STATEMENT_OP_SATURATE,
 			STATEMENT_OP_TRUNC,
+			STATEMENT_OP_ISINF,
 			STATEMENT_OP_LENGTH,
 			STATEMENT_OP_NEWVECTOR2,
 			STATEMENT_OP_NEWVECTOR4,
@@ -286,7 +304,7 @@ namespace Nuanceur
 		std::string				GetUniformName(const SYMBOL&) const;
 		CVector4				GetTemporaryValue(const SYMBOL&) const;
 		CIntVector4				GetTemporaryValueInt(const SYMBOL&) const;
-		bool					GetTemporaryValueBool(const SYMBOL&) const;
+		CBoolVector4			GetTemporaryValueBool(const SYMBOL&) const;
 
 		const StatementList&	GetStatements() const;
 		void					InsertStatement(const STATEMENT&);
@@ -299,7 +317,7 @@ namespace Nuanceur
 		SYMBOL					CreateConstant(float, float, float, float);
 		SYMBOL					CreateConstantInt(int32, int32, int32, int32);
 		SYMBOL					CreateConstantUint(uint32, uint32, uint32, uint32);
-		SYMBOL					CreateConstantBool(bool);
+		SYMBOL					CreateConstantBool(bool, bool, bool, bool);
 		
 		SYMBOL					CreateVariableFloat(const std::string&);
 		SYMBOL					CreateVariableInt(const std::string&);
@@ -335,7 +353,7 @@ namespace Nuanceur
 		typedef std::unordered_map<unsigned int, std::string> UniformNameMap;
 		typedef std::unordered_map<unsigned int, CVector4> TemporaryValueMap;
 		typedef std::unordered_map<unsigned int, CIntVector4> TemporaryValueIntMap;
-		typedef std::unordered_map<unsigned int, bool> TemporaryValueBoolMap;
+		typedef std::unordered_map<unsigned int, CBoolVector4> TemporaryValueBoolMap;
 
 		MetadataMap				m_metadata;
 		SymbolArray				m_symbols;

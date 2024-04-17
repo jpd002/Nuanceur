@@ -32,6 +32,7 @@ add_library(Nuanceur
 
 	../include/nuanceur/builder/ArrayUintValue.h
 	../include/nuanceur/builder/BoolValue.h
+	../include/nuanceur/builder/Bool2Value.h
 	../include/nuanceur/builder/Float2Value.h
 	../include/nuanceur/builder/Float3Value.h
 	../include/nuanceur/builder/Float4Value.h
