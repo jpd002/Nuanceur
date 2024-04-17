@@ -160,6 +160,7 @@ namespace Nuanceur
 		void Sub(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Clamp(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&,
 			const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
+		void ClassifyFloat(spv::Op, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void GlslStdOp(GLSLstd450, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Min(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Mix(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&,
@@ -199,6 +200,7 @@ namespace Nuanceur
 
 		//Type Ids
 		uint32 m_boolTypeId = EMPTY_ID;
+		uint32 m_bool4TypeId = EMPTY_ID;
 		uint32 m_floatTypeId = EMPTY_ID;
 		uint32 m_float4TypeId = EMPTY_ID;
 		uint32 m_matrix44TypeId = EMPTY_ID;
@@ -230,7 +232,7 @@ namespace Nuanceur
 		uint32 m_functionFloat4PointerTypeId = EMPTY_ID;
 		uint32 m_functionInt4PointerTypeId = EMPTY_ID;
 		uint32 m_functionUint4PointerTypeId = EMPTY_ID;
-		uint32 m_functionBoolPointerTypeId = EMPTY_ID;
+		uint32 m_functionBool4PointerTypeId = EMPTY_ID;
 		uint32 m_inputIntPointerTypeId = EMPTY_ID;
 		uint32 m_inputInt3PointerTypeId = EMPTY_ID;
 		uint32 m_inputUint4PointerTypeId = EMPTY_ID;
@@ -279,6 +281,8 @@ namespace Nuanceur
 		std::map<float, uint32> m_floatConstantIds;
 		std::map<int32, uint32> m_intConstantIds;
 		std::map<uint32, uint32> m_uintConstantIds;
+		uint32 m_boolConstantFalseId;
+		uint32 m_boolConstantTrueId;
 		uint32 m_nextId = EMPTY_ID + 1;
 		std::stack<uint32> m_endLabelIds;
 	};

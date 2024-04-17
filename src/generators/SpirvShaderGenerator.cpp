@@ -70,8 +70,12 @@ void CSpirvShaderGenerator::Generate()
 	auto mainFunctionTypeId = AllocateId();
 	m_glslStd450ExtInst = AllocateId();
 	m_boolTypeId = AllocateId();
+	m_bool4TypeId = AllocateId();
 	m_floatTypeId = AllocateId();
 	m_float4TypeId = AllocateId();
+
+	m_boolConstantFalseId = AllocateId();
+	m_boolConstantTrueId = AllocateId();
 
 	m_uintTypeId = AllocateId();
 	m_ushortTypeId = AllocateId();
@@ -104,7 +108,7 @@ void CSpirvShaderGenerator::Generate()
 	m_functionFloat4PointerTypeId = AllocateId();
 	m_functionInt4PointerTypeId = AllocateId();
 	m_functionUint4PointerTypeId = AllocateId();
-	m_functionBoolPointerTypeId = AllocateId();
+	m_functionBool4PointerTypeId = AllocateId();
 	auto outputPerVertexStructPointerTypeId = AllocateId();
 
 	AllocateUniformStructsIds();
@@ -280,6 +284,7 @@ void CSpirvShaderGenerator::Generate()
 	WriteOp(spv::OpTypeVoid, voidTypeId);
 	WriteOp(spv::OpTypeFunction, mainFunctionTypeId, voidTypeId);
 	WriteOp(spv::OpTypeBool, m_boolTypeId);
+	WriteOp(spv::OpTypeVector, m_bool4TypeId, m_boolTypeId, 4);
 	WriteOp(spv::OpTypeFloat, m_floatTypeId, 32);
 	WriteOp(spv::OpTypeVector, m_float4TypeId, m_floatTypeId, 4);
 	WriteOp(spv::OpTypeMatrix, m_matrix44TypeId, m_float4TypeId, 4);
@@ -311,7 +316,7 @@ void CSpirvShaderGenerator::Generate()
 	WriteOp(spv::OpTypePointer, m_functionFloat4PointerTypeId, spv::StorageClassFunction, m_float4TypeId);
 	WriteOp(spv::OpTypePointer, m_functionInt4PointerTypeId, spv::StorageClassFunction, m_int4TypeId);
 	WriteOp(spv::OpTypePointer, m_functionUint4PointerTypeId, spv::StorageClassFunction, m_uint4TypeId);
-	WriteOp(spv::OpTypePointer, m_functionBoolPointerTypeId, spv::StorageClassFunction, m_boolTypeId);
+	WriteOp(spv::OpTypePointer, m_functionBool4PointerTypeId, spv::StorageClassFunction, m_bool4TypeId);
 	
 	if(m_shaderType == SHADER_TYPE_VERTEX)
 	{
@@ -397,6 +402,10 @@ void CSpirvShaderGenerator::Generate()
 		assert(m_uintTypeId != EMPTY_ID);
 		WriteOp(spv::OpConstant, m_uintTypeId, uintConstantIdPair.second, uintConstantIdPair.first);
 	}
+
+	//Declare Bool Constants
+	WriteOp(spv::OpConstantFalse, m_boolTypeId, m_boolConstantFalseId);
+	WriteOp(spv::OpConstantTrue, m_boolTypeId, m_boolConstantTrueId);
 
 	DeclareTemporaryValueIds();
 
@@ -515,6 +524,9 @@ void CSpirvShaderGenerator::Generate()
 				break;
 			case CShaderBuilder::STATEMENT_OP_TRUNC:
 				GlslStdOp(GLSLstd450Trunc, dstRef, src1Ref);
+				break;
+			case CShaderBuilder::STATEMENT_OP_ISINF:
+				ClassifyFloat(spv::OpIsInf, dstRef, src1Ref);
 				break;
 			case CShaderBuilder::STATEMENT_OP_LOG2:
 				GlslStdOp(GLSLstd450Log2, dstRef, src1Ref);
@@ -804,11 +816,14 @@ void CSpirvShaderGenerator::Generate()
 				break;
 			case CShaderBuilder::STATEMENT_OP_IF_BEGIN:
 				{
+					assert(src1Ref.swizzle == SWIZZLE_X);
 					auto src1Id = LoadFromSymbol(src1Ref);
 					auto beginLabelId = AllocateId();
 					auto endLabelId = AllocateId();
+					auto conditionId = AllocateId();
+					WriteOp(spv::OpCompositeExtract, m_boolTypeId, conditionId, src1Id, 0);
 					WriteOp(spv::OpSelectionMerge, endLabelId, spv::SelectionControlMaskNone);
-					WriteOp(spv::OpBranchConditional, src1Id, beginLabelId, endLabelId);
+					WriteOp(spv::OpBranchConditional, conditionId, beginLabelId, endLabelId);
 					WriteOp(spv::OpLabel, beginLabelId);
 					m_endLabelIds.push(endLabelId);
 				}
@@ -1046,8 +1061,8 @@ void CSpirvShaderGenerator::GatherConstantsFromTemps()
 				RegisterUintConstant(temporaryValue.w);
 			}
 			break;
-		case CShaderBuilder::SYMBOL_TYPE_BOOL:
-			//No need to register components
+		case CShaderBuilder::SYMBOL_TYPE_BOOL4:
+			//No need to register constants
 			break;
 		default:
 			assert(false);
@@ -1094,17 +1109,14 @@ void CSpirvShaderGenerator::DeclareTemporaryValueIds()
 				WriteOp(spv::OpConstantComposite, m_uint4TypeId, temporaryValueId, valueXId, valueYId, valueZId, valueWId);
 			}
 			break;
-		case CShaderBuilder::SYMBOL_TYPE_BOOL:
+		case CShaderBuilder::SYMBOL_TYPE_BOOL4:
 			{
 				auto value = m_shaderBuilder.GetTemporaryValueBool(symbol);
-				if(value == false)
-				{
-					WriteOp(spv::OpConstantFalse, m_boolTypeId, temporaryValueId);
-				}
-				else
-				{
-					WriteOp(spv::OpConstantTrue, m_boolTypeId, temporaryValueId);
-				}
+				WriteOp(spv::OpConstantComposite, m_bool4TypeId, temporaryValueId,
+					value.x ? m_boolConstantTrueId : m_boolConstantFalseId,
+					value.y ? m_boolConstantTrueId : m_boolConstantFalseId,
+					value.z ? m_boolConstantTrueId : m_boolConstantFalseId,
+					value.w ? m_boolConstantTrueId : m_boolConstantFalseId);
 			}
 			break;
 		default:
@@ -1156,8 +1168,8 @@ void CSpirvShaderGenerator::DeclareVariablePointerIds()
 		case CShaderBuilder::SYMBOL_TYPE_UINT4:
 			WriteOp(spv::OpVariable, m_functionUint4PointerTypeId, pointerId, spv::StorageClassFunction);
 			break;
-		case CShaderBuilder::SYMBOL_TYPE_BOOL:
-			WriteOp(spv::OpVariable, m_functionBoolPointerTypeId, pointerId, spv::StorageClassFunction);
+		case CShaderBuilder::SYMBOL_TYPE_BOOL4:
+			WriteOp(spv::OpVariable, m_functionBool4PointerTypeId, pointerId, spv::StorageClassFunction);
 			break;
 		default:
 			assert(false);
@@ -1546,8 +1558,8 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 			case CShaderBuilder::SYMBOL_TYPE_UINT4:
 				WriteOp(spv::OpLoad, m_uint4TypeId, srcId, pointerId);
 				break;
-			case CShaderBuilder::SYMBOL_TYPE_BOOL:
-				WriteOp(spv::OpLoad, m_boolTypeId, srcId, pointerId);
+			case CShaderBuilder::SYMBOL_TYPE_BOOL4:
+				WriteOp(spv::OpLoad, m_bool4TypeId, srcId, pointerId);
 				break;
 			default:
 				assert(false);
@@ -1783,10 +1795,10 @@ void CSpirvShaderGenerator::LogicalOp(spv::Op op, const CShaderBuilder::SYMBOLRE
 	auto src1Id = LoadFromSymbol(src1Ref);
 	auto src2Id = LoadFromSymbol(src2Ref);
 	auto symbolType = GetCommonSymbolType(src1Ref, src2Ref);
-	assert(symbolType == CShaderBuilder::SYMBOL_TYPE_BOOL);
+	assert(symbolType == CShaderBuilder::SYMBOL_TYPE_BOOL4);
 
 	auto resultId = AllocateId();
-	WriteOp(op, m_boolTypeId, resultId, src1Id, src2Id);
+	WriteOp(op, m_bool4TypeId, resultId, src1Id, src2Id);
 	StoreToSymbol(dstRef, resultId);
 }
 
@@ -1794,7 +1806,7 @@ void CSpirvShaderGenerator::LogicalNot(const CShaderBuilder::SYMBOLREF& dstRef, 
 {
 	auto src1Id = LoadFromSymbol(src1Ref);
 	auto resultId = AllocateId();
-	WriteOp(spv::OpLogicalNot, m_boolTypeId, resultId, src1Id);
+	WriteOp(spv::OpLogicalNot, m_bool4TypeId, resultId, src1Id);
 	StoreToSymbol(dstRef, resultId);
 }
 
@@ -1846,6 +1858,14 @@ void CSpirvShaderGenerator::Clamp(const CShaderBuilder::SYMBOLREF& dstRef, const
 	StoreToSymbol(dstRef, resultId);
 }
 
+void CSpirvShaderGenerator::ClassifyFloat(spv::Op classifyOp, const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref)
+{
+	auto src1Id = LoadFromSymbol(src1Ref);
+	auto resultId = AllocateId();
+	WriteOp(classifyOp, m_bool4TypeId, resultId, src1Id);
+	StoreToSymbol(dstRef, resultId);
+}
+
 void CSpirvShaderGenerator::GlslStdOp(GLSLstd450 op, const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref)
 {
 	assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
@@ -1882,15 +1902,27 @@ void CSpirvShaderGenerator::Mix(const CShaderBuilder::SYMBOLREF& dstRef, const C
 {
 	assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
 	assert(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
-	assert(src3Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
 
 	auto src1Id = LoadFromSymbol(src1Ref);
 	auto src2Id = LoadFromSymbol(src2Ref);
 	auto src3Id = LoadFromSymbol(src3Ref);
 	auto resultId = AllocateId();
 
-	WriteOp(spv::OpExtInst, m_float4TypeId, resultId, m_glslStd450ExtInst, GLSLstd450::GLSLstd450FMix,
-		src1Id, src2Id, src3Id);
+	if(src3Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4)
+	{
+		WriteOp(spv::OpExtInst, m_float4TypeId, resultId, m_glslStd450ExtInst, GLSLstd450::GLSLstd450FMix, 
+			src1Id, src2Id, src3Id);
+	}
+	else if(src3Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_BOOL4)
+	{
+		//Order for Select is different from typical Mix
+		WriteOp(spv::OpSelect, m_float4TypeId, resultId, src3Id, src2Id, src1Id);
+	}
+	else
+	{
+		//Unknown operand
+		assert(false);
+	}
 
 	StoreToSymbol(dstRef, resultId);
 }
@@ -1974,13 +2006,8 @@ void CSpirvShaderGenerator::Compare(CShaderBuilder::STATEMENT_OP op, const CShad
 	auto opType = compareOp ? compareOp->second : spv::OpNop;
 	assert(opType != spv::OpNop);
 
-	auto src1ScalarId = AllocateId();
-	auto src2ScalarId = AllocateId();
 	auto resultId = AllocateId();
-
-	WriteOp(spv::OpCompositeExtract, scalarTypeId, src1ScalarId, src1Id, 0);
-	WriteOp(spv::OpCompositeExtract, scalarTypeId, src2ScalarId, src2Id, 0);
-	WriteOp(opType, m_boolTypeId, resultId, src1ScalarId, src2ScalarId);
+	WriteOp(opType, m_bool4TypeId, resultId, src1Id, src2Id);
 
 	StoreToSymbol(dstRef, resultId);
 }
