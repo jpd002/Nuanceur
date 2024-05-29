@@ -1935,6 +1935,7 @@ void CSpirvShaderGenerator::Compare(CShaderBuilder::STATEMENT_OP op, const CShad
 	static const CompareOpPair floatCompareOps[] =
 	{
 		{ CShaderBuilder::STATEMENT_OP_COMPARE_EQ, spv::OpFOrdEqual },
+		{ CShaderBuilder::STATEMENT_OP_COMPARE_NE, spv::OpFOrdNotEqual },
 		{ CShaderBuilder::STATEMENT_OP_COMPARE_LT, spv::OpFOrdLessThan },
 	};
 
