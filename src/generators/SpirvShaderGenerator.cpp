@@ -534,6 +534,9 @@ void CSpirvShaderGenerator::Generate()
 			case CShaderBuilder::STATEMENT_OP_MIN:
 				Min(dstRef, src1Ref, src2Ref);
 				break;
+			case CShaderBuilder::STATEMENT_OP_DOT:
+				Dot(dstRef, src1Ref, src2Ref);
+				break;
 			case CShaderBuilder::STATEMENT_OP_MIX:
 				Mix(dstRef, src1Ref, src2Ref, src3Ref);
 				break;
@@ -1863,6 +1866,19 @@ void CSpirvShaderGenerator::ClassifyFloat(spv::Op classifyOp, const CShaderBuild
 	auto src1Id = LoadFromSymbol(src1Ref);
 	auto resultId = AllocateId();
 	WriteOp(classifyOp, m_bool4TypeId, resultId, src1Id);
+	StoreToSymbol(dstRef, resultId);
+}
+
+void CSpirvShaderGenerator::Dot(const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref, const CShaderBuilder::SYMBOLREF& src2Ref)
+{
+	auto src1Id = LoadFromSymbol(src1Ref);
+	auto src2Id = LoadFromSymbol(src2Ref);
+	auto resultId = AllocateId();
+	auto symbolType = GetCommonSymbolType(src1Ref, src2Ref);
+	assert(symbolType == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
+
+	WriteOp(spv::OpDot, m_floatTypeId, resultId, src1Id, src2Id);
+
 	StoreToSymbol(dstRef, resultId);
 }
 
