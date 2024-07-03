@@ -8,9 +8,8 @@ namespace Nuanceur
 	{
 	public:
 		CSubpassInputValue(const CShaderBuilder::SYMBOL& symbol)
-			: SYMBOLREF(symbol, SWIZZLE_XYZW)
+		    : SYMBOLREF(symbol, SWIZZLE_XYZW)
 		{
-
 		}
 	};
 
@@ -18,9 +17,8 @@ namespace Nuanceur
 	{
 	public:
 		CSubpassInputUintValue(const CShaderBuilder::SYMBOL& symbol)
-			: SYMBOLREF(symbol, SWIZZLE_XYZW)
+		    : SYMBOLREF(symbol, SWIZZLE_XYZW)
 		{
-
 		}
 	};
 }

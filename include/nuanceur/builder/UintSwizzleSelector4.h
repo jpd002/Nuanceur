@@ -11,9 +11,8 @@ namespace Nuanceur
 	{
 	public:
 		CUintSwizzleSelector4(const CShaderBuilder::SYMBOL& symbol)
-			: m_symbol(symbol)
+		    : m_symbol(symbol)
 		{
-
 		}
 
 		CUintRvalue x() const

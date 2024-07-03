@@ -21,7 +21,7 @@ namespace Nuanceur
 	class CFloat4Value : public CShaderBuilder::SYMBOLREF
 	{
 	public:
-		CFloatSwizzleSelector4* operator ->()
+		CFloatSwizzleSelector4* operator->()
 		{
 			assert(swizzle == SWIZZLE_XYZW);
 			return m_swizzleSelector.get();
@@ -29,7 +29,7 @@ namespace Nuanceur
 
 	protected:
 		CFloat4Value(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_XYZW)
-			: SYMBOLREF(symbol, swizzle)
+		    : SYMBOLREF(symbol, swizzle)
 		{
 			m_swizzleSelector = std::make_shared<CFloatSwizzleSelector4>(symbol);
 		}
@@ -42,13 +42,12 @@ namespace Nuanceur
 	{
 	public:
 		CFloat4Lvalue(const CShaderBuilder::SYMBOL& symbol)
-			: CFloat4Value(symbol, SWIZZLE_XYZW)
+		    : CFloat4Value(symbol, SWIZZLE_XYZW)
 		{
-
 		}
 
-		void operator =(const CFloat4Lvalue& lvalue) = delete;
-		void operator =(const CFloat4Rvalue& rvalue);
+		void operator=(const CFloat4Lvalue& lvalue) = delete;
+		void operator=(const CFloat4Rvalue& rvalue);
 	};
 
 	class CFloat4Rvalue : public CFloat4Value
@@ -56,11 +55,11 @@ namespace Nuanceur
 	private:
 		friend CFloatSwizzleSelector;
 		friend CFloatSwizzleSelector4;
-		friend CFloat4Rvalue operator +(const CFloat4Value&, const CFloat4Value&);
-		friend CFloat4Rvalue operator -(const CFloat4Value&, const CFloat4Value&);
-		friend CFloat4Rvalue operator *(const CFloat4Value&, const CFloat4Value&);
-		friend CFloat4Rvalue operator /(const CFloat4Value&, const CFloat4Value&);
-		friend CFloat4Rvalue operator *(const CMatrix44Value&, const CFloat4Value&);
+		friend CFloat4Rvalue operator+(const CFloat4Value&, const CFloat4Value&);
+		friend CFloat4Rvalue operator-(const CFloat4Value&, const CFloat4Value&);
+		friend CFloat4Rvalue operator*(const CFloat4Value&, const CFloat4Value&);
+		friend CFloat4Rvalue operator/(const CFloat4Value&, const CFloat4Value&);
+		friend CFloat4Rvalue operator*(const CMatrix44Value&, const CFloat4Value&);
 		friend CFloat4Rvalue Clamp(const CFloat4Value&, const CFloat4Value&, const CFloat4Value&);
 		friend CFloat4Rvalue NewFloat4(CShaderBuilder&, float, float, float, float);
 		friend CFloat4Rvalue NewFloat4(const CFloatValue&, const CFloat3Value&);
@@ -76,11 +75,10 @@ namespace Nuanceur
 		CFloat4Rvalue(const CFloat4Rvalue&) = default;
 
 		CFloat4Rvalue(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_XYZW)
-			: CFloat4Value(symbol, swizzle)
+		    : CFloat4Value(symbol, swizzle)
 		{
-
 		}
 
-		CFloat4Rvalue& operator =(const CFloat4Rvalue&) = delete;
+		CFloat4Rvalue& operator=(const CFloat4Rvalue&) = delete;
 	};
 }

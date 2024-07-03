@@ -12,7 +12,7 @@ namespace Nuanceur
 	class CFloat2Value : public CShaderBuilder::SYMBOLREF
 	{
 	public:
-		CFloatSwizzleSelector4* operator ->()
+		CFloatSwizzleSelector4* operator->()
 		{
 			assert(swizzle == SWIZZLE_XY);
 			return m_swizzleSelector.get();
@@ -20,7 +20,7 @@ namespace Nuanceur
 
 	protected:
 		CFloat2Value(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_XY)
-			: SYMBOLREF(symbol, swizzle)
+		    : SYMBOLREF(symbol, swizzle)
 		{
 			m_swizzleSelector = std::make_shared<CFloatSwizzleSelector4>(symbol);
 		}
@@ -33,22 +33,21 @@ namespace Nuanceur
 	{
 	public:
 		CFloat2Lvalue(const CShaderBuilder::SYMBOL& symbol)
-			: CFloat2Value(symbol, SWIZZLE_XY)
+		    : CFloat2Value(symbol, SWIZZLE_XY)
 		{
-
 		}
 
-		void operator =(const CFloat2Lvalue& lvalue) = delete;
-		void operator =(const CFloat2Rvalue& rvalue);
+		void operator=(const CFloat2Lvalue& lvalue) = delete;
+		void operator=(const CFloat2Rvalue& rvalue);
 	};
 
 	class CFloat2Rvalue : public CFloat2Value
 	{
 	private:
 		friend CFloatSwizzleSelector4;
-		friend CFloat2Rvalue operator +(const CFloat2Value&, const CFloat2Value&);
-		friend CFloat2Rvalue operator *(const CFloat2Value&, const CFloat2Value&);
-		friend CFloat2Rvalue operator /(const CFloat2Value&, const CFloat2Value&);
+		friend CFloat2Rvalue operator+(const CFloat2Value&, const CFloat2Value&);
+		friend CFloat2Rvalue operator*(const CFloat2Value&, const CFloat2Value&);
+		friend CFloat2Rvalue operator/(const CFloat2Value&, const CFloat2Value&);
 		friend CFloat2Rvalue Fract(const CFloat2Value&);
 		friend CFloat2Rvalue Mix(const CFloat2Value&, const CFloat2Value&, const CBool2Value&);
 		friend CFloat2Rvalue NewFloat2(CShaderBuilder&, float, float);
@@ -58,11 +57,10 @@ namespace Nuanceur
 		CFloat2Rvalue(const CFloat2Rvalue&) = default;
 
 		CFloat2Rvalue(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_XY)
-			: CFloat2Value(symbol, swizzle)
+		    : CFloat2Value(symbol, swizzle)
 		{
-
 		}
 
-		CFloat2Rvalue& operator =(const CFloat2Rvalue&) = delete;
+		CFloat2Rvalue& operator=(const CFloat2Rvalue&) = delete;
 	};
 }

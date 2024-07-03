@@ -14,7 +14,7 @@ namespace Nuanceur
 	class CFloatValue : public CShaderBuilder::SYMBOLREF
 	{
 	public:
-		CFloatSwizzleSelector* operator ->()
+		CFloatSwizzleSelector* operator->()
 		{
 			assert(swizzle == SWIZZLE_X);
 			return m_swizzleSelector.get();
@@ -22,7 +22,7 @@ namespace Nuanceur
 
 	protected:
 		CFloatValue(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_X)
-			: SYMBOLREF(symbol, swizzle)
+		    : SYMBOLREF(symbol, swizzle)
 		{
 			m_swizzleSelector = std::make_shared<CFloatSwizzleSelector>(symbol);
 		}
@@ -35,12 +35,11 @@ namespace Nuanceur
 	{
 	public:
 		CFloatLvalue(const CShaderBuilder::SYMBOL& symbol)
-			: CFloatValue(symbol, SWIZZLE_X)
+		    : CFloatValue(symbol, SWIZZLE_X)
 		{
-
 		}
 
-		void operator =(const CFloatRvalue& rvalue);
+		void operator=(const CFloatRvalue& rvalue);
 	};
 
 	class CFloatRvalue : public CFloatValue
@@ -48,10 +47,10 @@ namespace Nuanceur
 	private:
 		friend CFloatSwizzleSelector;
 		friend CFloatSwizzleSelector4;
-		friend CFloatRvalue operator +(const CFloatValue&, const CFloatValue&);
-		friend CFloatRvalue operator -(const CFloatValue&, const CFloatValue&);
-		friend CFloatRvalue operator *(const CFloatValue&, const CFloatValue&);
-		friend CFloatRvalue operator /(const CFloatValue&, const CFloatValue&);
+		friend CFloatRvalue operator+(const CFloatValue&, const CFloatValue&);
+		friend CFloatRvalue operator-(const CFloatValue&, const CFloatValue&);
+		friend CFloatRvalue operator*(const CFloatValue&, const CFloatValue&);
+		friend CFloatRvalue operator/(const CFloatValue&, const CFloatValue&);
 		friend CFloatRvalue Abs(const CFloatValue&);
 		friend CFloatRvalue Log2(const CFloatValue&);
 		friend CFloatRvalue Mix(const CFloatValue&, const CFloatValue&, const CFloatValue&);
@@ -64,11 +63,10 @@ namespace Nuanceur
 		CFloatRvalue(const CFloatRvalue&) = default;
 
 		CFloatRvalue(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_X)
-			: CFloatValue(symbol, swizzle)
+		    : CFloatValue(symbol, swizzle)
 		{
-
 		}
 
-		CFloatRvalue& operator =(const CFloatRvalue&) = delete;
+		CFloatRvalue& operator=(const CFloatRvalue&) = delete;
 	};
 }

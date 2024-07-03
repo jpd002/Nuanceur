@@ -28,85 +28,85 @@
 
 namespace Nuanceur
 {
-	CFloatRvalue operator +(const CFloatValue& lhs, const CFloatValue& rhs);
-	CFloat2Rvalue operator +(const CFloat2Value& lhs, const CFloat2Value& rhs);
-	CFloat3Rvalue operator +(const CFloat3Value& lhs, const CFloat3Value& rhs);
-	CFloat4Rvalue operator +(const CFloat4Value& lhs, const CFloat4Value& rhs);
-	CIntRvalue operator +(const CIntValue& lhs, const CIntValue& rhs);
-	CInt2Rvalue operator +(const CInt2Value& lhs, const CInt2Value& rhs);
-	CInt3Rvalue operator +(const CInt3Value& lhs, const CInt3Value& rhs);
-	CUintRvalue operator +(const CUintValue& lhs, const CUintValue& rhs);
-	CUint3Rvalue operator +(const CUint3Value& lhs, const CUint3Value& rhs);
+	CFloatRvalue operator+(const CFloatValue& lhs, const CFloatValue& rhs);
+	CFloat2Rvalue operator+(const CFloat2Value& lhs, const CFloat2Value& rhs);
+	CFloat3Rvalue operator+(const CFloat3Value& lhs, const CFloat3Value& rhs);
+	CFloat4Rvalue operator+(const CFloat4Value& lhs, const CFloat4Value& rhs);
+	CIntRvalue operator+(const CIntValue& lhs, const CIntValue& rhs);
+	CInt2Rvalue operator+(const CInt2Value& lhs, const CInt2Value& rhs);
+	CInt3Rvalue operator+(const CInt3Value& lhs, const CInt3Value& rhs);
+	CUintRvalue operator+(const CUintValue& lhs, const CUintValue& rhs);
+	CUint3Rvalue operator+(const CUint3Value& lhs, const CUint3Value& rhs);
 
-	CFloatRvalue operator -(const CFloatValue& lhs, const CFloatValue& rhs);
-	CFloat3Rvalue operator -(const CFloat3Value& lhs, const CFloat3Value& rhs);
-	CFloat4Rvalue operator -(const CFloat4Value& lhs, const CFloat4Value& rhs);
-	CIntRvalue operator -(const CIntValue& lhs, const CIntValue& rhs);
-	CInt3Rvalue operator -(const CInt3Value& lhs, const CInt3Value& rhs);
-	CUint3Rvalue operator -(const CUint3Value& lhs, const CUint3Value& rhs);
+	CFloatRvalue operator-(const CFloatValue& lhs, const CFloatValue& rhs);
+	CFloat3Rvalue operator-(const CFloat3Value& lhs, const CFloat3Value& rhs);
+	CFloat4Rvalue operator-(const CFloat4Value& lhs, const CFloat4Value& rhs);
+	CIntRvalue operator-(const CIntValue& lhs, const CIntValue& rhs);
+	CInt3Rvalue operator-(const CInt3Value& lhs, const CInt3Value& rhs);
+	CUint3Rvalue operator-(const CUint3Value& lhs, const CUint3Value& rhs);
 
-	CFloatRvalue operator *(const CFloatValue& lhs, const CFloatValue& rhs);
-	CFloat2Rvalue operator *(const CFloat2Value& lhs, const CFloat2Value& rhs);
-	CFloat3Rvalue operator *(const CFloat3Value& lhs, const CFloat3Value& rhs);
-	CFloat4Rvalue operator *(const CFloat4Value& lhs, const CFloat4Value& rhs);
-	CInt3Rvalue operator *(const CInt3Value& lhs, const CInt3Value& rhs);
-	CUint3Rvalue operator *(const CUint3Value& lhs, const CUint3Value& rhs);
+	CFloatRvalue operator*(const CFloatValue& lhs, const CFloatValue& rhs);
+	CFloat2Rvalue operator*(const CFloat2Value& lhs, const CFloat2Value& rhs);
+	CFloat3Rvalue operator*(const CFloat3Value& lhs, const CFloat3Value& rhs);
+	CFloat4Rvalue operator*(const CFloat4Value& lhs, const CFloat4Value& rhs);
+	CInt3Rvalue operator*(const CInt3Value& lhs, const CInt3Value& rhs);
+	CUint3Rvalue operator*(const CUint3Value& lhs, const CUint3Value& rhs);
 
-	CIntRvalue operator *(const CIntValue& lhs, const CIntValue& rhs);
-	CInt2Rvalue operator *(const CInt2Value& lhs, const CInt2Value& rhs);
+	CIntRvalue operator*(const CIntValue& lhs, const CIntValue& rhs);
+	CInt2Rvalue operator*(const CInt2Value& lhs, const CInt2Value& rhs);
 
-	CUintRvalue operator *(const CUintValue& lhs, const CUintValue& rhs);
+	CUintRvalue operator*(const CUintValue& lhs, const CUintValue& rhs);
 
-	CFloatRvalue operator /(const CFloatValue& lhs, const CFloatValue& rhs);
-	CFloat2Rvalue operator /(const CFloat2Value& lhs, const CFloat2Value& rhs);
-	CFloat4Rvalue operator /(const CFloat4Value& lhs, const CFloat4Value& rhs);
-	CIntRvalue operator /(const CIntValue& lhs, const CIntValue& rhs);
+	CFloatRvalue operator/(const CFloatValue& lhs, const CFloatValue& rhs);
+	CFloat2Rvalue operator/(const CFloat2Value& lhs, const CFloat2Value& rhs);
+	CFloat4Rvalue operator/(const CFloat4Value& lhs, const CFloat4Value& rhs);
+	CIntRvalue operator/(const CIntValue& lhs, const CIntValue& rhs);
 
-	CIntRvalue operator %(const CIntValue& lhs, const CIntValue& rhs);
+	CIntRvalue operator%(const CIntValue& lhs, const CIntValue& rhs);
 
-	CIntRvalue operator >>(const CIntValue& lhs, const CIntValue& rhs);
-	CUintRvalue operator >>(const CUintValue& lhs, const CUintValue& rhs);
-	CUint3Rvalue operator >>(const CUint3Value& lhs, const CUint3Value& rhs);
+	CIntRvalue operator>>(const CIntValue& lhs, const CIntValue& rhs);
+	CUintRvalue operator>>(const CUintValue& lhs, const CUintValue& rhs);
+	CUint3Rvalue operator>>(const CUint3Value& lhs, const CUint3Value& rhs);
 
-	CIntRvalue operator <<(const CIntValue& lhs, const CIntValue& rhs);
-	CUintRvalue operator <<(const CUintValue& lhs, const CUintValue& rhs);
+	CIntRvalue operator<<(const CIntValue& lhs, const CIntValue& rhs);
+	CUintRvalue operator<<(const CUintValue& lhs, const CUintValue& rhs);
 
-	CIntRvalue operator &(const CIntValue& lhs, const CIntValue& rhs);
-	CInt4Rvalue operator &(const CInt4Value& lhs, const CInt4Value& rhs);
-	CUintRvalue operator &(const CUintValue& lhs, const CUintValue& rhs);
-	CUint4Rvalue operator &(const CUint4Value& lhs, const CUint4Value& rhs);
+	CIntRvalue operator&(const CIntValue& lhs, const CIntValue& rhs);
+	CInt4Rvalue operator&(const CInt4Value& lhs, const CInt4Value& rhs);
+	CUintRvalue operator&(const CUintValue& lhs, const CUintValue& rhs);
+	CUint4Rvalue operator&(const CUint4Value& lhs, const CUint4Value& rhs);
 
-	CIntRvalue operator |(const CIntValue& lhs, const CIntValue& rhs);
-	CUintRvalue operator |(const CUintValue& lhs, const CUintValue& rhs);
+	CIntRvalue operator|(const CIntValue& lhs, const CIntValue& rhs);
+	CUintRvalue operator|(const CUintValue& lhs, const CUintValue& rhs);
 
-	CUintRvalue operator ^(const CUintValue& lhs, const CUintValue& rhs);
+	CUintRvalue operator^(const CUintValue& lhs, const CUintValue& rhs);
 
-	CFloat4Rvalue operator *(const CMatrix44Value& lhs, const CFloat4Value& rhs);
+	CFloat4Rvalue operator*(const CMatrix44Value& lhs, const CFloat4Value& rhs);
 
-	CUintRvalue operator ~(const CUintValue& lhs);
+	CUintRvalue operator~(const CUintValue& lhs);
 
-	CBoolRvalue operator &&(const CBoolValue& lhs, const CBoolValue& rhs);
-	CBoolRvalue operator ||(const CBoolValue& lhs, const CBoolValue& rhs);
+	CBoolRvalue operator&&(const CBoolValue& lhs, const CBoolValue& rhs);
+	CBoolRvalue operator||(const CBoolValue& lhs, const CBoolValue& rhs);
 
-	CBoolRvalue operator !(const CBoolValue& lhs);
+	CBoolRvalue operator!(const CBoolValue& lhs);
 
-	CBoolRvalue operator ==(const CFloatValue& lhs, const CFloatValue& rhs);
-	CBoolRvalue operator !=(const CFloatValue& lhs, const CFloatValue& rhs);
-	CBoolRvalue operator <(const CFloatValue& lhs, const CFloatValue& rhs);
+	CBoolRvalue operator==(const CFloatValue& lhs, const CFloatValue& rhs);
+	CBoolRvalue operator!=(const CFloatValue& lhs, const CFloatValue& rhs);
+	CBoolRvalue operator<(const CFloatValue& lhs, const CFloatValue& rhs);
 
-	CBoolRvalue operator ==(const CIntValue& lhs, const CIntValue& rhs);
-	CBoolRvalue operator !=(const CIntValue& lhs, const CIntValue& rhs);
-	CBoolRvalue operator <(const CIntValue& lhs, const CIntValue& rhs);
-	CBoolRvalue operator <=(const CIntValue& lhs, const CIntValue& rhs);
-	CBoolRvalue operator >(const CIntValue& lhs, const CIntValue& rhs);
-	CBoolRvalue operator >=(const CIntValue& lhs, const CIntValue& rhs);
+	CBoolRvalue operator==(const CIntValue& lhs, const CIntValue& rhs);
+	CBoolRvalue operator!=(const CIntValue& lhs, const CIntValue& rhs);
+	CBoolRvalue operator<(const CIntValue& lhs, const CIntValue& rhs);
+	CBoolRvalue operator<=(const CIntValue& lhs, const CIntValue& rhs);
+	CBoolRvalue operator>(const CIntValue& lhs, const CIntValue& rhs);
+	CBoolRvalue operator>=(const CIntValue& lhs, const CIntValue& rhs);
 
-	CBoolRvalue operator ==(const CUintValue& lhs, const CUintValue& rhs);
-	CBoolRvalue operator !=(const CUintValue& lhs, const CUintValue& rhs);
-	CBoolRvalue operator <(const CUintValue& lhs, const CUintValue& rhs);
-	CBoolRvalue operator <=(const CUintValue& lhs, const CUintValue& rhs);
-	CBoolRvalue operator >(const CUintValue& lhs, const CUintValue& rhs);
-	CBoolRvalue operator >=(const CUintValue& lhs, const CUintValue& rhs);
+	CBoolRvalue operator==(const CUintValue& lhs, const CUintValue& rhs);
+	CBoolRvalue operator!=(const CUintValue& lhs, const CUintValue& rhs);
+	CBoolRvalue operator<(const CUintValue& lhs, const CUintValue& rhs);
+	CBoolRvalue operator<=(const CUintValue& lhs, const CUintValue& rhs);
+	CBoolRvalue operator>(const CUintValue& lhs, const CUintValue& rhs);
+	CBoolRvalue operator>=(const CUintValue& lhs, const CUintValue& rhs);
 
 	CFloatRvalue Abs(const CFloatValue&);
 	CFloat4Rvalue Clamp(const CFloat4Value&, const CFloat4Value&, const CFloat4Value&);
@@ -131,7 +131,7 @@ namespace Nuanceur
 	CFloat2Rvalue NewFloat2(const CFloatValue& x, const CFloatValue& y);
 
 	CFloat3Rvalue NewFloat3(CShaderBuilder&, float x, float y, float z);
-	
+
 	CFloat4Rvalue NewFloat4(CShaderBuilder& owner, float x, float y, float z, float w);
 	CFloat4Rvalue NewFloat4(const CFloatValue& x, const CFloat3Value& yzw);
 	CFloat4Rvalue NewFloat4(const CFloatValue& x, const CFloatValue& y, const CFloatValue& z, const CFloatValue& w);

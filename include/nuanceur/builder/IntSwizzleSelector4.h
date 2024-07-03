@@ -11,9 +11,8 @@ namespace Nuanceur
 	{
 	public:
 		CIntSwizzleSelector4(const CShaderBuilder::SYMBOLREF& symbolRef)
-			: m_symbolRef(symbolRef)
+		    : m_symbolRef(symbolRef)
 		{
-
 		}
 
 		CIntRvalue x() const

@@ -11,14 +11,14 @@ namespace Nuanceur
 	class CInt2Value : public CShaderBuilder::SYMBOLREF
 	{
 	public:
-		CIntSwizzleSelector4* operator ->()
+		CIntSwizzleSelector4* operator->()
 		{
 			return m_swizzleSelector.get();
 		}
 
 	protected:
 		CInt2Value(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_XY)
-			: SYMBOLREF(symbol, swizzle)
+		    : SYMBOLREF(symbol, swizzle)
 		{
 			m_swizzleSelector = std::make_shared<CIntSwizzleSelector4>(*this);
 		}
@@ -31,23 +31,22 @@ namespace Nuanceur
 	{
 	public:
 		CInt2Lvalue(const CShaderBuilder::SYMBOL& symbol)
-			: CInt2Value(symbol, SWIZZLE_XY)
+		    : CInt2Value(symbol, SWIZZLE_XY)
 		{
-
 		}
 
-		void operator =(const CInt2Lvalue& lvalue) = delete;
-		void operator =(const CInt2Rvalue& rvalue);
+		void operator=(const CInt2Lvalue& lvalue) = delete;
+		void operator=(const CInt2Rvalue& rvalue);
 	};
 
 	class CInt2Rvalue : public CInt2Value
 	{
 	private:
 		friend CIntSwizzleSelector4;
-		friend CInt2Rvalue operator +(const CInt2Value&, const CInt2Value&);
-		friend CInt2Rvalue operator *(const CInt2Value&, const CInt2Value&);
-		friend CInt2Rvalue operator /(const CInt2Value&, const CInt2Value&);
-		friend CInt2Rvalue operator <<(const CInt2Value&, const CInt2Value&);
+		friend CInt2Rvalue operator+(const CInt2Value&, const CInt2Value&);
+		friend CInt2Rvalue operator*(const CInt2Value&, const CInt2Value&);
+		friend CInt2Rvalue operator/(const CInt2Value&, const CInt2Value&);
+		friend CInt2Rvalue operator<<(const CInt2Value&, const CInt2Value&);
 		friend CInt2Rvalue NewInt2(CShaderBuilder&, int32, int32);
 		friend CInt2Rvalue NewInt2(const CIntValue&, const CIntValue&);
 		friend CInt2Rvalue ToInt(const CFloat2Value&);
@@ -55,11 +54,10 @@ namespace Nuanceur
 		CInt2Rvalue(const CInt2Rvalue&) = default;
 
 		CInt2Rvalue(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_XY)
-			: CInt2Value(symbol, swizzle)
+		    : CInt2Value(symbol, swizzle)
 		{
-
 		}
 
-		CInt2Rvalue& operator =(const CInt2Rvalue&) = delete;
+		CInt2Rvalue& operator=(const CInt2Rvalue&) = delete;
 	};
 }

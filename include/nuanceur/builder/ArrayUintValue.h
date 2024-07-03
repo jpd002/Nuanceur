@@ -8,9 +8,8 @@ namespace Nuanceur
 	{
 	public:
 		CArrayUintValue(const CShaderBuilder::SYMBOL& symbol)
-			: SYMBOLREF(symbol, SWIZZLE_XYZW)
+		    : SYMBOLREF(symbol, SWIZZLE_XYZW)
 		{
-
 		}
 	};
 }

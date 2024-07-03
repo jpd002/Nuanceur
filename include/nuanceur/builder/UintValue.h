@@ -12,7 +12,7 @@ namespace Nuanceur
 	class CUintValue : public CShaderBuilder::SYMBOLREF
 	{
 	public:
-		CUintSwizzleSelector4* operator ->()
+		CUintSwizzleSelector4* operator->()
 		{
 			assert(swizzle == SWIZZLE_X);
 			return m_swizzleSelector.get();
@@ -20,7 +20,7 @@ namespace Nuanceur
 
 	protected:
 		CUintValue(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_X)
-			: SYMBOLREF(symbol, swizzle)
+		    : SYMBOLREF(symbol, swizzle)
 		{
 			m_swizzleSelector = std::make_shared<CUintSwizzleSelector4>(symbol);
 		}
@@ -33,13 +33,12 @@ namespace Nuanceur
 	{
 	public:
 		CUintLvalue(const CShaderBuilder::SYMBOL& symbol)
-			: CUintValue(symbol, SWIZZLE_X)
+		    : CUintValue(symbol, SWIZZLE_X)
 		{
-
 		}
 
-		void operator =(const CUintLvalue& lvalue) = delete;
-		void operator =(const CUintRvalue& rvalue);
+		void operator=(const CUintLvalue& lvalue) = delete;
+		void operator=(const CUintRvalue& rvalue);
 	};
 
 	class CUintRvalue : public CUintValue
@@ -51,14 +50,14 @@ namespace Nuanceur
 		friend CUintRvalue AtomicAnd(const CImageUint2DValue&, const CInt2Value&, const CUintValue&);
 		friend CUintRvalue AtomicOr(const CArrayUintValue&, const CIntValue&, const CUintValue&);
 		friend CUintRvalue AtomicOr(const CImageUint2DValue&, const CInt2Value&, const CUintValue&);
-		friend CUintRvalue operator +(const CUintValue&, const CUintValue&);
-		friend CUintRvalue operator *(const CUintValue&, const CUintValue&);
-		friend CUintRvalue operator <<(const CUintValue&, const CUintValue&);
-		friend CUintRvalue operator >>(const CUintValue&, const CUintValue&);
-		friend CUintRvalue operator &(const CUintValue&, const CUintValue&);
-		friend CUintRvalue operator |(const CUintValue&, const CUintValue&);
-		friend CUintRvalue operator ^(const CUintValue&, const CUintValue&);
-		friend CUintRvalue operator ~(const CUintValue&);
+		friend CUintRvalue operator+(const CUintValue&, const CUintValue&);
+		friend CUintRvalue operator*(const CUintValue&, const CUintValue&);
+		friend CUintRvalue operator<<(const CUintValue&, const CUintValue&);
+		friend CUintRvalue operator>>(const CUintValue&, const CUintValue&);
+		friend CUintRvalue operator&(const CUintValue&, const CUintValue&);
+		friend CUintRvalue operator|(const CUintValue&, const CUintValue&);
+		friend CUintRvalue operator^(const CUintValue&, const CUintValue&);
+		friend CUintRvalue operator~(const CUintValue&);
 		friend CUintRvalue NewUint(CShaderBuilder&, uint32);
 		friend CUintRvalue ToUint(const CFloatValue&);
 		friend CUintRvalue ToUint(const CIntValue&);
@@ -66,11 +65,10 @@ namespace Nuanceur
 		CUintRvalue(const CUintRvalue&) = default;
 
 		CUintRvalue(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_X)
-			: CUintValue(symbol, swizzle)
+		    : CUintValue(symbol, swizzle)
 		{
-
 		}
 
-		CUintRvalue& operator =(const CUintRvalue&) = delete;
+		CUintRvalue& operator=(const CUintRvalue&) = delete;
 	};
 }

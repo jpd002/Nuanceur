@@ -4,10 +4,9 @@
 using namespace Nuanceur;
 
 CGlslShaderGenerator::CGlslShaderGenerator(const CShaderBuilder& shaderBuilder, SHADER_TYPE shaderType)
-: m_shaderBuilder(shaderBuilder)
-, m_shaderType(shaderType)
+    : m_shaderBuilder(shaderBuilder)
+    , m_shaderType(shaderType)
 {
-
 }
 
 std::string CGlslShaderGenerator::Generate(const CShaderBuilder& shaderBuilder, SHADER_TYPE shaderType)
@@ -24,7 +23,7 @@ std::string CGlslShaderGenerator::Generate() const
 	{
 		result += "precision mediump float;\r\n";
 	}
-	
+
 	result += GenerateInputs();
 	result += GenerateOutputs();
 	result += GenerateUniforms();
@@ -39,8 +38,8 @@ std::string CGlslShaderGenerator::Generate() const
 		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_TEMPORARY) continue;
 		auto temporaryValue = m_shaderBuilder.GetTemporaryValue(symbol);
 		result += string_format("\tvec4 %s = vec4(%f, %f, %f, %f);\r\n",
-			MakeSymbolName(symbol).c_str(),
-			temporaryValue.x, temporaryValue.y, temporaryValue.z, temporaryValue.w);
+		                        MakeSymbolName(symbol).c_str(),
+		                        temporaryValue.x, temporaryValue.y, temporaryValue.z, temporaryValue.w);
 	}
 
 	for(const auto& statement : m_shaderBuilder.GetStatements())
@@ -54,123 +53,123 @@ std::string CGlslShaderGenerator::Generate() const
 		{
 		case CShaderBuilder::STATEMENT_OP_ADD:
 			result += string_format("\t%s = %s + %s;\r\n",
-				PrintSymbolRef(dstRef).c_str(),
-				PrintSymbolRef(src1Ref).c_str(),
-				PrintSymbolRef(src2Ref).c_str());
+			                        PrintSymbolRef(dstRef).c_str(),
+			                        PrintSymbolRef(src1Ref).c_str(),
+			                        PrintSymbolRef(src2Ref).c_str());
 			break;
 		case CShaderBuilder::STATEMENT_OP_SUBSTRACT:
 			result += string_format("\t%s = %s - %s;\r\n",
-				PrintSymbolRef(dstRef).c_str(),
-				PrintSymbolRef(src1Ref).c_str(),
-				PrintSymbolRef(src2Ref).c_str());
+			                        PrintSymbolRef(dstRef).c_str(),
+			                        PrintSymbolRef(src1Ref).c_str(),
+			                        PrintSymbolRef(src2Ref).c_str());
 			break;
 		case CShaderBuilder::STATEMENT_OP_MULTIPLY:
 			result += string_format("\t%s = %s * %s;\r\n",
-				PrintSymbolRef(dstRef).c_str(),
-				PrintSymbolRef(src1Ref).c_str(),
-				PrintSymbolRef(src2Ref).c_str());
+			                        PrintSymbolRef(dstRef).c_str(),
+			                        PrintSymbolRef(src1Ref).c_str(),
+			                        PrintSymbolRef(src2Ref).c_str());
 			break;
 		case CShaderBuilder::STATEMENT_OP_DIVIDE:
 			result += string_format("\t%s = %s / %s;\r\n",
-				PrintSymbolRef(dstRef).c_str(),
-				PrintSymbolRef(src1Ref).c_str(),
-				PrintSymbolRef(src2Ref).c_str());
+			                        PrintSymbolRef(dstRef).c_str(),
+			                        PrintSymbolRef(src1Ref).c_str(),
+			                        PrintSymbolRef(src2Ref).c_str());
 			break;
 		case CShaderBuilder::STATEMENT_OP_MAX:
 			result += string_format("\t%s = max(%s, %s);\r\n",
-				PrintSymbolRef(dstRef).c_str(),
-				PrintSymbolRef(src1Ref).c_str(),
-				PrintSymbolRef(src2Ref).c_str());
+			                        PrintSymbolRef(dstRef).c_str(),
+			                        PrintSymbolRef(src1Ref).c_str(),
+			                        PrintSymbolRef(src2Ref).c_str());
 			break;
 		case CShaderBuilder::STATEMENT_OP_DOT:
 			result += string_format("\t%s = dot(%s, %s);\r\n",
-				PrintSymbolRef(dstRef).c_str(),
-				PrintSymbolRef(src1Ref).c_str(),
-				PrintSymbolRef(src2Ref).c_str());
+			                        PrintSymbolRef(dstRef).c_str(),
+			                        PrintSymbolRef(src1Ref).c_str(),
+			                        PrintSymbolRef(src2Ref).c_str());
 			break;
 		case CShaderBuilder::STATEMENT_OP_POW:
 			result += string_format("\t%s = pow(%s, %s);\r\n",
-				PrintSymbolRef(dstRef).c_str(),
-				PrintSymbolRef(src1Ref).c_str(),
-				PrintSymbolRef(src2Ref).c_str());
+			                        PrintSymbolRef(dstRef).c_str(),
+			                        PrintSymbolRef(src1Ref).c_str(),
+			                        PrintSymbolRef(src2Ref).c_str());
 			break;
 		case CShaderBuilder::STATEMENT_OP_MIX:
 			result += string_format("\t%s = mix(%s, %s, %s);\r\n",
-				PrintSymbolRef(dstRef).c_str(),
-				PrintSymbolRef(src1Ref).c_str(),
-				PrintSymbolRef(src2Ref).c_str(),
-				PrintSymbolRef(src3Ref).c_str());
+			                        PrintSymbolRef(dstRef).c_str(),
+			                        PrintSymbolRef(src1Ref).c_str(),
+			                        PrintSymbolRef(src2Ref).c_str(),
+			                        PrintSymbolRef(src3Ref).c_str());
 			break;
 		case CShaderBuilder::STATEMENT_OP_NEWVECTOR2:
 			result += string_format("\t%s = vec2(%s, %s);\r\n",
-				PrintSymbolRef(dstRef).c_str(),
-				PrintSymbolRef(src1Ref).c_str(),
-				PrintSymbolRef(src2Ref).c_str());
+			                        PrintSymbolRef(dstRef).c_str(),
+			                        PrintSymbolRef(src1Ref).c_str(),
+			                        PrintSymbolRef(src2Ref).c_str());
 			break;
 		case CShaderBuilder::STATEMENT_OP_NEWVECTOR4:
 			switch(statement.GetSourceCount())
 			{
 			case 2:
 				result += string_format("\t%s = vec4(%s, %s);\r\n",
-					PrintSymbolRef(dstRef).c_str(),
-					PrintSymbolRef(src1Ref).c_str(),
-					PrintSymbolRef(src2Ref).c_str());
+				                        PrintSymbolRef(dstRef).c_str(),
+				                        PrintSymbolRef(src1Ref).c_str(),
+				                        PrintSymbolRef(src2Ref).c_str());
 				break;
 			case 3:
 				result += string_format("\t%s = vec4(%s, %s, %s);\r\n",
-					PrintSymbolRef(dstRef).c_str(),
-					PrintSymbolRef(src1Ref).c_str(),
-					PrintSymbolRef(src2Ref).c_str(),
-					PrintSymbolRef(src3Ref).c_str());
+				                        PrintSymbolRef(dstRef).c_str(),
+				                        PrintSymbolRef(src1Ref).c_str(),
+				                        PrintSymbolRef(src2Ref).c_str(),
+				                        PrintSymbolRef(src3Ref).c_str());
 				break;
 			case 4:
 				result += string_format("\t%s = vec4(%s, %s, %s, %s);\r\n",
-					PrintSymbolRef(dstRef).c_str(),
-					PrintSymbolRef(src1Ref).c_str(),
-					PrintSymbolRef(src2Ref).c_str(),
-					PrintSymbolRef(src3Ref).c_str(),
-					PrintSymbolRef(src4Ref).c_str());
+				                        PrintSymbolRef(dstRef).c_str(),
+				                        PrintSymbolRef(src1Ref).c_str(),
+				                        PrintSymbolRef(src2Ref).c_str(),
+				                        PrintSymbolRef(src3Ref).c_str(),
+				                        PrintSymbolRef(src4Ref).c_str());
 				break;
 			}
 			break;
 		case CShaderBuilder::STATEMENT_OP_ASSIGN:
 			result += string_format("\t%s = %s;\r\n",
-				PrintSymbolRef(dstRef).c_str(),
-				PrintSymbolRef(src1Ref).c_str());
+			                        PrintSymbolRef(dstRef).c_str(),
+			                        PrintSymbolRef(src1Ref).c_str());
 			break;
 		case CShaderBuilder::STATEMENT_OP_NEGATE:
 			result += string_format("\t%s = -%s;\r\n",
-				PrintSymbolRef(dstRef).c_str(),
-				PrintSymbolRef(src1Ref).c_str());
+			                        PrintSymbolRef(dstRef).c_str(),
+			                        PrintSymbolRef(src1Ref).c_str());
 			break;
 		case CShaderBuilder::STATEMENT_OP_SATURATE:
 			result += string_format("\t%s = clamp(%s, 0.0, 1.0);\r\n",
-				PrintSymbolRef(dstRef).c_str(),
-				PrintSymbolRef(src1Ref).c_str());
+			                        PrintSymbolRef(dstRef).c_str(),
+			                        PrintSymbolRef(src1Ref).c_str());
 			break;
 		case CShaderBuilder::STATEMENT_OP_NORMALIZE:
 			result += string_format("\t%s = normalize(%s);\r\n",
-				PrintSymbolRef(dstRef).c_str(),
-				PrintSymbolRef(src1Ref).c_str());
+			                        PrintSymbolRef(dstRef).c_str(),
+			                        PrintSymbolRef(src1Ref).c_str());
 			break;
 		case CShaderBuilder::STATEMENT_OP_LENGTH:
 			result += string_format("\t%s = length(%s);\r\n",
-				PrintSymbolRef(dstRef).c_str(),
-				PrintSymbolRef(src1Ref).c_str());
+			                        PrintSymbolRef(dstRef).c_str(),
+			                        PrintSymbolRef(src1Ref).c_str());
 			break;
 		case CShaderBuilder::STATEMENT_OP_SAMPLE:
 			assert(src1Ref.symbol.location == CShaderBuilder::SYMBOL_LOCATION_TEXTURE);
 			result += string_format("\t%s = texture2D(c_sampler%d, %s);\r\n",
-				PrintSymbolRef(dstRef).c_str(),
-				src1Ref.symbol.index,
-				PrintSymbolRef(src2Ref).c_str());
+			                        PrintSymbolRef(dstRef).c_str(),
+			                        src1Ref.symbol.index,
+			                        PrintSymbolRef(src2Ref).c_str());
 			break;
 		default:
 			assert(0);
 			break;
 		}
 	}
-	
+
 	result += "}\r\n";
 
 	return result;
@@ -187,8 +186,8 @@ std::string CGlslShaderGenerator::GenerateInputs() const
 		if(semantic.type == SEMANTIC_SYSTEM_POSITION) continue;
 		if(semantic.type == SEMANTIC_SYSTEM_COLOR) continue;
 		result += string_format("%s %s %s;\r\n",
-			inputTag, MakeTypeName(symbol.type).c_str(),
-			MakeLocalSymbolName(symbol).c_str());
+		                        inputTag, MakeTypeName(symbol.type).c_str(),
+		                        MakeLocalSymbolName(symbol).c_str());
 	}
 	return result;
 }
@@ -204,8 +203,8 @@ std::string CGlslShaderGenerator::GenerateOutputs() const
 		if(semantic.type == SEMANTIC_SYSTEM_POSITION) continue;
 		if(semantic.type == SEMANTIC_SYSTEM_COLOR) continue;
 		result += string_format("%s %s %s;\r\n",
-			inputTag, MakeTypeName(symbol.type).c_str(),
-			MakeLocalSymbolName(symbol).c_str());
+		                        inputTag, MakeTypeName(symbol.type).c_str(),
+		                        MakeLocalSymbolName(symbol).c_str());
 	}
 	return result;
 }
@@ -218,7 +217,7 @@ std::string CGlslShaderGenerator::GenerateUniforms() const
 		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_UNIFORM) continue;
 		auto constantType = (symbol.type == CShaderBuilder::SYMBOL_TYPE_MATRIX) ? "mat4" : "vec4";
 		result += string_format("uniform %s %s;\r\n",
-			constantType, MakeLocalSymbolName(symbol).c_str());
+		                        constantType, MakeLocalSymbolName(symbol).c_str());
 	}
 	return result;
 }
@@ -263,30 +262,30 @@ std::string CGlslShaderGenerator::MakeLocalSymbolName(const CShaderBuilder::SYMB
 	switch(sym.location)
 	{
 	case CShaderBuilder::SYMBOL_LOCATION_INPUT:
+	{
+		auto semantic = m_shaderBuilder.GetInputSemantic(sym);
+		const char* prefix = (m_shaderType == SHADER_TYPE_VERTEX) ? "a" : "v";
+		return string_format("%s_%s", prefix, MakeSemanticName(semantic).c_str());
+	}
+	break;
+	case CShaderBuilder::SYMBOL_LOCATION_OUTPUT:
+	{
+		auto semantic = m_shaderBuilder.GetOutputSemantic(sym);
+		if(semantic.type == SEMANTIC_SYSTEM_POSITION)
 		{
-			auto semantic = m_shaderBuilder.GetInputSemantic(sym);
-			const char* prefix = (m_shaderType == SHADER_TYPE_VERTEX) ? "a" : "v";
+			return "gl_Position";
+		}
+		else if(semantic.type == SEMANTIC_SYSTEM_COLOR)
+		{
+			return "gl_FragColor";
+		}
+		else
+		{
+			const char* prefix = (m_shaderType == SHADER_TYPE_VERTEX) ? "v" : "invalid";
 			return string_format("%s_%s", prefix, MakeSemanticName(semantic).c_str());
 		}
-		break;
-	case CShaderBuilder::SYMBOL_LOCATION_OUTPUT:
-		{
-			auto semantic = m_shaderBuilder.GetOutputSemantic(sym);
-			if(semantic.type == SEMANTIC_SYSTEM_POSITION)
-			{
-				return "gl_Position";
-			}
-			else if(semantic.type == SEMANTIC_SYSTEM_COLOR)
-			{
-				return "gl_FragColor";
-			}
-			else
-			{
-				const char* prefix = (m_shaderType == SHADER_TYPE_VERTEX) ? "v" : "invalid";
-				return string_format("%s_%s", prefix, MakeSemanticName(semantic).c_str());
-			}
-		}
-		break;
+	}
+	break;
 	case CShaderBuilder::SYMBOL_LOCATION_UNIFORM:
 		return m_shaderBuilder.GetUniformName(sym);
 	default:

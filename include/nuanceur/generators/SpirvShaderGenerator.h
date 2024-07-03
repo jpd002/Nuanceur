@@ -38,8 +38,8 @@ namespace Nuanceur
 			{
 				assert(stringLength != 0);
 				uint32 value = 0;
-				if(stringLength > 0) value |= static_cast<uint32>(param[0] <<  0);
-				if(stringLength > 1) value |= static_cast<uint32>(param[1] <<  8);
+				if(stringLength > 0) value |= static_cast<uint32>(param[0] << 0);
+				if(stringLength > 1) value |= static_cast<uint32>(param[1] << 8);
 				if(stringLength > 2) value |= static_cast<uint32>(param[2] << 16);
 				if(stringLength > 3) value |= static_cast<uint32>(param[3] << 24);
 				convertedParams.push_back(value);
@@ -68,7 +68,7 @@ namespace Nuanceur
 		}
 
 		template <typename ParamType, typename... OtherParamTypes>
-		static void ConvertParams(ConvertedParamArray& convertedParams, ParamType&& param, OtherParamTypes &&...otherParams)
+		static void ConvertParams(ConvertedParamArray& convertedParams, ParamType&& param, OtherParamTypes&&... otherParams)
 		{
 			ConvertParam(convertedParams, param);
 			ConvertParams(convertedParams, std::forward<OtherParamTypes>(otherParams)...);
@@ -88,7 +88,7 @@ namespace Nuanceur
 		static void Generate(Framework::CStream&, const CShaderBuilder&, SHADER_TYPE);
 
 	private:
-		        CSpirvShaderGenerator(Framework::CStream&, const CShaderBuilder&, SHADER_TYPE);
+		CSpirvShaderGenerator(Framework::CStream&, const CShaderBuilder&, SHADER_TYPE);
 		virtual ~CSpirvShaderGenerator() = default;
 
 		void Generate();
@@ -101,7 +101,7 @@ namespace Nuanceur
 		}
 
 		template <typename... ParamTypes>
-		void WriteOp(spv::Op opcode, ParamTypes&&...params)
+		void WriteOp(spv::Op opcode, ParamTypes&&... params)
 		{
 			SpirvOpConverter::ConvertedParamArray convertedParams;
 			convertedParams.reserve(sizeof...(params));
@@ -159,16 +159,16 @@ namespace Nuanceur
 		void LogicalNot(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Sub(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Clamp(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&,
-			const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
+		           const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void ClassifyFloat(spv::Op, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Dot(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void GlslStdOp(GLSLstd450, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Min(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Mix(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&,
-			const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
+		         const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Compare(CShaderBuilder::STATEMENT_OP, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
-		void AtomicImageOp(spv::Op, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, 
-			const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
+		void AtomicImageOp(spv::Op, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&,
+		                   const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Load(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Store(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Store16(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);

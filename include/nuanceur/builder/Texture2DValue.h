@@ -8,9 +8,8 @@ namespace Nuanceur
 	{
 	public:
 		CTexture2DValue(const CShaderBuilder::SYMBOL& symbol)
-			: SYMBOLREF(symbol, SWIZZLE_XYZW)
+		    : SYMBOLREF(symbol, SWIZZLE_XYZW)
 		{
-
 		}
 	};
 }

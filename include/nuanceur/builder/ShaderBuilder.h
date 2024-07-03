@@ -119,48 +119,54 @@ namespace Nuanceur
 		struct SEMANTIC_INFO
 		{
 			SEMANTIC_INFO(SEMANTIC type, unsigned int index)
-				: type(type), index(index)
+			    : type(type)
+			    , index(index)
 			{
-
 			}
 
-			SEMANTIC type		= SEMANTIC_NONE;
-			unsigned int index	= 0;
+			SEMANTIC type = SEMANTIC_NONE;
+			unsigned int index = 0;
 		};
 
 		struct SYMBOL
 		{
-			SYMBOL() {}
+			SYMBOL()
+			{
+			}
 
-			CShaderBuilder*		owner = nullptr;
-			SYMBOL_TYPE			type = SYMBOL_TYPE_NULL;
-			SYMBOL_LOCATION		location = SYMBOL_LOCATION_NULL;
-			unsigned int		unit = 0;
-			unsigned int		index = 0;
-			uint32				attributes = 0;
+			CShaderBuilder* owner = nullptr;
+			SYMBOL_TYPE type = SYMBOL_TYPE_NULL;
+			SYMBOL_LOCATION location = SYMBOL_LOCATION_NULL;
+			unsigned int unit = 0;
+			unsigned int index = 0;
+			uint32 attributes = 0;
 		};
 
 		struct SYMBOLREF
 		{
-			SYMBOLREF() {}
-			
-			SYMBOLREF(const SYMBOL& symbol, const SWIZZLE_TYPE& swizzle)
-				: symbol(symbol), swizzle(swizzle)
+			SYMBOLREF()
 			{
-			
 			}
-			
-			SYMBOL			symbol;
-			SWIZZLE_TYPE	swizzle = SWIZZLE_XYZW;
+
+			SYMBOLREF(const SYMBOL& symbol, const SWIZZLE_TYPE& swizzle)
+			    : symbol(symbol)
+			    , swizzle(swizzle)
+			{
+			}
+
+			SYMBOL symbol;
+			SWIZZLE_TYPE swizzle = SWIZZLE_XYZW;
 		};
 
 		class CIntVector4
 		{
 		public:
 			CIntVector4(int32 x, int32 y, int32 z, int32 w)
-				: x(x), y(y), z(z), w(w)
+			    : x(x)
+			    , y(y)
+			    , z(z)
+			    , w(w)
 			{
-			
 			}
 
 			int32 x;
@@ -252,17 +258,21 @@ namespace Nuanceur
 			STATEMENT() = default;
 
 			STATEMENT(STATEMENT_OP op, SYMBOLREF dstRef, SYMBOLREF src1Ref, SYMBOLREF src2Ref = SYMBOLREF(), SYMBOLREF src3Ref = SYMBOLREF(), SYMBOLREF src4Ref = SYMBOLREF())
-				: op(op), dstRef(dstRef), src1Ref(src1Ref), src2Ref(src2Ref), src3Ref(src3Ref), src4Ref(src4Ref)
+			    : op(op)
+			    , dstRef(dstRef)
+			    , src1Ref(src1Ref)
+			    , src2Ref(src2Ref)
+			    , src3Ref(src3Ref)
+			    , src4Ref(src4Ref)
 			{
-
 			}
 
-			STATEMENT_OP		op = STATEMENT_OP_NOP;
-			SYMBOLREF			dstRef;
-			SYMBOLREF			src1Ref;
-			SYMBOLREF			src2Ref;
-			SYMBOLREF			src3Ref;
-			SYMBOLREF			src4Ref;
+			STATEMENT_OP op = STATEMENT_OP_NOP;
+			SYMBOLREF dstRef;
+			SYMBOLREF src1Ref;
+			SYMBOLREF src2Ref;
+			SYMBOLREF src3Ref;
+			SYMBOLREF src4Ref;
 
 			unsigned int GetSourceCount() const
 			{
@@ -301,60 +311,60 @@ namespace Nuanceur
 
 		//We need a special operator = that will remap symbol owners
 
-		virtual					~CShaderBuilder() = default;
+		virtual ~CShaderBuilder() = default;
 
-		uint32					GetMetadata(METADATA_TYPE, uint32) const;
-		void					SetMetadata(METADATA_TYPE, uint32);
+		uint32 GetMetadata(METADATA_TYPE, uint32) const;
+		void SetMetadata(METADATA_TYPE, uint32);
 
-		const SymbolArray&		GetSymbols() const;
-		SEMANTIC_INFO			GetInputSemantic(const SYMBOL&) const;
-		SEMANTIC_INFO			GetOutputSemantic(const SYMBOL&) const;
-		std::string				GetVariableName(const SYMBOL&) const;
-		std::string				GetUniformName(const SYMBOL&) const;
-		CVector4				GetTemporaryValue(const SYMBOL&) const;
-		CIntVector4				GetTemporaryValueInt(const SYMBOL&) const;
-		CBoolVector4			GetTemporaryValueBool(const SYMBOL&) const;
+		const SymbolArray& GetSymbols() const;
+		SEMANTIC_INFO GetInputSemantic(const SYMBOL&) const;
+		SEMANTIC_INFO GetOutputSemantic(const SYMBOL&) const;
+		std::string GetVariableName(const SYMBOL&) const;
+		std::string GetUniformName(const SYMBOL&) const;
+		CVector4 GetTemporaryValue(const SYMBOL&) const;
+		CIntVector4 GetTemporaryValueInt(const SYMBOL&) const;
+		CBoolVector4 GetTemporaryValueBool(const SYMBOL&) const;
 
-		const StatementList&	GetStatements() const;
-		void					InsertStatement(const STATEMENT&);
+		const StatementList& GetStatements() const;
+		void InsertStatement(const STATEMENT&);
 
-		SYMBOL					CreateInput(SEMANTIC, unsigned int = 0);
-		SYMBOL					CreateInputInt(SEMANTIC, unsigned int = 0);
-		SYMBOL					CreateInputUint(SEMANTIC, unsigned int = 0);
-		SYMBOL					CreateOutput(SEMANTIC, unsigned int = 0);
-		SYMBOL					CreateOutputUint(SEMANTIC, unsigned int = 0);
-		SYMBOL					CreateConstant(float, float, float, float);
-		SYMBOL					CreateConstantInt(int32, int32, int32, int32);
-		SYMBOL					CreateConstantUint(uint32, uint32, uint32, uint32);
-		SYMBOL					CreateConstantBool(bool, bool, bool, bool);
-		
-		SYMBOL					CreateVariableFloat(const std::string&);
-		SYMBOL					CreateVariableInt(const std::string&);
-		SYMBOL					CreateVariableUint(const std::string&);
-		SYMBOL					CreateVariableBool(const std::string&);
+		SYMBOL CreateInput(SEMANTIC, unsigned int = 0);
+		SYMBOL CreateInputInt(SEMANTIC, unsigned int = 0);
+		SYMBOL CreateInputUint(SEMANTIC, unsigned int = 0);
+		SYMBOL CreateOutput(SEMANTIC, unsigned int = 0);
+		SYMBOL CreateOutputUint(SEMANTIC, unsigned int = 0);
+		SYMBOL CreateConstant(float, float, float, float);
+		SYMBOL CreateConstantInt(int32, int32, int32, int32);
+		SYMBOL CreateConstantUint(uint32, uint32, uint32, uint32);
+		SYMBOL CreateConstantBool(bool, bool, bool, bool);
 
-		SYMBOL					CreateTemporary();
-		SYMBOL					CreateTemporaryBool();
-		SYMBOL					CreateTemporaryInt();
-		SYMBOL					CreateTemporaryUint();
+		SYMBOL CreateVariableFloat(const std::string&);
+		SYMBOL CreateVariableInt(const std::string&);
+		SYMBOL CreateVariableUint(const std::string&);
+		SYMBOL CreateVariableBool(const std::string&);
 
-		SYMBOL					CreateUniformFloat4(const std::string&, unsigned int = 0);
-		SYMBOL					CreateUniformInt4(const std::string&, unsigned int = 0);
-		SYMBOL					CreateUniformMatrix(const std::string&, unsigned int = 0);
-		SYMBOL					CreateUniformArrayUint(const std::string&, unsigned int = 0, uint32 = 0);
-		SYMBOL					CreateUniformArrayUchar(const std::string&, unsigned int = 0, uint32 = 0);
-		SYMBOL					CreateUniformArrayUshort(const std::string&, unsigned int = 0, uint32 = 0);
+		SYMBOL CreateTemporary();
+		SYMBOL CreateTemporaryBool();
+		SYMBOL CreateTemporaryInt();
+		SYMBOL CreateTemporaryUint();
 
-		SYMBOL					CreateTexture2D(unsigned int);
+		SYMBOL CreateUniformFloat4(const std::string&, unsigned int = 0);
+		SYMBOL CreateUniformInt4(const std::string&, unsigned int = 0);
+		SYMBOL CreateUniformMatrix(const std::string&, unsigned int = 0);
+		SYMBOL CreateUniformArrayUint(const std::string&, unsigned int = 0, uint32 = 0);
+		SYMBOL CreateUniformArrayUchar(const std::string&, unsigned int = 0, uint32 = 0);
+		SYMBOL CreateUniformArrayUshort(const std::string&, unsigned int = 0, uint32 = 0);
 
-		SYMBOL					CreateImage2DUint(unsigned int);
+		SYMBOL CreateTexture2D(unsigned int);
 
-		SYMBOL					CreateSubpassInput(unsigned int, unsigned int);
-		SYMBOL					CreateSubpassInputUint(unsigned int, unsigned int);
+		SYMBOL CreateImage2DUint(unsigned int);
 
-		SYMBOL					CreateOptionalInput(bool, SEMANTIC, unsigned int = 0);
-		SYMBOL					CreateOptionalOutput(bool, SEMANTIC, unsigned int = 0);
-		SYMBOL					CreateOptionalUniformMatrix(bool, const std::string&);
+		SYMBOL CreateSubpassInput(unsigned int, unsigned int);
+		SYMBOL CreateSubpassInputUint(unsigned int, unsigned int);
+
+		SYMBOL CreateOptionalInput(bool, SEMANTIC, unsigned int = 0);
+		SYMBOL CreateOptionalOutput(bool, SEMANTIC, unsigned int = 0);
+		SYMBOL CreateOptionalUniformMatrix(bool, const std::string&);
 
 	private:
 		typedef std::unordered_map<unsigned int, SEMANTIC_INFO> SemanticMap;
@@ -364,20 +374,20 @@ namespace Nuanceur
 		typedef std::unordered_map<unsigned int, CIntVector4> TemporaryValueIntMap;
 		typedef std::unordered_map<unsigned int, CBoolVector4> TemporaryValueBoolMap;
 
-		MetadataMap				m_metadata;
-		SymbolArray				m_symbols;
-		StatementList			m_statements;
-		unsigned int			m_currentTempIndex = 0;
-		unsigned int			m_currentVariableIndex = 0;
-		unsigned int			m_currentInputIndex = 0;
-		unsigned int			m_currentOutputIndex = 0;
+		MetadataMap m_metadata;
+		SymbolArray m_symbols;
+		StatementList m_statements;
+		unsigned int m_currentTempIndex = 0;
+		unsigned int m_currentVariableIndex = 0;
+		unsigned int m_currentInputIndex = 0;
+		unsigned int m_currentOutputIndex = 0;
 
-		SemanticMap				m_inputSemantics;
-		SemanticMap				m_outputSemantics;
-		VariableNameMap			m_variableNames;
-		UniformNameMap			m_uniformNames;
-		TemporaryValueMap		m_temporaryValues;
-		TemporaryValueIntMap	m_temporaryValuesInt;
-		TemporaryValueBoolMap	m_temporaryValuesBool;
+		SemanticMap m_inputSemantics;
+		SemanticMap m_outputSemantics;
+		VariableNameMap m_variableNames;
+		UniformNameMap m_uniformNames;
+		TemporaryValueMap m_temporaryValues;
+		TemporaryValueIntMap m_temporaryValuesInt;
+		TemporaryValueBoolMap m_temporaryValuesBool;
 	};
 }

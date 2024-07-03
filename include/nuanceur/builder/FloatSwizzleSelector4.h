@@ -11,9 +11,8 @@ namespace Nuanceur
 	{
 	public:
 		CFloatSwizzleSelector4(const CShaderBuilder::SYMBOL& symbol)
-			: m_symbol(symbol)
+		    : m_symbol(symbol)
 		{
-
 		}
 
 		CFloatRvalue x() const
@@ -45,7 +44,7 @@ namespace Nuanceur
 		{
 			return CFloat2Rvalue(m_symbol, SWIZZLE_ZZ);
 		}
-		
+
 		CFloat2Rvalue ww() const
 		{
 			return CFloat2Rvalue(m_symbol, SWIZZLE_WW);

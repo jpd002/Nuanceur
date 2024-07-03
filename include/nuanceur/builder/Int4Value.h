@@ -11,14 +11,14 @@ namespace Nuanceur
 	class CInt4Value : public CShaderBuilder::SYMBOLREF
 	{
 	public:
-		CIntSwizzleSelector4* operator ->()
+		CIntSwizzleSelector4* operator->()
 		{
 			return m_swizzleSelector.get();
 		}
 
 	protected:
 		CInt4Value(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_XYZW)
-			: SYMBOLREF(symbol, swizzle)
+		    : SYMBOLREF(symbol, swizzle)
 		{
 			m_swizzleSelector = std::make_shared<CIntSwizzleSelector4>(*this);
 		}
@@ -31,23 +31,22 @@ namespace Nuanceur
 	{
 	public:
 		CInt4Lvalue(const CShaderBuilder::SYMBOL& symbol)
-			: CInt4Value(symbol, SWIZZLE_XYZW)
+		    : CInt4Value(symbol, SWIZZLE_XYZW)
 		{
-
 		}
 
-		void operator =(const CInt4Lvalue& lvalue) = delete;
-		void operator =(const CInt4Rvalue& rvalue);
+		void operator=(const CInt4Lvalue& lvalue) = delete;
+		void operator=(const CInt4Rvalue& rvalue);
 	};
 
 	class CInt4Rvalue : public CInt4Value
 	{
 	private:
 		friend CIntSwizzleSelector4;
-		friend CInt4Rvalue operator +(const CInt4Value&, const CInt4Value&);
-		friend CInt4Rvalue operator -(const CInt4Value&, const CInt4Value&);
-		friend CInt4Rvalue operator /(const CInt4Value&, const CInt4Value&);
-		friend CInt4Rvalue operator &(const CInt4Value&, const CInt4Value&);
+		friend CInt4Rvalue operator+(const CInt4Value&, const CInt4Value&);
+		friend CInt4Rvalue operator-(const CInt4Value&, const CInt4Value&);
+		friend CInt4Rvalue operator/(const CInt4Value&, const CInt4Value&);
+		friend CInt4Rvalue operator&(const CInt4Value&, const CInt4Value&);
 		friend CInt4Rvalue Clamp(const CInt4Value&, const CInt4Value&, const CInt4Value&);
 		friend CInt4Rvalue NewInt4(CShaderBuilder&, int32, int32, int32, int32);
 		friend CInt4Rvalue NewInt4(const CIntValue&, const CIntValue&, const CIntValue&, const CIntValue&);
@@ -57,11 +56,10 @@ namespace Nuanceur
 		CInt4Rvalue(const CInt4Rvalue&) = default;
 
 		CInt4Rvalue(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_XYZW)
-			: CInt4Value(symbol, swizzle)
+		    : CInt4Value(symbol, swizzle)
 		{
-
 		}
 
-		CInt4Rvalue& operator =(const CInt4Rvalue&) = delete;
+		CInt4Rvalue& operator=(const CInt4Rvalue&) = delete;
 	};
 }

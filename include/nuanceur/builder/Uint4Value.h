@@ -13,7 +13,7 @@ namespace Nuanceur
 	class CUint4Value : public CShaderBuilder::SYMBOLREF
 	{
 	public:
-		CUintSwizzleSelector4* operator ->()
+		CUintSwizzleSelector4* operator->()
 		{
 			assert(swizzle == SWIZZLE_XYZW);
 			return m_swizzleSelector.get();
@@ -21,7 +21,7 @@ namespace Nuanceur
 
 	protected:
 		CUint4Value(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_XYZW)
-			: SYMBOLREF(symbol, swizzle)
+		    : SYMBOLREF(symbol, swizzle)
 		{
 			m_swizzleSelector = std::make_shared<CUintSwizzleSelector4>(symbol);
 		}
@@ -34,13 +34,12 @@ namespace Nuanceur
 	{
 	public:
 		CUint4Lvalue(const CShaderBuilder::SYMBOL& symbol)
-			: CUint4Value(symbol, SWIZZLE_XYZW)
+		    : CUint4Value(symbol, SWIZZLE_XYZW)
 		{
-
 		}
 
-		void operator =(const CUint4Lvalue& lvalue) = delete;
-		void operator =(const CUint4Rvalue& rvalue);
+		void operator=(const CUint4Lvalue& lvalue) = delete;
+		void operator=(const CUint4Rvalue& rvalue);
 	};
 
 	class CUint4Rvalue : public CUint4Value
@@ -48,7 +47,7 @@ namespace Nuanceur
 	private:
 		friend CUintSwizzleSelector4;
 		friend CUint4Rvalue Load(const CImageUint2DValue&, const CInt2Value&);
-		friend CUint4Rvalue operator &(const CUint4Value&, const CUint4Value&);
+		friend CUint4Rvalue operator&(const CUint4Value&, const CUint4Value&);
 		friend CUint4Rvalue NewUint4(CShaderBuilder&, uint32, uint32, uint32, uint32);
 		friend CUint4Rvalue NewUint4(const CUintValue&, const CUint3Value&);
 		friend CUint4Rvalue NewUint4(const CUint3Value&, const CUintValue&);
@@ -59,11 +58,10 @@ namespace Nuanceur
 		CUint4Rvalue(const CUint4Rvalue&) = default;
 
 		CUint4Rvalue(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_XYZW)
-			: CUint4Value(symbol, swizzle)
+		    : CUint4Value(symbol, swizzle)
 		{
-
 		}
 
-		CUint4Rvalue& operator =(const CUint4Rvalue&) = delete;
+		CUint4Rvalue& operator=(const CUint4Rvalue&) = delete;
 	};
 }

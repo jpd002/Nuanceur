@@ -8,67 +8,62 @@ using namespace Nuanceur;
 
 #define CHECK_ISOPERANDVALID(a) assert((a).symbol.type != CShaderBuilder::SYMBOL_TYPE_NULL)
 
-#define GENERATE_VECTOR_BINARY_OP(StatementOp, Operator, VectorType) \
-	VectorType##Rvalue Nuanceur::operator Operator(const VectorType##Value& lhs, const VectorType##Value& rhs) \
-	{ \
-		CHECK_ISOPERANDVALID(lhs); \
-		CHECK_ISOPERANDVALID(rhs); \
-		auto owner = GetCommonOwner(lhs.symbol, rhs.symbol); \
-		auto temp = VectorType##Rvalue(owner->CreateTemporary()); \
-		owner->InsertStatement( \
-			CShaderBuilder::STATEMENT(CShaderBuilder::StatementOp, temp, lhs, rhs) \
-		); \
-		return temp; \
+#define GENERATE_VECTOR_BINARY_OP(StatementOp, Operator, VectorType)                                             \
+	VectorType##Rvalue Nuanceur::operator Operator(const VectorType##Value & lhs, const VectorType##Value & rhs) \
+	{                                                                                                            \
+		CHECK_ISOPERANDVALID(lhs);                                                                               \
+		CHECK_ISOPERANDVALID(rhs);                                                                               \
+		auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);                                                     \
+		auto temp = VectorType##Rvalue(owner->CreateTemporary());                                                \
+		owner->InsertStatement(                                                                                  \
+		    CShaderBuilder::STATEMENT(CShaderBuilder::StatementOp, temp, lhs, rhs));                             \
+		return temp;                                                                                             \
 	}
 
-#define GENERATE_VECTOR_BINARY_INT_OP(StatementOp, Operator, VectorType) \
-	VectorType##Rvalue Nuanceur::operator Operator(const VectorType##Value& lhs, const VectorType##Value& rhs) \
-	{ \
-		CHECK_ISOPERANDVALID(lhs); \
-		CHECK_ISOPERANDVALID(rhs); \
-		auto owner = GetCommonOwner(lhs.symbol, rhs.symbol); \
-		auto temp = VectorType##Rvalue(owner->CreateTemporaryInt()); \
-		owner->InsertStatement( \
-			CShaderBuilder::STATEMENT(CShaderBuilder::StatementOp, temp, lhs, rhs) \
-		); \
-		return temp; \
+#define GENERATE_VECTOR_BINARY_INT_OP(StatementOp, Operator, VectorType)                                         \
+	VectorType##Rvalue Nuanceur::operator Operator(const VectorType##Value & lhs, const VectorType##Value & rhs) \
+	{                                                                                                            \
+		CHECK_ISOPERANDVALID(lhs);                                                                               \
+		CHECK_ISOPERANDVALID(rhs);                                                                               \
+		auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);                                                     \
+		auto temp = VectorType##Rvalue(owner->CreateTemporaryInt());                                             \
+		owner->InsertStatement(                                                                                  \
+		    CShaderBuilder::STATEMENT(CShaderBuilder::StatementOp, temp, lhs, rhs));                             \
+		return temp;                                                                                             \
 	}
 
-#define GENERATE_VECTOR_BINARY_UINT_OP(StatementOp, Operator, VectorType) \
-	VectorType##Rvalue Nuanceur::operator Operator(const VectorType##Value& lhs, const VectorType##Value& rhs) \
-	{ \
-		CHECK_ISOPERANDVALID(lhs); \
-		CHECK_ISOPERANDVALID(rhs); \
-		auto owner = GetCommonOwner(lhs.symbol, rhs.symbol); \
-		auto temp = VectorType##Rvalue(owner->CreateTemporaryUint()); \
-		owner->InsertStatement( \
-			CShaderBuilder::STATEMENT(CShaderBuilder::StatementOp, temp, lhs, rhs) \
-		); \
-		return temp; \
+#define GENERATE_VECTOR_BINARY_UINT_OP(StatementOp, Operator, VectorType)                                        \
+	VectorType##Rvalue Nuanceur::operator Operator(const VectorType##Value & lhs, const VectorType##Value & rhs) \
+	{                                                                                                            \
+		CHECK_ISOPERANDVALID(lhs);                                                                               \
+		CHECK_ISOPERANDVALID(rhs);                                                                               \
+		auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);                                                     \
+		auto temp = VectorType##Rvalue(owner->CreateTemporaryUint());                                            \
+		owner->InsertStatement(                                                                                  \
+		    CShaderBuilder::STATEMENT(CShaderBuilder::StatementOp, temp, lhs, rhs));                             \
+		return temp;                                                                                             \
 	}
 
-#define GENERATE_VECTOR_COMPARE_OP(StatementOp, Operator, VectorType) \
-	CBoolRvalue Nuanceur::operator Operator(const VectorType##Value& lhs, const VectorType##Value& rhs) \
-	{ \
-		CHECK_ISOPERANDVALID(lhs); \
-		CHECK_ISOPERANDVALID(rhs); \
-		auto owner = GetCommonOwner(lhs.symbol, rhs.symbol); \
-		auto temp = CBoolRvalue(owner->CreateTemporaryBool()); \
-		owner->InsertStatement( \
-			CShaderBuilder::STATEMENT(CShaderBuilder::StatementOp, temp, lhs, rhs) \
-		); \
-		return temp; \
+#define GENERATE_VECTOR_COMPARE_OP(StatementOp, Operator, VectorType)                                     \
+	CBoolRvalue Nuanceur::operator Operator(const VectorType##Value & lhs, const VectorType##Value & rhs) \
+	{                                                                                                     \
+		CHECK_ISOPERANDVALID(lhs);                                                                        \
+		CHECK_ISOPERANDVALID(rhs);                                                                        \
+		auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);                                              \
+		auto temp = CBoolRvalue(owner->CreateTemporaryBool());                                            \
+		owner->InsertStatement(                                                                           \
+		    CShaderBuilder::STATEMENT(CShaderBuilder::StatementOp, temp, lhs, rhs));                      \
+		return temp;                                                                                      \
 	}
 
-#define GENERATE_VECTOR_ASSIGN(VectorType) \
-	void VectorType##Lvalue::operator =(const VectorType##Rvalue& rhs) \
-	{ \
-		CHECK_ISOPERANDVALID(*this); \
-		CHECK_ISOPERANDVALID(rhs); \
-		auto owner = rhs.symbol.owner; \
-		owner->InsertStatement( \
-			CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ASSIGN, *this, rhs) \
-		); \
+#define GENERATE_VECTOR_ASSIGN(VectorType)                                               \
+	void VectorType##Lvalue::operator=(const VectorType##Rvalue & rhs)                   \
+	{                                                                                    \
+		CHECK_ISOPERANDVALID(*this);                                                     \
+		CHECK_ISOPERANDVALID(rhs);                                                       \
+		auto owner = rhs.symbol.owner;                                                   \
+		owner->InsertStatement(                                                          \
+		    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ASSIGN, *this, rhs)); \
 	}
 
 static CShaderBuilder* GetCommonOwner(const CShaderBuilder::SYMBOL& symbol1, const CShaderBuilder::SYMBOL& symbol2)
@@ -163,59 +158,54 @@ GENERATE_VECTOR_ASSIGN(CInt4)
 GENERATE_VECTOR_ASSIGN(CUint)
 GENERATE_VECTOR_ASSIGN(CUint4)
 
-CFloat4Rvalue Nuanceur::operator *(const CMatrix44Value& lhs, const CFloat4Value& rhs)
+CFloat4Rvalue Nuanceur::operator*(const CMatrix44Value& lhs, const CFloat4Value& rhs)
 {
 	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
 	auto temp = CFloat4Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MULTIPLY, temp, lhs, rhs)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MULTIPLY, temp, lhs, rhs));
 	return temp;
 }
 
-CUintRvalue Nuanceur::operator ~(const CUintValue& lhs)
+CUintRvalue Nuanceur::operator~(const CUintValue& lhs)
 {
 	CHECK_ISOPERANDVALID(lhs);
 	auto owner = lhs.symbol.owner;
 	auto temp = CUintRvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NOT, temp, lhs)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NOT, temp, lhs));
 	return temp;
 }
 
-CBoolRvalue Nuanceur::operator &&(const CBoolValue& lhs, const CBoolValue& rhs)
+CBoolRvalue Nuanceur::operator&&(const CBoolValue& lhs, const CBoolValue& rhs)
 {
 	CHECK_ISOPERANDVALID(lhs);
 	CHECK_ISOPERANDVALID(rhs);
 	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
 	auto temp = CBoolRvalue(owner->CreateTemporaryBool());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOGICAL_AND, temp, lhs, rhs)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOGICAL_AND, temp, lhs, rhs));
 	return temp;
 }
 
-CBoolRvalue Nuanceur::operator ||(const CBoolValue& lhs, const CBoolValue& rhs)
+CBoolRvalue Nuanceur::operator||(const CBoolValue& lhs, const CBoolValue& rhs)
 {
 	CHECK_ISOPERANDVALID(lhs);
 	CHECK_ISOPERANDVALID(rhs);
 	auto owner = GetCommonOwner(lhs.symbol, rhs.symbol);
 	auto temp = CBoolRvalue(owner->CreateTemporaryBool());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOGICAL_OR, temp, lhs, rhs)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOGICAL_OR, temp, lhs, rhs));
 	return temp;
 }
 
-CBoolRvalue Nuanceur::operator !(const CBoolValue& lhs)
+CBoolRvalue Nuanceur::operator!(const CBoolValue& lhs)
 {
 	CHECK_ISOPERANDVALID(lhs);
 	auto owner = lhs.symbol.owner;
 	auto temp = CBoolRvalue(owner->CreateTemporaryBool());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOGICAL_NOT, temp, lhs)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOGICAL_NOT, temp, lhs));
 	return temp;
 }
 
@@ -237,8 +227,7 @@ CIntRvalue Nuanceur::Clamp(const CIntValue& value, const CIntValue& min, const C
 	auto owner = GetCommonOwner(value.symbol, min.symbol);
 	auto temp = CIntRvalue(owner->CreateTemporaryInt());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_CLAMP, temp, value, min, max)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_CLAMP, temp, value, min, max));
 	return temp;
 }
 
@@ -250,8 +239,7 @@ CInt4Rvalue Nuanceur::Clamp(const CInt4Value& value, const CInt4Value& min, cons
 	auto owner = GetCommonOwner(value.symbol, min.symbol);
 	auto temp = CInt4Rvalue(owner->CreateTemporaryInt());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_CLAMP, temp, value, min, max)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_CLAMP, temp, value, min, max));
 	return temp;
 }
 
@@ -263,8 +251,7 @@ CFloat4Rvalue Nuanceur::Clamp(const CFloat4Value& value, const CFloat4Value& min
 	auto owner = GetCommonOwner(value.symbol, min.symbol);
 	auto temp = CFloat4Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_CLAMP, temp, value, min, max)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_CLAMP, temp, value, min, max));
 	return temp;
 }
 
@@ -274,7 +261,7 @@ CFloat2Rvalue Nuanceur::Fract(const CFloat2Value& value)
 	auto owner = value.symbol.owner;
 	auto temp = CFloat2Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_FRACT, temp, value));
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_FRACT, temp, value));
 	return temp;
 }
 
@@ -306,8 +293,7 @@ CUint4Rvalue Nuanceur::Min(const CUint4Value& x, const CUint4Value& y)
 	auto owner = GetCommonOwner(x.symbol, y.symbol);
 	auto temp = CUint4Rvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MIN, temp, x, y)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MIN, temp, x, y));
 	return temp;
 }
 
@@ -319,8 +305,7 @@ CFloatRvalue Nuanceur::Mix(const CFloatValue& x, const CFloatValue& y, const CFl
 	auto owner = GetCommonOwner(x.symbol, y.symbol);
 	auto temp = CFloatRvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MIX, temp, x, y, a)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MIX, temp, x, y, a));
 	return temp;
 }
 
@@ -344,8 +329,7 @@ CFloat3Rvalue Nuanceur::Mix(const CFloat3Value& x, const CFloat3Value& y, const 
 	auto owner = GetCommonOwner(x.symbol, y.symbol);
 	auto temp = CFloat3Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MIX, temp, x, y, a)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MIX, temp, x, y, a));
 	return temp;
 }
 
@@ -354,8 +338,7 @@ CFloat4Rvalue Nuanceur::Normalize(const CFloat4Value& rhs)
 	auto owner = rhs.symbol.owner;
 	auto temp = CFloat4Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NORMALIZE, temp, rhs)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NORMALIZE, temp, rhs));
 	return temp;
 }
 
@@ -364,8 +347,7 @@ CFloatRvalue Nuanceur::Saturate(const CFloatValue& rhs)
 	auto owner = rhs.symbol.owner;
 	auto temp = CFloatRvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_SATURATE, temp, rhs)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_SATURATE, temp, rhs));
 	return temp;
 }
 
@@ -376,8 +358,7 @@ CInt3Rvalue Nuanceur::ShiftRightArithmetic(const CInt3Value& x, const CInt3Value
 	auto owner = GetCommonOwner(x.symbol, y.symbol);
 	auto temp = CInt3Rvalue(owner->CreateTemporaryInt());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_RSHIFT_ARITHMETIC, temp, x, y)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_RSHIFT_ARITHMETIC, temp, x, y));
 	return temp;
 }
 
@@ -418,8 +399,7 @@ CFloat2Rvalue Nuanceur::NewFloat2(const CFloatValue& x, const CFloatValue& y)
 	auto owner = GetCommonOwner(x.symbol, y.symbol);
 	auto temp = CFloat2Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR2, temp, x, y)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR2, temp, x, y));
 	return temp;
 }
 
@@ -440,8 +420,7 @@ CFloat4Rvalue Nuanceur::NewFloat4(const CFloatValue& x, const CFloat3Value& yzw)
 	auto owner = GetCommonOwner(x.symbol, yzw.symbol);
 	auto temp = CFloat4Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, x, yzw)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, x, yzw));
 	return temp;
 }
 
@@ -450,8 +429,7 @@ CFloat4Rvalue Nuanceur::NewFloat4(const CFloatValue& x, const CFloatValue& y, co
 	auto owner = GetCommonOwner(x.symbol, y.symbol);
 	auto temp = CFloat4Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, x, y, z, w)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, x, y, z, w));
 	return temp;
 }
 
@@ -460,8 +438,7 @@ CFloat4Rvalue Nuanceur::NewFloat4(const CFloat2Value& xy, const CFloat2Value& zw
 	auto owner = GetCommonOwner(xy.symbol, zw.symbol);
 	auto temp = CFloat4Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, xy, zw)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, xy, zw));
 	return temp;
 }
 
@@ -470,8 +447,7 @@ CFloat4Rvalue Nuanceur::NewFloat4(const CFloat3Value& xyz, const CFloatValue& w)
 	auto owner = GetCommonOwner(xyz.symbol, w.symbol);
 	auto temp = CFloat4Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, xyz, w)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, xyz, w));
 	return temp;
 }
 
@@ -492,8 +468,7 @@ CInt2Rvalue Nuanceur::NewInt2(const CIntValue& x, const CIntValue& y)
 	auto owner = GetCommonOwner(x.symbol, y.symbol);
 	auto temp = CInt2Rvalue(owner->CreateTemporaryInt());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR2, temp, x, y)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR2, temp, x, y));
 	return temp;
 }
 
@@ -514,8 +489,7 @@ CInt4Rvalue Nuanceur::NewInt4(const CIntValue& x, const CIntValue& y, const CInt
 	auto owner = GetCommonOwner(x.symbol, y.symbol);
 	auto temp = CInt4Rvalue(owner->CreateTemporaryInt());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, x, y, z, w)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, x, y, z, w));
 	return temp;
 }
 
@@ -524,8 +498,7 @@ CInt4Rvalue Nuanceur::NewInt4(const CInt3Value& xyz, const CIntValue& w)
 	auto owner = GetCommonOwner(xyz.symbol, w.symbol);
 	auto temp = CInt4Rvalue(owner->CreateTemporaryInt());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, xyz, w)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, xyz, w));
 	return temp;
 }
 
@@ -552,8 +525,7 @@ CUint4Rvalue Nuanceur::NewUint4(const CUintValue& x, const CUint3Value& yzw)
 	auto owner = GetCommonOwner(x.symbol, yzw.symbol);
 	auto temp = CUint4Rvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, x, yzw)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, x, yzw));
 	return temp;
 }
 
@@ -562,8 +534,7 @@ CUint4Rvalue Nuanceur::NewUint4(const CUint3Value& xyz, const CUintValue& w)
 	auto owner = GetCommonOwner(xyz.symbol, w.symbol);
 	auto temp = CUint4Rvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, xyz, w)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NEWVECTOR4, temp, xyz, w));
 	return temp;
 }
 
@@ -578,8 +549,7 @@ CFloat4Rvalue Nuanceur::Sample(const CTexture2DValue& texture, const CFloat2Valu
 	auto owner = GetCommonOwner(texture.symbol, coord.symbol);
 	auto temp = CFloat4Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_SAMPLE, temp, texture, coord)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_SAMPLE, temp, texture, coord));
 	return temp;
 }
 
@@ -588,8 +558,7 @@ CUint4Rvalue Nuanceur::Load(const CImageUint2DValue& image, const CInt2Value& co
 	auto owner = GetCommonOwner(image.symbol, coord.symbol);
 	auto temp = CUint4Rvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOAD, temp, image, coord)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOAD, temp, image, coord));
 	return temp;
 }
 
@@ -597,8 +566,7 @@ void Nuanceur::Store(const CImageUint2DValue& image, const CInt2Value& coord, co
 {
 	auto owner = GetCommonOwner(image.symbol, coord.symbol);
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_STORE, CShaderBuilder::SYMBOLREF(), image, coord, value)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_STORE, CShaderBuilder::SYMBOLREF(), image, coord, value));
 }
 
 CUintRvalue Nuanceur::AtomicAnd(const CImageUint2DValue& image, const CInt2Value& coord, const CUintValue& value)
@@ -606,8 +574,7 @@ CUintRvalue Nuanceur::AtomicAnd(const CImageUint2DValue& image, const CInt2Value
 	auto owner = GetCommonOwner(image.symbol, coord.symbol);
 	auto temp = CUintRvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ATOMICAND, temp, image, coord, value)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ATOMICAND, temp, image, coord, value));
 	return temp;
 }
 
@@ -616,8 +583,7 @@ CUintRvalue Nuanceur::AtomicOr(const CImageUint2DValue& image, const CInt2Value&
 	auto owner = GetCommonOwner(image.symbol, coord.symbol);
 	auto temp = CUintRvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ATOMICOR, temp, image, coord, value)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ATOMICOR, temp, image, coord, value));
 	return temp;
 }
 
@@ -626,8 +592,7 @@ CUintRvalue Nuanceur::Load(const CArrayUintValue& buffer, const CIntValue& index
 	auto owner = GetCommonOwner(buffer.symbol, index.symbol);
 	auto temp = CUintRvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOAD, temp, buffer, index)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOAD, temp, buffer, index));
 	return temp;
 }
 
@@ -635,24 +600,21 @@ void Nuanceur::Store(const CArrayUintValue& buffer, const CIntValue& index, cons
 {
 	auto owner = GetCommonOwner(buffer.symbol, index.symbol);
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_STORE, CShaderBuilder::SYMBOLREF(), buffer, index, value)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_STORE, CShaderBuilder::SYMBOLREF(), buffer, index, value));
 }
 
 void Nuanceur::Store(const CArrayUshortValue& buffer, const CIntValue& index, const CUshortValue& value)
 {
 	auto owner = GetCommonOwner(buffer.symbol, index.symbol);
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_STORE16, CShaderBuilder::SYMBOLREF(), buffer, index, value)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_STORE16, CShaderBuilder::SYMBOLREF(), buffer, index, value));
 }
 
 void Nuanceur::Store(const CArrayUcharValue& buffer, const CIntValue& index, const CUcharValue& value)
 {
 	auto owner = GetCommonOwner(buffer.symbol, index.symbol);
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_STORE8, CShaderBuilder::SYMBOLREF(), buffer, index, value)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_STORE8, CShaderBuilder::SYMBOLREF(), buffer, index, value));
 }
 
 CUintRvalue Nuanceur::AtomicAnd(const CArrayUintValue& buffer, const CIntValue& index, const CUintValue& value)
@@ -660,8 +622,7 @@ CUintRvalue Nuanceur::AtomicAnd(const CArrayUintValue& buffer, const CIntValue& 
 	auto owner = GetCommonOwner(buffer.symbol, index.symbol);
 	auto temp = CUintRvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ATOMICAND, temp, buffer, index, value)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ATOMICAND, temp, buffer, index, value));
 	return temp;
 }
 
@@ -670,8 +631,7 @@ CUintRvalue Nuanceur::AtomicOr(const CArrayUintValue& buffer, const CIntValue& i
 	auto owner = GetCommonOwner(buffer.symbol, index.symbol);
 	auto temp = CUintRvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ATOMICOR, temp, buffer, index, value)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_ATOMICOR, temp, buffer, index, value));
 	return temp;
 }
 
@@ -680,8 +640,7 @@ CFloat4Rvalue Nuanceur::Load(const CSubpassInputValue& image, const CInt2Value& 
 	auto owner = GetCommonOwner(image.symbol, coord.symbol);
 	auto temp = CFloat4Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOAD, temp, image, coord)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOAD, temp, image, coord));
 	return temp;
 }
 
@@ -690,8 +649,7 @@ CUint4Rvalue Nuanceur::Load(const CSubpassInputUintValue& image, const CInt2Valu
 	auto owner = GetCommonOwner(image.symbol, coord.symbol);
 	auto temp = CUint4Rvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOAD, temp, image, coord)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOAD, temp, image, coord));
 	return temp;
 }
 
@@ -700,8 +658,7 @@ CFloatRvalue Nuanceur::ToFloat(const CUintValue& rhs)
 	auto owner = rhs.symbol.owner;
 	auto temp = CFloatRvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOFLOAT, temp, rhs)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOFLOAT, temp, rhs));
 	return temp;
 }
 
@@ -710,8 +667,7 @@ CFloatRvalue Nuanceur::ToFloat(const CIntValue& rhs)
 	auto owner = rhs.symbol.owner;
 	auto temp = CFloatRvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOFLOAT, temp, rhs)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOFLOAT, temp, rhs));
 	return temp;
 }
 
@@ -720,8 +676,7 @@ CFloat2Rvalue Nuanceur::ToFloat(const CInt2Value& rhs)
 	auto owner = rhs.symbol.owner;
 	auto temp = CFloat2Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOFLOAT, temp, rhs)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOFLOAT, temp, rhs));
 	return temp;
 }
 
@@ -730,8 +685,7 @@ CFloat4Rvalue Nuanceur::ToFloat(const CInt4Value& rhs)
 	auto owner = rhs.symbol.owner;
 	auto temp = CFloat4Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOFLOAT, temp, rhs)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOFLOAT, temp, rhs));
 	return temp;
 }
 
@@ -740,8 +694,7 @@ CFloat4Rvalue Nuanceur::ToFloat(const CUint4Value& rhs)
 	auto owner = rhs.symbol.owner;
 	auto temp = CFloat4Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOFLOAT, temp, rhs)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOFLOAT, temp, rhs));
 	return temp;
 }
 
@@ -759,8 +712,7 @@ CIntRvalue Nuanceur::ToInt(const CUintValue& rhs)
 	auto owner = rhs.symbol.owner;
 	auto temp = CIntRvalue(owner->CreateTemporaryInt());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOINT, temp, rhs)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOINT, temp, rhs));
 	return temp;
 }
 
@@ -769,8 +721,7 @@ CInt2Rvalue Nuanceur::ToInt(const CFloat2Value& rhs)
 	auto owner = rhs.symbol.owner;
 	auto temp = CInt2Rvalue(owner->CreateTemporaryInt());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOINT, temp, rhs)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOINT, temp, rhs));
 	return temp;
 }
 
@@ -779,8 +730,7 @@ CInt4Rvalue Nuanceur::ToInt(const CFloat4Value& rhs)
 	auto owner = rhs.symbol.owner;
 	auto temp = CInt4Rvalue(owner->CreateTemporaryInt());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOINT, temp, rhs)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOINT, temp, rhs));
 	return temp;
 }
 
@@ -789,8 +739,7 @@ CUintRvalue Nuanceur::ToUint(const CFloatValue& rhs)
 	auto owner = rhs.symbol.owner;
 	auto temp = CUintRvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUINT, temp, rhs)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUINT, temp, rhs));
 	return temp;
 }
 
@@ -799,8 +748,7 @@ CUintRvalue Nuanceur::ToUint(const CIntValue& rhs)
 	auto owner = rhs.symbol.owner;
 	auto temp = CUintRvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUINT, temp, rhs)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUINT, temp, rhs));
 	return temp;
 }
 
@@ -809,8 +757,7 @@ CUshortRvalue Nuanceur::ToUshort(const CUintValue& rhs)
 	auto owner = rhs.symbol.owner;
 	auto temp = CUshortRvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUSHORT, temp, rhs)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUSHORT, temp, rhs));
 	return temp;
 }
 
@@ -819,8 +766,7 @@ CUcharRvalue Nuanceur::ToUchar(const CUintValue& rhs)
 	auto owner = rhs.symbol.owner;
 	auto temp = CUcharRvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUCHAR, temp, rhs)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUCHAR, temp, rhs));
 	return temp;
 }
 
@@ -829,42 +775,36 @@ CUint4Rvalue Nuanceur::ToUint(const CFloat4Value& rhs)
 	auto owner = rhs.symbol.owner;
 	auto temp = CUint4Rvalue(owner->CreateTemporaryUint());
 	owner->InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUINT, temp, rhs)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUINT, temp, rhs));
 	return temp;
 }
 
 void Nuanceur::Return(CShaderBuilder& owner)
 {
 	owner.InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_RETURN, CShaderBuilder::SYMBOLREF(), CShaderBuilder::SYMBOLREF())
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_RETURN, CShaderBuilder::SYMBOLREF(), CShaderBuilder::SYMBOLREF()));
 }
 
 void Nuanceur::BeginInvocationInterlock(CShaderBuilder& owner)
 {
 	owner.InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_INVOCATION_INTERLOCK_BEGIN, CShaderBuilder::SYMBOLREF(), CShaderBuilder::SYMBOLREF())
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_INVOCATION_INTERLOCK_BEGIN, CShaderBuilder::SYMBOLREF(), CShaderBuilder::SYMBOLREF()));
 }
 
 void Nuanceur::EndInvocationInterlock(CShaderBuilder& owner)
 {
 	owner.InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_INVOCATION_INTERLOCK_END, CShaderBuilder::SYMBOLREF(), CShaderBuilder::SYMBOLREF())
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_INVOCATION_INTERLOCK_END, CShaderBuilder::SYMBOLREF(), CShaderBuilder::SYMBOLREF()));
 }
 
 void Nuanceur::BeginIf(CShaderBuilder& owner, const CBoolValue& condition)
 {
 	owner.InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_IF_BEGIN, Nuanceur::CShaderBuilder::SYMBOLREF(), condition)
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_IF_BEGIN, Nuanceur::CShaderBuilder::SYMBOLREF(), condition));
 }
 
 void Nuanceur::EndIf(CShaderBuilder& owner)
 {
 	owner.InsertStatement(
-		CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_IF_END, Nuanceur::CShaderBuilder::SYMBOLREF(), Nuanceur::CShaderBuilder::SYMBOLREF())
-	);
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_IF_END, Nuanceur::CShaderBuilder::SYMBOLREF(), Nuanceur::CShaderBuilder::SYMBOLREF()));
 }
