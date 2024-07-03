@@ -20,6 +20,13 @@ if (WIN32)
 	add_definitions(-D_LIB)
 endif (WIN32)
 
+if(NOT TARGET vkrunner)
+	add_subdirectory(
+		${CMAKE_CURRENT_SOURCE_DIR}/../deps/vkrunner
+		${CMAKE_CURRENT_BINARY_DIR}/vkrunner
+	)
+endif()
+
 add_library(Nuanceur
 	../src/builder/Operations.cpp
 	../src/builder/ShaderBuilder.cpp
@@ -61,3 +68,14 @@ add_library(Nuanceur
 )
 target_include_directories(Nuanceur PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include ${CMAKE_CURRENT_SOURCE_DIR}/../../Framework/include)
 
+add_executable(NuanceurTestSuite
+	../tests/BasicTest.cpp
+	../tests/BasicTest.h
+	../tests/Main.cpp
+	../tests/SwizzleTest.cpp
+	../tests/SwizzleTest.h
+	../tests/Test.cpp
+	../tests/Test.h
+)
+target_include_directories(NuanceurTestSuite PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include ${CMAKE_CURRENT_SOURCE_DIR}/../deps/vkrunner)
+target_link_libraries(NuanceurTestSuite PUBLIC Nuanceur Framework vkrunner)
