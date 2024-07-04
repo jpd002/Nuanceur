@@ -1,6 +1,7 @@
 #include <functional>
 #include "BasicTest.h"
-#include "SwizzleTest.h"
+#include "Swizzle1Test.h"
+#include "Swizzle2Test.h"
 
 typedef std::function<CTest*()> TestFactoryFunction;
 
@@ -8,7 +9,8 @@ typedef std::function<CTest*()> TestFactoryFunction;
 static const TestFactoryFunction s_factories[] =
 {
 	[]() { return new CBasicTest(); },
-	[]() { return new CSwizzleTest(); },
+	[]() { return new CSwizzle1Test(); },
+	[]() { return new CSwizzle2Test(); },
 };
 // clang-format on
 

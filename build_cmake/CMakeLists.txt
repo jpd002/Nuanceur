@@ -72,8 +72,10 @@ add_executable(NuanceurTestSuite
 	../tests/BasicTest.cpp
 	../tests/BasicTest.h
 	../tests/Main.cpp
-	../tests/SwizzleTest.cpp
-	../tests/SwizzleTest.h
+	../tests/Swizzle1Test.cpp
+	../tests/Swizzle1Test.h
+	../tests/Swizzle2Test.cpp
+	../tests/Swizzle2Test.h
 	../tests/Test.cpp
 	../tests/Test.h
 )

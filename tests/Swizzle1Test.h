@@ -2,7 +2,7 @@
 
 #include "Test.h"
 
-class CSwizzleTest : public CTest
+class CSwizzle1Test : public CTest
 {
 public:
 	void Run() override;
