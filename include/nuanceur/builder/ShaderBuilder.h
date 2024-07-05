@@ -46,12 +46,15 @@ namespace Nuanceur
 		SWIZZLE_XZ,
 		SWIZZLE_XW,
 
+		SWIZZLE_YX,
 		SWIZZLE_YY,
 		SWIZZLE_YZ,
 		SWIZZLE_YW,
 
 		SWIZZLE_ZZ,
 		SWIZZLE_ZW,
+
+		SWIZZLE_WZ,
 		SWIZZLE_WW,
 
 		SWIZZLE_XXX,
@@ -67,14 +70,17 @@ namespace Nuanceur
 		SWIZZLE_XXXX,
 		SWIZZLE_XYZW,
 
+		SWIZZLE_YXZW,
 		SWIZZLE_YZWX,
 
 		SWIZZLE_WXYZ,
 		SWIZZLE_WZYX,
+		SWIZZLE_WZZW,
 		SWIZZLE_WWWW,
 	};
 
 	bool IsIdentitySwizzle(SWIZZLE_TYPE);
+	bool IsMaskSwizzle(SWIZZLE_TYPE);
 	uint32 GetSwizzleElementCount(SWIZZLE_TYPE);
 	SWIZZLE_TYPE TransformSwizzle(SWIZZLE_TYPE, SWIZZLE_TYPE);
 

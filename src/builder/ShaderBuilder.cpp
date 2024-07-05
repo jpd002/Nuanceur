@@ -10,13 +10,43 @@ bool Nuanceur::IsIdentitySwizzle(SWIZZLE_TYPE swizzle)
 	       (swizzle == SWIZZLE_XYZW);
 }
 
+bool Nuanceur::IsMaskSwizzle(SWIZZLE_TYPE swizzle)
+{
+	switch(swizzle)
+	{
+	case SWIZZLE_X:
+	case SWIZZLE_Y:
+	case SWIZZLE_Z:
+	case SWIZZLE_W:
+	case SWIZZLE_XY:
+	case SWIZZLE_YZ:
+	case SWIZZLE_YW:
+	case SWIZZLE_ZW:
+	case SWIZZLE_XYZ:
+	case SWIZZLE_XYZW:
+		return true;
+	default:
+		assert(false);
+		return false;
+	}
+}
+
 uint32 Nuanceur::GetSwizzleElementCount(SWIZZLE_TYPE swizzle)
 {
 	switch(swizzle)
 	{
 	case SWIZZLE_X:
 	case SWIZZLE_Y:
+	case SWIZZLE_Z:
+	case SWIZZLE_W:
 		return 1;
+	case SWIZZLE_XY:
+	case SWIZZLE_YZ:
+	case SWIZZLE_YW:
+	case SWIZZLE_ZW:
+		return 2;
+	case SWIZZLE_XYZW:
+		return 4;
 	default:
 		assert(false);
 		return 1;

@@ -24,6 +24,7 @@ namespace Nuanceur
 		CFloatValue(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_X)
 		    : SYMBOLREF(symbol, swizzle)
 		{
+			assert(GetSwizzleElementCount(swizzle) == 1);
 			m_swizzleSelector = std::make_shared<CFloatSwizzleSelector>(symbol);
 		}
 
@@ -34,9 +35,10 @@ namespace Nuanceur
 	class CFloatLvalue : public CFloatValue
 	{
 	public:
-		CFloatLvalue(const CShaderBuilder::SYMBOL& symbol)
-		    : CFloatValue(symbol, SWIZZLE_X)
+		CFloatLvalue(const CShaderBuilder::SYMBOL& symbol, SWIZZLE_TYPE swizzle = SWIZZLE_X)
+		    : CFloatValue(symbol, swizzle)
 		{
+			assert(IsMaskSwizzle(swizzle));
 		}
 
 		void operator=(const CFloatRvalue& rvalue);
