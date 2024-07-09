@@ -1871,9 +1871,19 @@ void CSpirvShaderGenerator::BitwiseOp(spv::Op op, const CShaderBuilder::SYMBOLRE
 void CSpirvShaderGenerator::BitwiseNot(const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref)
 {
 	auto src1Id = LoadFromSymbol(src1Ref);
-	assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
 	auto resultId = AllocateId();
-	WriteOp(spv::OpNot, m_uint4TypeId, resultId, src1Id);
+	switch(src1Ref.symbol.type)
+	{
+	case CShaderBuilder::SYMBOL_TYPE_INT4:
+		WriteOp(spv::OpNot, m_int4TypeId, resultId, src1Id);
+		break;
+	case CShaderBuilder::SYMBOL_TYPE_UINT4:
+		WriteOp(spv::OpNot, m_uint4TypeId, resultId, src1Id);
+		break;
+	default:
+		assert(false);
+		break;
+	}
 	StoreToSymbol(dstRef, resultId);
 }
 

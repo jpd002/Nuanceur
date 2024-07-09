@@ -85,6 +85,8 @@ SWIZZLE_TYPE Nuanceur::TransformSwizzle(SWIZZLE_TYPE a, SWIZZLE_TYPE b)
 			return SWIZZLE_Z;
 		case SWIZZLE_Y:
 			return SWIZZLE_W;
+		case SWIZZLE_XY:
+			return SWIZZLE_ZW;
 		}
 		break;
 	}

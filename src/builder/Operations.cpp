@@ -121,11 +121,13 @@ GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_RSHIFT, >>, CUint)
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_RSHIFT, >>, CUint3)
 
 GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_AND, &, CInt)
+GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_AND, &, CInt2)
 GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_AND, &, CInt4)
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_AND, &, CUint)
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_AND, &, CUint4)
 
 GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_OR, |, CInt)
+GENERATE_VECTOR_BINARY_INT_OP(STATEMENT_OP_OR, |, CInt2)
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_OR, |, CUint)
 
 GENERATE_VECTOR_BINARY_UINT_OP(STATEMENT_OP_XOR, ^, CUint)
@@ -164,6 +166,16 @@ CFloat4Rvalue Nuanceur::operator*(const CMatrix44Value& lhs, const CFloat4Value&
 	auto temp = CFloat4Rvalue(owner->CreateTemporary());
 	owner->InsertStatement(
 	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_MULTIPLY, temp, lhs, rhs));
+	return temp;
+}
+
+CInt2Rvalue Nuanceur::operator~(const CInt2Value& lhs)
+{
+	CHECK_ISOPERANDVALID(lhs);
+	auto owner = lhs.symbol.owner;
+	auto temp = CInt2Rvalue(owner->CreateTemporaryInt());
+	owner->InsertStatement(
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_NOT, temp, lhs));
 	return temp;
 }
 

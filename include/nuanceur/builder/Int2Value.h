@@ -46,6 +46,9 @@ namespace Nuanceur
 		friend CInt2Rvalue operator+(const CInt2Value&, const CInt2Value&);
 		friend CInt2Rvalue operator*(const CInt2Value&, const CInt2Value&);
 		friend CInt2Rvalue operator/(const CInt2Value&, const CInt2Value&);
+		friend CInt2Rvalue operator|(const CInt2Value&, const CInt2Value&);
+		friend CInt2Rvalue operator&(const CInt2Value&, const CInt2Value&);
+		friend CInt2Rvalue operator~(const CInt2Value&);
 		friend CInt2Rvalue operator<<(const CInt2Value&, const CInt2Value&);
 		friend CInt2Rvalue NewInt2(CShaderBuilder&, int32, int32);
 		friend CInt2Rvalue NewInt2(const CIntValue&, const CIntValue&);
