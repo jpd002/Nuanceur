@@ -43,6 +43,7 @@ uint32 Nuanceur::GetSwizzleElementCount(SWIZZLE_TYPE swizzle)
 	case SWIZZLE_XY:
 	case SWIZZLE_YZ:
 	case SWIZZLE_YW:
+	case SWIZZLE_ZZ:
 	case SWIZZLE_ZW:
 		return 2;
 	case SWIZZLE_XYZW:
