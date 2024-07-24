@@ -1580,72 +1580,35 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 			break;
 		}
 		auto prevId = srcId;
-		std::array<uint32, 4> components = {0, 0, 0, 0};
+		std::array<int32, 4> components = {0, 0, 0, 0};
 		srcId = AllocateId();
-
-		static const uint32 compX = 0;
-		static const uint32 compY = 1;
-		static const uint32 compZ = 2;
-		static const uint32 compW = 3;
-
-#define CASE_SWIZZLE2(a, b)              \
-	case SWIZZLE_##a##b:                 \
-		components = {comp##a, comp##b}; \
-		break;
-
-		switch(srcRef.swizzle)
+		switch(GetSwizzleElementCount(srcRef.swizzle))
 		{
-		case SWIZZLE_Y:
-			components = {1};
+		case 1:
+			components = {srcRef.swizzle & 3};
 			break;
-		case SWIZZLE_Z:
-			components = {2};
+		case 2:
+			components = {
+			    (srcRef.swizzle >> 0) & 3,
+			    (srcRef.swizzle >> 2) & 3};
 			break;
-		case SWIZZLE_W:
-			components = {3};
+		case 3:
+			components = {
+			    (srcRef.swizzle >> 0) & 3,
+			    (srcRef.swizzle >> 2) & 3,
+			    (srcRef.swizzle >> 4) & 3};
 			break;
-			CASE_SWIZZLE2(X, X)
-			CASE_SWIZZLE2(Y, X)
-			CASE_SWIZZLE2(Y, Y)
-			CASE_SWIZZLE2(Z, Z)
-			CASE_SWIZZLE2(Z, W)
-			CASE_SWIZZLE2(W, Z)
-			CASE_SWIZZLE2(W, W)
-		case SWIZZLE_XXX:
-			components = {0, 0, 0};
-			break;
-		case SWIZZLE_YYY:
-			components = {1, 1, 1};
-			break;
-		case SWIZZLE_WWW:
-			components = {3, 3, 3};
-			break;
-		case SWIZZLE_XXXX:
-			components = {0, 0, 0, 0};
-			break;
-		case SWIZZLE_YXZW:
-			components = {1, 0, 2, 3};
-			break;
-		case SWIZZLE_YZWX:
-			components = {1, 2, 3, 0};
-			break;
-		case SWIZZLE_WXYZ:
-			components = {3, 0, 1, 2};
-			break;
-		case SWIZZLE_WZYX:
-			components = {3, 2, 1, 0};
-			break;
-		case SWIZZLE_WZZW:
-			components = {3, 2, 2, 3};
-			break;
-		case SWIZZLE_WWWW:
-			components = {3, 3, 3, 3};
+		case 4:
+			components = {
+			    (srcRef.swizzle >> 0) & 3,
+			    (srcRef.swizzle >> 2) & 3,
+			    (srcRef.swizzle >> 4) & 3,
+			    (srcRef.swizzle >> 6) & 3};
 			break;
 		default:
 			assert(false);
 			break;
 		}
-#undef CASE_SWIZZLE2
 		WriteOp(spv::OpVectorShuffle, srcType, srcId, prevId, prevId,
 		        components[0], components[1], components[2], components[3]);
 	}
