@@ -1,0 +1,3 @@
+[submodule "deps/vkrunner"]
+	path = deps/vkrunner
+	url = https://github.com/jpd002/vkrunner
