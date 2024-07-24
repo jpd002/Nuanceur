@@ -711,19 +711,13 @@ void CSpirvShaderGenerator::Generate()
 				switch(statement.GetSourceCount())
 				{
 				case 2:
+				{
+					uint32 src1ElementCount = GetSwizzleElementCount(statement.src1Ref.swizzle);
+					uint32 src2ElementCount = GetSwizzleElementCount(statement.src2Ref.swizzle);
+					assert((src1ElementCount + src2ElementCount) == 4);
 					if(
-					    (statement.src1Ref.swizzle == SWIZZLE_XYZ) &&
-					    (statement.src2Ref.swizzle == SWIZZLE_X))
-					{
-						auto src1Id = LoadFromSymbol(src1Ref);
-						auto src2Id = LoadFromSymbol(src2Ref);
-						auto resultId = AllocateId();
-						WriteOp(spv::OpVectorShuffle, resultType, resultId, src1Id, src2Id, 0, 1, 2, 4);
-						StoreToSymbol(dstRef, resultId);
-					}
-					else if(
-					    (statement.src1Ref.swizzle == SWIZZLE_XYZ) &&
-					    (statement.src2Ref.swizzle == SWIZZLE_W))
+					    (src1ElementCount == 3) &&
+					    (src2ElementCount == 1))
 					{
 						auto src1Id = LoadFromSymbol(src1Ref);
 						auto src2Id = LoadFromSymbol(src2Ref);
@@ -755,7 +749,8 @@ void CSpirvShaderGenerator::Generate()
 					{
 						assert(false);
 					}
-					break;
+				}
+				break;
 				case 4:
 					if(
 					    (statement.src1Ref.swizzle == SWIZZLE_X) &&
@@ -1580,30 +1575,30 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 			break;
 		}
 		auto prevId = srcId;
-		std::array<int32, 4> components = {0, 0, 0, 0};
+		std::array<uint32, 4> components = {0, 0, 0, 0};
 		srcId = AllocateId();
 		switch(GetSwizzleElementCount(srcRef.swizzle))
 		{
 		case 1:
-			components = {srcRef.swizzle & 3};
+			components = {GetSwizzleElement(srcRef.swizzle, 0)};
 			break;
 		case 2:
 			components = {
-			    (srcRef.swizzle >> 0) & 3,
-			    (srcRef.swizzle >> 2) & 3};
+			    GetSwizzleElement(srcRef.swizzle, 0),
+			    GetSwizzleElement(srcRef.swizzle, 1)};
 			break;
 		case 3:
 			components = {
-			    (srcRef.swizzle >> 0) & 3,
-			    (srcRef.swizzle >> 2) & 3,
-			    (srcRef.swizzle >> 4) & 3};
+			    GetSwizzleElement(srcRef.swizzle, 0),
+			    GetSwizzleElement(srcRef.swizzle, 1),
+			    GetSwizzleElement(srcRef.swizzle, 2)};
 			break;
 		case 4:
 			components = {
-			    (srcRef.swizzle >> 0) & 3,
-			    (srcRef.swizzle >> 2) & 3,
-			    (srcRef.swizzle >> 4) & 3,
-			    (srcRef.swizzle >> 6) & 3};
+			    GetSwizzleElement(srcRef.swizzle, 0),
+			    GetSwizzleElement(srcRef.swizzle, 1),
+			    GetSwizzleElement(srcRef.swizzle, 2),
+			    GetSwizzleElement(srcRef.swizzle, 3)};
 			break;
 		default:
 			assert(false);
@@ -1619,6 +1614,22 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 void CSpirvShaderGenerator::StoreToSymbol(const CShaderBuilder::SYMBOLREF& dstRef, uint32 valueId)
 {
 	assert(IsMaskSwizzle(dstRef.swizzle));
+
+	auto mixSrcAndDst = [&](uint32 srcValueId, uint32 dstValueId, SWIZZLE_TYPE dstSwizzle) {
+		//Makes a new destination with src and dst, respecting dst swizzle
+		uint32 resultId = AllocateId();
+		std::array<uint32, 4> components = {0, 1, 2, 3};
+		uint32 elemCount = GetSwizzleElementCount(dstSwizzle);
+		for(int i = 0; i < elemCount; i++)
+		{
+			uint32 elem = GetSwizzleElement(dstSwizzle, i);
+			components[elem] = 4 + i;
+		}
+		WriteOp(spv::OpVectorShuffle, m_float4TypeId, resultId, dstValueId, srcValueId,
+		        components[0], components[1], components[2], components[3]);
+		return resultId;
+	};
+
 	switch(dstRef.symbol.location)
 	{
 	case CShaderBuilder::SYMBOL_LOCATION_OUTPUT:
@@ -1637,47 +1648,16 @@ void CSpirvShaderGenerator::StoreToSymbol(const CShaderBuilder::SYMBOLREF& dstRe
 			//Output is a float4. If our swizzle elem size ain't 4
 			//we need to shuffle the src with output value.
 			//Input should already be properly ordered
-			switch(GetSwizzleElementCount(dstRef.swizzle))
+			uint32 elemCount = GetSwizzleElementCount(dstRef.swizzle);
+			switch(elemCount)
 			{
 			case 1:
 			case 2:
+			case 3:
 			{
 				uint32 dstValueId = AllocateId();
-				uint32 swizzledValueId = AllocateId();
 				WriteOp(spv::OpLoad, m_float4TypeId, dstValueId, pointerId);
-				std::array<uint32, 4> components = {};
-				switch(dstRef.swizzle)
-				{
-				case SWIZZLE_X:
-					components = {4, 1, 2, 3};
-					break;
-				case SWIZZLE_Y:
-					components = {0, 4, 2, 3};
-					break;
-				case SWIZZLE_Z:
-					components = {0, 1, 4, 3};
-					break;
-				case SWIZZLE_W:
-					components = {0, 1, 2, 4};
-					break;
-				case SWIZZLE_XY:
-					components = {4, 5, 2, 3};
-					break;
-				case SWIZZLE_YZ:
-					components = {0, 4, 5, 3};
-					break;
-				case SWIZZLE_YW:
-					components = {0, 4, 2, 5};
-					break;
-				case SWIZZLE_ZW:
-					components = {0, 1, 4, 5};
-					break;
-				default:
-					assert(false);
-					break;
-				}
-				WriteOp(spv::OpVectorShuffle, m_float4TypeId, swizzledValueId, dstValueId, valueId,
-				        components[0], components[1], components[2], components[3]);
+				uint32 swizzledValueId = mixSrcAndDst(valueId, dstValueId, dstRef.swizzle);
 				WriteOp(spv::OpStore, pointerId, swizzledValueId);
 			}
 			break;
@@ -1692,10 +1672,21 @@ void CSpirvShaderGenerator::StoreToSymbol(const CShaderBuilder::SYMBOLREF& dstRe
 	}
 	break;
 	case CShaderBuilder::SYMBOL_LOCATION_TEMPORARY:
-		//Replace current active id for that temporary symbol.
-		assert(IsIdentitySwizzle(dstRef.swizzle));
-		m_temporaryValueIds[dstRef.symbol.index] = valueId;
-		break;
+	{
+		if(IsIdentitySwizzle(dstRef.swizzle))
+		{
+			//Replace current active id for that temporary symbol.
+			m_temporaryValueIds[dstRef.symbol.index] = valueId;
+		}
+		else
+		{
+			uint32 elemCount = GetSwizzleElementCount(dstRef.swizzle);
+			uint32 dstValueId = m_temporaryValueIds[dstRef.symbol.index];
+			uint32 swizzledValueId = mixSrcAndDst(valueId, dstValueId, dstRef.swizzle);
+			m_temporaryValueIds[dstRef.symbol.index] = swizzledValueId;
+		}
+	}
+	break;
 	case CShaderBuilder::SYMBOL_LOCATION_VARIABLE:
 	{
 		assert(IsIdentitySwizzle(dstRef.swizzle));

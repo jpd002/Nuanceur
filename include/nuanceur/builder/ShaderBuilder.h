@@ -119,7 +119,21 @@ namespace Nuanceur
 
 	bool IsIdentitySwizzle(SWIZZLE_TYPE);
 	bool IsMaskSwizzle(SWIZZLE_TYPE);
-	uint32 GetSwizzleElementCount(SWIZZLE_TYPE);
+
+	inline uint32 GetSwizzleElement(SWIZZLE_TYPE swizzle, uint32 index)
+	{
+		uint32 elemCount = (swizzle >> 8);
+		assert(index < elemCount);
+		return (swizzle >> (index * 2)) & 0x03;
+	}
+
+	inline uint32 GetSwizzleElementCount(SWIZZLE_TYPE swizzle)
+	{
+		uint32 elemCount = (swizzle >> 8);
+		assert((elemCount > 0) && (elemCount <= 4));
+		return elemCount;
+	}
+
 	SWIZZLE_TYPE TransformSwizzle(SWIZZLE_TYPE, SWIZZLE_TYPE);
 
 	class CShaderBuilder
