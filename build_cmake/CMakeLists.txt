@@ -79,6 +79,8 @@ if(TARGET_PLATFORM_WIN32)
 		../tests/Swizzle1Test.h
 		../tests/Swizzle2Test.cpp
 		../tests/Swizzle2Test.h
+		../tests/SwizzleTempTest.cpp
+		../tests/SwizzleTempTest.h
 		../tests/Test.cpp
 		../tests/Test.h
 	)
