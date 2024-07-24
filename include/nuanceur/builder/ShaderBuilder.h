@@ -34,50 +34,88 @@ namespace Nuanceur
 		UNIFORM_UNIT_PUSHCONSTANT = -1,
 	};
 
+	enum COMPONENT
+	{
+		COMPONENT_X,
+		COMPONENT_Y,
+		COMPONENT_Z,
+		COMPONENT_W
+	};
+
+	constexpr uint32 MakeSwizzle1(uint32 comp0)
+	{
+		return 0x100 | (comp0);
+	}
+
+	constexpr uint32 MakeSwizzle2(uint32 comp0, uint32 comp1)
+	{
+		return 0x200 | (comp0) | (comp1 << 2);
+	}
+
+	constexpr uint32 MakeSwizzle3(uint32 comp0, uint32 comp1, uint32 comp2)
+	{
+		return 0x300 | (comp0) | (comp1 << 2) | (comp2 << 4);
+	}
+
+	constexpr uint32 MakeSwizzle4(uint32 comp0, uint32 comp1, uint32 comp2, uint32 comp3)
+	{
+		return 0x400 | (comp0) | (comp1 << 2) | (comp2 << 4) | (comp3 << 6);
+	}
+
+#define DEFINE_SWIZZLE1(a) SWIZZLE_##a = MakeSwizzle1(COMPONENT_##a)
+#define DEFINE_SWIZZLE2(a, b) SWIZZLE_##a##b = MakeSwizzle2(COMPONENT_##a, COMPONENT_##b)
+#define DEFINE_SWIZZLE3(a, b, c) SWIZZLE_##a##b##c = MakeSwizzle3(COMPONENT_##a, COMPONENT_##b, COMPONENT_##c)
+#define DEFINE_SWIZZLE4(a, b, c, d) SWIZZLE_##a##b##c##d = MakeSwizzle4(COMPONENT_##a, COMPONENT_##b, COMPONENT_##c, COMPONENT_##d)
+
 	enum SWIZZLE_TYPE
 	{
-		SWIZZLE_X,
-		SWIZZLE_Y,
-		SWIZZLE_Z,
-		SWIZZLE_W,
+		DEFINE_SWIZZLE1(X),
+		DEFINE_SWIZZLE1(Y),
+		DEFINE_SWIZZLE1(Z),
+		DEFINE_SWIZZLE1(W),
 
-		SWIZZLE_XX,
-		SWIZZLE_XY,
-		SWIZZLE_XZ,
-		SWIZZLE_XW,
+		DEFINE_SWIZZLE2(X, X),
+		DEFINE_SWIZZLE2(X, Y),
+		DEFINE_SWIZZLE2(X, Z),
+		DEFINE_SWIZZLE2(X, W),
 
-		SWIZZLE_YX,
-		SWIZZLE_YY,
-		SWIZZLE_YZ,
-		SWIZZLE_YW,
+		DEFINE_SWIZZLE2(Y, X),
+		DEFINE_SWIZZLE2(Y, Y),
+		DEFINE_SWIZZLE2(Y, Z),
+		DEFINE_SWIZZLE2(Y, W),
 
-		SWIZZLE_ZZ,
-		SWIZZLE_ZW,
+		DEFINE_SWIZZLE2(Z, Z),
+		DEFINE_SWIZZLE2(Z, W),
 
-		SWIZZLE_WZ,
-		SWIZZLE_WW,
+		DEFINE_SWIZZLE2(W, Z),
+		DEFINE_SWIZZLE2(W, W),
 
-		SWIZZLE_XXX,
-		SWIZZLE_XYZ,
-		SWIZZLE_XYW,
-		SWIZZLE_XZW,
+		DEFINE_SWIZZLE3(X, X, X),
+		DEFINE_SWIZZLE3(X, Y, Z),
+		DEFINE_SWIZZLE3(X, Y, W),
+		DEFINE_SWIZZLE3(X, Z, W),
 
-		SWIZZLE_YYY,
-		SWIZZLE_YZW,
+		DEFINE_SWIZZLE3(Y, Y, Y),
+		DEFINE_SWIZZLE3(Y, Z, W),
 
-		SWIZZLE_WWW,
+		DEFINE_SWIZZLE3(W, W, W),
 
-		SWIZZLE_XXXX,
-		SWIZZLE_XYZW,
+		DEFINE_SWIZZLE4(X, X, X, X),
+		DEFINE_SWIZZLE4(X, Y, Z, W),
 
-		SWIZZLE_YXZW,
-		SWIZZLE_YZWX,
+		DEFINE_SWIZZLE4(Y, X, Z, W),
+		DEFINE_SWIZZLE4(Y, Z, W, X),
 
-		SWIZZLE_WXYZ,
-		SWIZZLE_WZYX,
-		SWIZZLE_WZZW,
-		SWIZZLE_WWWW,
+		DEFINE_SWIZZLE4(W, X, Y, Z),
+		DEFINE_SWIZZLE4(W, Z, Y, X),
+		DEFINE_SWIZZLE4(W, Z, Z, W),
+		DEFINE_SWIZZLE4(W, W, W, W),
 	};
+
+#undef DEFINE_SWIZZLE4
+#undef DEFINE_SWIZZLE3
+#undef DEFINE_SWIZZLE2
+#undef DEFINE_SWIZZLE1
 
 	bool IsIdentitySwizzle(SWIZZLE_TYPE);
 	bool IsMaskSwizzle(SWIZZLE_TYPE);
