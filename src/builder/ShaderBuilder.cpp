@@ -60,6 +60,7 @@ SWIZZLE_TYPE Nuanceur::TransformSwizzle(SWIZZLE_TYPE a, SWIZZLE_TYPE b)
 	{
 	default:
 		assert(false);
+		[[fallthrough]];
 	case SWIZZLE_X:
 	case SWIZZLE_XY:
 	case SWIZZLE_XYZ:
@@ -71,6 +72,7 @@ SWIZZLE_TYPE Nuanceur::TransformSwizzle(SWIZZLE_TYPE a, SWIZZLE_TYPE b)
 		{
 		default:
 			assert(false);
+			[[fallthrough]];
 		case SWIZZLE_XX:
 			return SWIZZLE_YY;
 		case SWIZZLE_XXX:
@@ -82,6 +84,7 @@ SWIZZLE_TYPE Nuanceur::TransformSwizzle(SWIZZLE_TYPE a, SWIZZLE_TYPE b)
 		{
 		default:
 			assert(false);
+			[[fallthrough]];
 		case SWIZZLE_X:
 			return SWIZZLE_Z;
 		case SWIZZLE_Y:
