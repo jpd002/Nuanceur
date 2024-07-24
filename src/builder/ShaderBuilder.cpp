@@ -33,25 +33,9 @@ bool Nuanceur::IsMaskSwizzle(SWIZZLE_TYPE swizzle)
 
 uint32 Nuanceur::GetSwizzleElementCount(SWIZZLE_TYPE swizzle)
 {
-	switch(swizzle)
-	{
-	case SWIZZLE_X:
-	case SWIZZLE_Y:
-	case SWIZZLE_Z:
-	case SWIZZLE_W:
-		return 1;
-	case SWIZZLE_XY:
-	case SWIZZLE_YZ:
-	case SWIZZLE_YW:
-	case SWIZZLE_ZZ:
-	case SWIZZLE_ZW:
-		return 2;
-	case SWIZZLE_XYZW:
-		return 4;
-	default:
-		assert(false);
-		return 1;
-	}
+	uint32 elemCount = (swizzle >> 8);
+	assert((elemCount > 0) && (elemCount <= 4));
+	return elemCount;
 }
 
 SWIZZLE_TYPE Nuanceur::TransformSwizzle(SWIZZLE_TYPE a, SWIZZLE_TYPE b)
