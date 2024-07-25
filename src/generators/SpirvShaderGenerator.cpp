@@ -1665,6 +1665,7 @@ void CSpirvShaderGenerator::StoreToSymbol(const CShaderBuilder::SYMBOLREF& dstRe
 			}
 			break;
 			case 4:
+				assert(dstRef.swizzle == SWIZZLE_XYZW);
 				WriteOp(spv::OpStore, pointerId, valueId);
 				break;
 			default:
@@ -1676,26 +1677,54 @@ void CSpirvShaderGenerator::StoreToSymbol(const CShaderBuilder::SYMBOLREF& dstRe
 	break;
 	case CShaderBuilder::SYMBOL_LOCATION_TEMPORARY:
 	{
-		if(IsIdentitySwizzle(dstRef.swizzle))
+		uint32 elemCount = GetSwizzleElementCount(dstRef.swizzle);
+		switch(elemCount)
 		{
-			//Replace current active id for that temporary symbol.
-			m_temporaryValueIds[dstRef.symbol.index] = valueId;
-		}
-		else
+		case 1:
+		case 2:
+		case 3:
 		{
-			uint32 elemCount = GetSwizzleElementCount(dstRef.swizzle);
 			uint32 dstValueId = m_temporaryValueIds[dstRef.symbol.index];
 			uint32 swizzledValueId = mixSrcAndDst(valueId, dstValueId, dstRef.swizzle);
 			m_temporaryValueIds[dstRef.symbol.index] = swizzledValueId;
+		}
+		break;
+		case 4:
+			assert(dstRef.swizzle == SWIZZLE_XYZW);
+			//Replace current active id for that temporary symbol.
+			m_temporaryValueIds[dstRef.symbol.index] = valueId;
+			break;
+		default:
+			assert(false);
+			break;
 		}
 	}
 	break;
 	case CShaderBuilder::SYMBOL_LOCATION_VARIABLE:
 	{
-		assert(IsIdentitySwizzle(dstRef.swizzle));
 		assert(m_variablePointerIds.find(dstRef.symbol.index) != std::end(m_variablePointerIds));
 		auto pointerId = m_variablePointerIds[dstRef.symbol.index];
-		WriteOp(spv::OpStore, pointerId, valueId);
+		uint32 elemCount = GetSwizzleElementCount(dstRef.swizzle);
+		switch(elemCount)
+		{
+		case 1:
+		case 2:
+		case 3:
+		{
+			uint32 dstValueId = AllocateId();
+			WriteOp(spv::OpLoad, m_float4TypeId, dstValueId, pointerId);
+			uint32 swizzledValueId = mixSrcAndDst(valueId, dstValueId, dstRef.swizzle);
+			WriteOp(spv::OpStore, pointerId, swizzledValueId);
+		}
+		break;
+		case 4:
+			assert(dstRef.swizzle == SWIZZLE_XYZW);
+			WriteOp(spv::OpStore, pointerId, valueId);
+			break;
+		default:
+			assert(false);
+			break;
+		}
 	}
 	break;
 	default:
