@@ -525,6 +525,9 @@ void CSpirvShaderGenerator::Generate()
 			case CShaderBuilder::STATEMENT_OP_MIN:
 				Min(dstRef, src1Ref, src2Ref);
 				break;
+			case CShaderBuilder::STATEMENT_OP_MAX:
+				Max(dstRef, src1Ref, src2Ref);
+				break;
 			case CShaderBuilder::STATEMENT_OP_DOT:
 				Dot(dstRef, src1Ref, src2Ref);
 				break;
@@ -1952,11 +1955,42 @@ void CSpirvShaderGenerator::Min(const CShaderBuilder::SYMBOLREF& dstRef, const C
 	auto symbolType = GetCommonSymbolType(src1Ref, src2Ref);
 	switch(symbolType)
 	{
+	case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
+		WriteOp(spv::OpExtInst, m_float4TypeId, resultId, m_glslStd450ExtInst, GLSLstd450::GLSLstd450FMin, src1Id, src2Id);
+		break;
 	case CShaderBuilder::SYMBOL_TYPE_INT4:
 		WriteOp(spv::OpExtInst, m_int4TypeId, resultId, m_glslStd450ExtInst, GLSLstd450::GLSLstd450SMin, src1Id, src2Id);
 		break;
 	case CShaderBuilder::SYMBOL_TYPE_UINT4:
 		WriteOp(spv::OpExtInst, m_uint4TypeId, resultId, m_glslStd450ExtInst, GLSLstd450::GLSLstd450UMin, src1Id, src2Id);
+		break;
+	default:
+		assert(false);
+		break;
+	}
+
+	StoreToSymbol(dstRef, resultId);
+}
+
+void CSpirvShaderGenerator::Max(const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref, const CShaderBuilder::SYMBOLREF& src2Ref)
+{
+	auto src1Id = LoadFromSymbol(src1Ref);
+	auto src2Id = LoadFromSymbol(src2Ref);
+	auto resultId = AllocateId();
+	auto symbolType = GetCommonSymbolType(src1Ref, src2Ref);
+	switch(symbolType)
+	{
+	case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
+		WriteOp(spv::OpExtInst, m_float4TypeId, resultId, m_glslStd450ExtInst, GLSLstd450::GLSLstd450FMax, src1Id, src2Id);
+		break;
+	case CShaderBuilder::SYMBOL_TYPE_INT4:
+		WriteOp(spv::OpExtInst, m_int4TypeId, resultId, m_glslStd450ExtInst, GLSLstd450::GLSLstd450SMax, src1Id, src2Id);
+		break;
+	case CShaderBuilder::SYMBOL_TYPE_UINT4:
+		WriteOp(spv::OpExtInst, m_uint4TypeId, resultId, m_glslStd450ExtInst, GLSLstd450::GLSLstd450UMax, src1Id, src2Id);
+		break;
+	default:
+		assert(false);
 		break;
 	}
 
