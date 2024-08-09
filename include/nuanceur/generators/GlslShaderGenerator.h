@@ -1,6 +1,7 @@
 #pragma once
 
 #include "nuanceur/builder/ShaderBuilder.h"
+#include <array>
 
 namespace Nuanceur
 {
@@ -13,10 +14,10 @@ namespace Nuanceur
 			SHADER_TYPE_FRAGMENT
 		};
 
-		static std::string Generate(const CShaderBuilder&, SHADER_TYPE);
+		static std::string Generate(const CShaderBuilder&, SHADER_TYPE, uint32 = 0);
 
 	private:
-		CGlslShaderGenerator(const CShaderBuilder&, SHADER_TYPE);
+		CGlslShaderGenerator(const CShaderBuilder&, SHADER_TYPE, uint32 = 0);
 
 		std::string Generate() const;
 
@@ -31,7 +32,10 @@ namespace Nuanceur
 		static std::string MakeTypeName(CShaderBuilder::SYMBOL_TYPE);
 		std::string PrintSymbolRef(const CShaderBuilder::SYMBOLREF&) const;
 
+		std::string EmitConversion(const std::array<const char*, 4>&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&) const;
+
 		const CShaderBuilder& m_shaderBuilder;
 		SHADER_TYPE m_shaderType = SHADER_TYPE_VERTEX;
+		uint32 m_glslVersion = 0;
 	};
 }
