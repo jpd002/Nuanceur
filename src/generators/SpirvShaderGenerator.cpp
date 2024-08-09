@@ -1617,7 +1617,23 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 void CSpirvShaderGenerator::StoreToSymbol(const CShaderBuilder::SYMBOLREF& dstRef, uint32 valueId)
 {
 	assert(IsMaskSwizzle(dstRef.swizzle));
-
+	uint32 vectorTypeId =
+	    [&]() {
+		    switch(dstRef.symbol.type)
+		    {
+		    default:
+			    assert(false);
+			    [[fallthrough]];
+		    case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
+			    return m_float4TypeId;
+		    case CShaderBuilder::SYMBOL_TYPE_INT4:
+			    return m_int4TypeId;
+		    case CShaderBuilder::SYMBOL_TYPE_UINT4:
+			    return m_uint4TypeId;
+		    case CShaderBuilder::SYMBOL_TYPE_BOOL4:
+			    return m_bool4TypeId;
+		    }
+	    }();
 	auto mixSrcAndDst = [&](uint32 srcValueId, uint32 dstValueId, SWIZZLE_TYPE dstSwizzle) {
 		//Makes a new destination with src and dst, respecting dst swizzle
 		uint32 resultId = AllocateId();
@@ -1628,7 +1644,7 @@ void CSpirvShaderGenerator::StoreToSymbol(const CShaderBuilder::SYMBOLREF& dstRe
 			uint32 elem = GetSwizzleElement(dstSwizzle, i);
 			components[elem] = 4 + i;
 		}
-		WriteOp(spv::OpVectorShuffle, m_float4TypeId, resultId, dstValueId, srcValueId,
+		WriteOp(spv::OpVectorShuffle, vectorTypeId, resultId, dstValueId, srcValueId,
 		        components[0], components[1], components[2], components[3]);
 		return resultId;
 	};
@@ -1659,7 +1675,7 @@ void CSpirvShaderGenerator::StoreToSymbol(const CShaderBuilder::SYMBOLREF& dstRe
 			case 3:
 			{
 				uint32 dstValueId = AllocateId();
-				WriteOp(spv::OpLoad, m_float4TypeId, dstValueId, pointerId);
+				WriteOp(spv::OpLoad, vectorTypeId, dstValueId, pointerId);
 				uint32 swizzledValueId = mixSrcAndDst(valueId, dstValueId, dstRef.swizzle);
 				WriteOp(spv::OpStore, pointerId, swizzledValueId);
 			}
@@ -1712,7 +1728,7 @@ void CSpirvShaderGenerator::StoreToSymbol(const CShaderBuilder::SYMBOLREF& dstRe
 		case 3:
 		{
 			uint32 dstValueId = AllocateId();
-			WriteOp(spv::OpLoad, m_float4TypeId, dstValueId, pointerId);
+			WriteOp(spv::OpLoad, vectorTypeId, dstValueId, pointerId);
 			uint32 swizzledValueId = mixSrcAndDst(valueId, dstValueId, dstRef.swizzle);
 			WriteOp(spv::OpStore, pointerId, swizzledValueId);
 		}
