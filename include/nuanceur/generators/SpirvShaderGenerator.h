@@ -139,6 +139,8 @@ namespace Nuanceur
 		void RegisterFloatConstant(float);
 		void RegisterIntConstant(int32);
 		void RegisterUintConstant(uint32);
+		void RegisterUshortConstant(uint32);
+		void RegisterUcharConstant(uint32);
 
 		uint32 LoadFromSymbol(const CShaderBuilder::SYMBOLREF&);
 		void StoreToSymbol(const CShaderBuilder::SYMBOLREF&, uint32);
@@ -283,6 +285,8 @@ namespace Nuanceur
 		std::map<float, uint32> m_floatConstantIds;
 		std::map<int32, uint32> m_intConstantIds;
 		std::map<uint32, uint32> m_uintConstantIds;
+		std::map<uint32, uint32> m_ushortConstantIds;
+		std::map<uint32, uint32> m_ucharConstantIds;
 		uint32 m_boolConstantFalseId;
 		uint32 m_boolConstantTrueId;
 		uint32 m_nextId = EMPTY_ID + 1;

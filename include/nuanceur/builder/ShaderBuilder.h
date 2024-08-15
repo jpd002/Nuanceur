@@ -152,6 +152,8 @@ namespace Nuanceur
 			SYMBOL_TYPE_FLOAT4,
 			SYMBOL_TYPE_INT4,
 			SYMBOL_TYPE_UINT4,
+			SYMBOL_TYPE_USHORT4,
+			SYMBOL_TYPE_UCHAR4,
 			SYMBOL_TYPE_BOOL4,
 			SYMBOL_TYPE_MATRIX,
 			SYMBOL_TYPE_ARRAYUINT,
@@ -405,6 +407,8 @@ namespace Nuanceur
 		SYMBOL CreateTemporaryBool();
 		SYMBOL CreateTemporaryInt();
 		SYMBOL CreateTemporaryUint();
+		SYMBOL CreateTemporaryUshort();
+		SYMBOL CreateTemporaryUchar();
 
 		SYMBOL CreateUniformFloat4(const std::string&, unsigned int = 0);
 		SYMBOL CreateUniformInt4(const std::string&, unsigned int = 0);

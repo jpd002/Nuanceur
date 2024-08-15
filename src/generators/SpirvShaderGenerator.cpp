@@ -401,6 +401,20 @@ void CSpirvShaderGenerator::Generate()
 		WriteOp(spv::OpConstant, m_uintTypeId, uintConstantIdPair.second, uintConstantIdPair.first);
 	}
 
+	//Declare Ushort Constants
+	for(const auto& ushortConstantIdPair : m_ushortConstantIds)
+	{
+		assert(m_ushortTypeId != EMPTY_ID);
+		WriteOp(spv::OpConstant, m_ushortTypeId, ushortConstantIdPair.second, ushortConstantIdPair.first);
+	}
+
+	//Declare Uchar Constants
+	for(const auto& ucharConstantIdPair : m_ucharConstantIds)
+	{
+		assert(m_ucharTypeId != EMPTY_ID);
+		WriteOp(spv::OpConstant, m_ucharTypeId, ucharConstantIdPair.second, ucharConstantIdPair.first);
+	}
+
 	//Declare Bool Constants
 	WriteOp(spv::OpConstantFalse, m_boolTypeId, m_boolConstantFalseId);
 	WriteOp(spv::OpConstantTrue, m_boolTypeId, m_boolConstantTrueId);
@@ -454,13 +468,11 @@ void CSpirvShaderGenerator::Generate()
 				{
 					WriteOp(spv::OpIMul, m_int4TypeId, resultId, src1Id, src2Id);
 				}
-				else if((
-				            (src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_INT4) &&
-				            (src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_INT4)) ||
-				        ((src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4) &&
-				         (src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4)))
+				else if(
+				    (src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4) &&
+				    (src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4))
 				{
-					WriteOp(spv::OpIMul, m_int4TypeId, resultId, src1Id, src2Id);
+					WriteOp(spv::OpIMul, m_uint4TypeId, resultId, src1Id, src2Id);
 				}
 				else
 				{
@@ -1048,6 +1060,24 @@ void CSpirvShaderGenerator::GatherConstantsFromTemps()
 			RegisterUintConstant(temporaryValue.w);
 		}
 		break;
+		case CShaderBuilder::SYMBOL_TYPE_USHORT4:
+		{
+			auto temporaryValue = m_shaderBuilder.GetTemporaryValueInt(symbol);
+			RegisterUshortConstant(temporaryValue.x);
+			RegisterUshortConstant(temporaryValue.y);
+			RegisterUshortConstant(temporaryValue.z);
+			RegisterUshortConstant(temporaryValue.w);
+		}
+		break;
+		case CShaderBuilder::SYMBOL_TYPE_UCHAR4:
+		{
+			auto temporaryValue = m_shaderBuilder.GetTemporaryValueInt(symbol);
+			RegisterUcharConstant(temporaryValue.x);
+			RegisterUcharConstant(temporaryValue.y);
+			RegisterUcharConstant(temporaryValue.z);
+			RegisterUcharConstant(temporaryValue.w);
+		}
+		break;
 		case CShaderBuilder::SYMBOL_TYPE_BOOL4:
 			//No need to register constants
 			break;
@@ -1094,6 +1124,26 @@ void CSpirvShaderGenerator::DeclareTemporaryValueIds()
 			uint32 valueZId = m_uintConstantIds[temporaryValue.z];
 			uint32 valueWId = m_uintConstantIds[temporaryValue.w];
 			WriteOp(spv::OpConstantComposite, m_uint4TypeId, temporaryValueId, valueXId, valueYId, valueZId, valueWId);
+		}
+		break;
+		case CShaderBuilder::SYMBOL_TYPE_USHORT4:
+		{
+			auto temporaryValue = m_shaderBuilder.GetTemporaryValueInt(symbol);
+			uint32 valueXId = m_ushortConstantIds[temporaryValue.x];
+			uint32 valueYId = m_ushortConstantIds[temporaryValue.y];
+			uint32 valueZId = m_ushortConstantIds[temporaryValue.z];
+			uint32 valueWId = m_ushortConstantIds[temporaryValue.w];
+			WriteOp(spv::OpConstantComposite, m_ushort4TypeId, temporaryValueId, valueXId, valueYId, valueZId, valueWId);
+		}
+		break;
+		case CShaderBuilder::SYMBOL_TYPE_UCHAR4:
+		{
+			auto temporaryValue = m_shaderBuilder.GetTemporaryValueInt(symbol);
+			uint32 valueXId = m_ucharConstantIds[temporaryValue.x];
+			uint32 valueYId = m_ucharConstantIds[temporaryValue.y];
+			uint32 valueZId = m_ucharConstantIds[temporaryValue.z];
+			uint32 valueWId = m_ucharConstantIds[temporaryValue.w];
+			WriteOp(spv::OpConstantComposite, m_uchar4TypeId, temporaryValueId, valueXId, valueYId, valueZId, valueWId);
 		}
 		break;
 		case CShaderBuilder::SYMBOL_TYPE_BOOL4:
@@ -1403,6 +1453,20 @@ void CSpirvShaderGenerator::RegisterUintConstant(uint32 value)
 	m_uintConstantIds[value] = AllocateId();
 }
 
+void CSpirvShaderGenerator::RegisterUshortConstant(uint32 value)
+{
+	assert(value < 0x10000);
+	if(m_ushortConstantIds.find(value) != std::end(m_ushortConstantIds)) return;
+	m_ushortConstantIds[value] = AllocateId();
+}
+
+void CSpirvShaderGenerator::RegisterUcharConstant(uint32 value)
+{
+	assert(value < 0x100);
+	if(m_ucharConstantIds.find(value) != std::end(m_ucharConstantIds)) return;
+	m_ucharConstantIds[value] = AllocateId();
+}
+
 uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& srcRef)
 {
 	uint32 srcId = 0;
@@ -1630,6 +1694,10 @@ void CSpirvShaderGenerator::StoreToSymbol(const CShaderBuilder::SYMBOLREF& dstRe
 			    return m_int4TypeId;
 		    case CShaderBuilder::SYMBOL_TYPE_UINT4:
 			    return m_uint4TypeId;
+		    case CShaderBuilder::SYMBOL_TYPE_USHORT4:
+			    return m_ushort4TypeId;
+		    case CShaderBuilder::SYMBOL_TYPE_UCHAR4:
+			    return m_uchar4TypeId;
 		    case CShaderBuilder::SYMBOL_TYPE_BOOL4:
 			    return m_bool4TypeId;
 		    }
@@ -1643,6 +1711,11 @@ void CSpirvShaderGenerator::StoreToSymbol(const CShaderBuilder::SYMBOLREF& dstRe
 		{
 			uint32 elem = GetSwizzleElement(dstSwizzle, i);
 			components[elem] = 4 + i;
+		}
+		if((dstValueId == 127) && (srcValueId == 227))
+		{
+			int i = 0;
+			i++;
 		}
 		WriteOp(spv::OpVectorShuffle, vectorTypeId, resultId, dstValueId, srcValueId,
 		        components[0], components[1], components[2], components[3]);
@@ -1776,6 +1849,7 @@ uint32 CSpirvShaderGenerator::GetResultType(CShaderBuilder::SYMBOL_TYPE symbolTy
 		return m_int4TypeId;
 	default:
 		assert(false);
+		[[fallthrough]];
 	case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
 		return m_float4TypeId;
 	}
@@ -2116,6 +2190,7 @@ void CSpirvShaderGenerator::Compare(CShaderBuilder::STATEMENT_OP op, const CShad
 		    {
 		    default:
 			    assert(false);
+			    [[fallthrough]];
 		    case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
 			    return m_floatTypeId;
 		    case CShaderBuilder::SYMBOL_TYPE_INT4:
@@ -2304,7 +2379,7 @@ void CSpirvShaderGenerator::Store(const CShaderBuilder::SYMBOLREF& src1Ref, cons
 void CSpirvShaderGenerator::Store16(const CShaderBuilder::SYMBOLREF& src1Ref, const CShaderBuilder::SYMBOLREF& src2Ref, const CShaderBuilder::SYMBOLREF& src3Ref)
 {
 	assert(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_INT4);
-	assert(src3Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
+	assert(src3Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_USHORT4);
 	assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_ARRAYUSHORT);
 
 	auto bufferAccessParams = GetStructAccessChainParams(src1Ref);
@@ -2324,7 +2399,7 @@ void CSpirvShaderGenerator::Store16(const CShaderBuilder::SYMBOLREF& src1Ref, co
 void CSpirvShaderGenerator::Store8(const CShaderBuilder::SYMBOLREF& src1Ref, const CShaderBuilder::SYMBOLREF& src2Ref, const CShaderBuilder::SYMBOLREF& src3Ref)
 {
 	assert(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_INT4);
-	assert(src3Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UINT4);
+	assert(src3Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_UCHAR4);
 	assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_ARRAYUCHAR);
 
 	auto bufferAccessParams = GetStructAccessChainParams(src1Ref);

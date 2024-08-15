@@ -767,7 +767,7 @@ CUintRvalue Nuanceur::ToUint(const CIntValue& rhs)
 CUshortRvalue Nuanceur::ToUshort(const CUintValue& rhs)
 {
 	auto owner = rhs.symbol.owner;
-	auto temp = CUshortRvalue(owner->CreateTemporaryUint());
+	auto temp = CUshortRvalue(owner->CreateTemporaryUshort());
 	owner->InsertStatement(
 	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUSHORT, temp, rhs));
 	return temp;
@@ -776,7 +776,7 @@ CUshortRvalue Nuanceur::ToUshort(const CUintValue& rhs)
 CUcharRvalue Nuanceur::ToUchar(const CUintValue& rhs)
 {
 	auto owner = rhs.symbol.owner;
-	auto temp = CUcharRvalue(owner->CreateTemporaryUint());
+	auto temp = CUcharRvalue(owner->CreateTemporaryUchar());
 	owner->InsertStatement(
 	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_TOUCHAR, temp, rhs));
 	return temp;

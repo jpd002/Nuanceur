@@ -131,7 +131,10 @@ CShaderBuilder::CIntVector4 CShaderBuilder::GetTemporaryValueInt(const SYMBOL& s
 {
 	CIntVector4 result(0, 0, 0, 0);
 	assert(sym.location == SYMBOL_LOCATION_TEMPORARY);
-	assert((sym.type == SYMBOL_TYPE_INT4) || (sym.type == SYMBOL_TYPE_UINT4));
+	assert((sym.type == SYMBOL_TYPE_INT4) ||
+	       (sym.type == SYMBOL_TYPE_UINT4) ||
+	       (sym.type == SYMBOL_TYPE_USHORT4) ||
+	       (sym.type == SYMBOL_TYPE_UCHAR4));
 	auto temporaryValueIterator = m_temporaryValuesInt.find(sym.index);
 	if(temporaryValueIterator != std::end(m_temporaryValuesInt))
 	{
@@ -331,6 +334,30 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateTemporaryUint()
 	sym.owner = this;
 	sym.index = m_currentTempIndex++;
 	sym.type = SYMBOL_TYPE_UINT4;
+	sym.location = SYMBOL_LOCATION_TEMPORARY;
+	m_symbols.push_back(sym);
+
+	return sym;
+}
+
+CShaderBuilder::SYMBOL CShaderBuilder::CreateTemporaryUshort()
+{
+	SYMBOL sym;
+	sym.owner = this;
+	sym.index = m_currentTempIndex++;
+	sym.type = SYMBOL_TYPE_USHORT4;
+	sym.location = SYMBOL_LOCATION_TEMPORARY;
+	m_symbols.push_back(sym);
+
+	return sym;
+}
+
+CShaderBuilder::SYMBOL CShaderBuilder::CreateTemporaryUchar()
+{
+	SYMBOL sym;
+	sym.owner = this;
+	sym.index = m_currentTempIndex++;
+	sym.type = SYMBOL_TYPE_UCHAR4;
 	sym.location = SYMBOL_LOCATION_TEMPORARY;
 	m_symbols.push_back(sym);
 
