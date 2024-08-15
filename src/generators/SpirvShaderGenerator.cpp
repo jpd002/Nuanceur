@@ -482,40 +482,11 @@ void CSpirvShaderGenerator::Generate()
 			}
 			break;
 			case CShaderBuilder::STATEMENT_OP_DIVIDE:
-			{
-				auto src1Id = LoadFromSymbol(src1Ref);
-				auto src2Id = LoadFromSymbol(src2Ref);
-				auto resultId = AllocateId();
-				if(
-				    (src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4) &&
-				    (src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4))
-				{
-					WriteOp(spv::OpFDiv, m_float4TypeId, resultId, src1Id, src2Id);
-				}
-				else if(
-				    (src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_INT4) &&
-				    (src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_INT4))
-				{
-					WriteOp(spv::OpSDiv, m_int4TypeId, resultId, src1Id, src2Id);
-				}
-				else
-				{
-					assert(false);
-				}
-				StoreToSymbol(dstRef, resultId);
-			}
-			break;
+				Div(dstRef, src1Ref, src2Ref);
+				break;
 			case CShaderBuilder::STATEMENT_OP_MODULO:
-			{
-				auto src1Id = LoadFromSymbol(src1Ref);
-				auto src2Id = LoadFromSymbol(src2Ref);
-				auto resultId = AllocateId();
-				assert(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_INT4);
-				assert(src2Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_INT4);
-				WriteOp(spv::OpSMod, m_int4TypeId, resultId, src1Id, src2Id);
-				StoreToSymbol(dstRef, resultId);
-			}
-			break;
+				Mod(dstRef, src1Ref, src2Ref);
+				break;
 			case CShaderBuilder::STATEMENT_OP_ABS:
 				GlslStdOp(GLSLstd450FAbs, dstRef, src1Ref);
 				break;
@@ -1712,11 +1683,6 @@ void CSpirvShaderGenerator::StoreToSymbol(const CShaderBuilder::SYMBOLREF& dstRe
 			uint32 elem = GetSwizzleElement(dstSwizzle, i);
 			components[elem] = 4 + i;
 		}
-		if((dstValueId == 127) && (srcValueId == 227))
-		{
-			int i = 0;
-			i++;
-		}
 		WriteOp(spv::OpVectorShuffle, vectorTypeId, resultId, dstValueId, srcValueId,
 		        components[0], components[1], components[2], components[3]);
 		return resultId;
@@ -1894,6 +1860,31 @@ bool CSpirvShaderGenerator::IsBuiltInOutput(Nuanceur::SEMANTIC semantic) const
 	return false;
 }
 
+uint32 CSpirvShaderGenerator::MakeDefinedInt4Vector(uint32 srcValueId, SWIZZLE_TYPE swizzle)
+{
+	uint32 result = 0;
+	//Make sure our whole vector contains sensible values since we're dividing
+	//across 4 lanes. Issues can happen when 0 happens in one of the components.
+	switch(GetSwizzleElementCount(swizzle))
+	{
+	case 1:
+		result = AllocateId();
+		WriteOp(spv::OpVectorShuffle, m_int4TypeId, result, srcValueId, srcValueId, 0, 0, 0, 0);
+		break;
+	case 2:
+		result = AllocateId();
+		WriteOp(spv::OpVectorShuffle, m_int4TypeId, result, srcValueId, srcValueId, 0, 1, 0, 1);
+		break;
+	default:
+		assert(false);
+		[[fallthrough]];
+	case 4:
+		result = srcValueId;
+		break;
+	}
+	return result;
+}
+
 uint32 CSpirvShaderGenerator::AllocateId()
 {
 	return m_nextId++;
@@ -1960,6 +1951,42 @@ void CSpirvShaderGenerator::BitwiseNot(const CShaderBuilder::SYMBOLREF& dstRef, 
 		assert(false);
 		break;
 	}
+	StoreToSymbol(dstRef, resultId);
+}
+
+void CSpirvShaderGenerator::Div(const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref, const CShaderBuilder::SYMBOLREF& src2Ref)
+{
+	auto src1Id = LoadFromSymbol(src1Ref);
+	auto src2Id = LoadFromSymbol(src2Ref);
+	auto symbolType = GetCommonSymbolType(src1Ref, src2Ref);
+	auto resultId = AllocateId();
+	switch(symbolType)
+	{
+	case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
+		WriteOp(spv::OpFDiv, m_float4TypeId, resultId, src1Id, src2Id);
+		break;
+	case CShaderBuilder::SYMBOL_TYPE_INT4:
+	{
+		uint32 dividerId = MakeDefinedInt4Vector(src2Id, src2Ref.swizzle);
+		WriteOp(spv::OpSDiv, m_int4TypeId, resultId, src1Id, dividerId);
+	}
+	break;
+	default:
+		assert(false);
+		break;
+	}
+	StoreToSymbol(dstRef, resultId);
+}
+
+void CSpirvShaderGenerator::Mod(const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref, const CShaderBuilder::SYMBOLREF& src2Ref)
+{
+	auto src1Id = LoadFromSymbol(src1Ref);
+	auto src2Id = LoadFromSymbol(src2Ref);
+	auto symbolType = GetCommonSymbolType(src1Ref, src2Ref);
+	assert(symbolType == CShaderBuilder::SYMBOL_TYPE_INT4);
+	auto resultId = AllocateId();
+	uint32 dividerId = MakeDefinedInt4Vector(src2Id, src2Ref.swizzle);
+	WriteOp(spv::OpSMod, m_int4TypeId, resultId, src1Id, dividerId);
 	StoreToSymbol(dstRef, resultId);
 }
 

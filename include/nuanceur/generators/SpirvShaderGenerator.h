@@ -152,11 +152,15 @@ namespace Nuanceur
 		static uint32 MapSemanticToLocation(Nuanceur::SEMANTIC, uint32);
 		bool IsBuiltInOutput(Nuanceur::SEMANTIC) const;
 
+		uint32 MakeDefinedInt4Vector(uint32, Nuanceur::SWIZZLE_TYPE);
+
 		uint32 AllocateId();
 
 		void Add(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void BitwiseOp(spv::Op, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void BitwiseNot(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
+		void Div(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
+		void Mod(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void LogicalOp(spv::Op, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void LogicalNot(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
 		void Sub(const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&, const CShaderBuilder::SYMBOLREF&);
