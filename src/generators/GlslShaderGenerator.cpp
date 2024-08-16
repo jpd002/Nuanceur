@@ -29,6 +29,14 @@ std::string CGlslShaderGenerator::Generate() const
 	{
 		result += "precision mediump float;\r\n";
 	}
+	else if(m_shaderType == SHADER_TYPE_COMPUTE)
+	{
+		uint32 localSizeX = m_shaderBuilder.GetMetadata(CShaderBuilder::METADATA_LOCALSIZE_X, 1);
+		uint32 localSizeY = m_shaderBuilder.GetMetadata(CShaderBuilder::METADATA_LOCALSIZE_Y, 1);
+		uint32 localSizeZ = m_shaderBuilder.GetMetadata(CShaderBuilder::METADATA_LOCALSIZE_Z, 1);
+		result += string_format("layout(local_size_x = %d, local_size_y = %d, local_size_z = %d) in;\r\n",
+			localSizeX, localSizeY, localSizeZ);
+	}
 
 	result += GenerateInputs();
 	result += GenerateOutputs();
@@ -71,6 +79,14 @@ std::string CGlslShaderGenerator::Generate() const
 			                        temporaryValue.x, temporaryValue.y, temporaryValue.z, temporaryValue.w);
 		}
 		break;
+		case CShaderBuilder::SYMBOL_TYPE_BOOL4:
+		{
+			auto temporaryValue = m_shaderBuilder.GetTemporaryValueBool(symbol);
+			result += string_format("\t%s %s = bvec4(%u, %u, %u, %u);\r\n",
+			                        MakeTypeName(symbol.type).c_str(), MakeSymbolName(symbol).c_str(),
+			                        temporaryValue.x, temporaryValue.y, temporaryValue.z, temporaryValue.w);
+		}
+		break;
 		}
 	}
 
@@ -103,6 +119,12 @@ std::string CGlslShaderGenerator::Generate() const
 			break;
 		case CShaderBuilder::STATEMENT_OP_DIVIDE:
 			result += string_format("\t%s = %s / %s;\r\n",
+			                        PrintSymbolRef(dstRef).c_str(),
+			                        PrintSymbolRef(src1Ref).c_str(),
+			                        PrintSymbolRef(src2Ref).c_str());
+			break;
+		case CShaderBuilder::STATEMENT_OP_MODULO:
+			result += string_format("\t%s = %s %% %s;\r\n",
 			                        PrintSymbolRef(dstRef).c_str(),
 			                        PrintSymbolRef(src1Ref).c_str(),
 			                        PrintSymbolRef(src2Ref).c_str());
@@ -208,6 +230,12 @@ std::string CGlslShaderGenerator::Generate() const
 			                        MakeSymbolName(src1Ref.symbol).c_str(),
 			                        PrintSymbolRef(src2Ref).c_str());
 			break;
+		case CShaderBuilder::STATEMENT_OP_STORE:
+			result += string_format("\t%s[%s] = %s;\r\n",
+			                        MakeSymbolName(src1Ref.symbol).c_str(),
+			                        PrintSymbolRef(src2Ref).c_str(),
+			                        PrintSymbolRef(src3Ref).c_str());
+			break;
 		case CShaderBuilder::STATEMENT_OP_RSHIFT:
 			result += string_format("\t%s = %s >> %s;\r\n",
 			                        PrintSymbolRef(dstRef).c_str(),
@@ -219,6 +247,22 @@ std::string CGlslShaderGenerator::Generate() const
 			                        PrintSymbolRef(dstRef).c_str(),
 			                        PrintSymbolRef(src1Ref).c_str(),
 			                        PrintSymbolRef(src2Ref).c_str());
+			break;
+		case CShaderBuilder::STATEMENT_OP_COMPARE_GE:
+			result += string_format("\t%s = %s >= %s;\r\n",
+			                        PrintSymbolRef(dstRef).c_str(),
+			                        PrintSymbolRef(src1Ref).c_str(),
+			                        PrintSymbolRef(src2Ref).c_str());
+			break;
+		case CShaderBuilder::STATEMENT_OP_IF_BEGIN:
+			result += string_format("\tif(%s)\r\n", PrintSymbolRef(src1Ref).c_str());
+			result += "\t{\r\n";
+			break;
+		case CShaderBuilder::STATEMENT_OP_IF_END:
+			result += "\t}\r\n";
+			break;
+		case CShaderBuilder::STATEMENT_OP_RETURN:
+			result += "\treturn;\r\n";
 			break;
 		default:
 			assert(0);
@@ -245,6 +289,7 @@ std::string CGlslShaderGenerator::GenerateInputs() const
 		auto semantic = m_shaderBuilder.GetInputSemantic(symbol);
 		if(semantic.type == SEMANTIC_SYSTEM_POSITION) continue;
 		if(semantic.type == SEMANTIC_SYSTEM_COLOR) continue;
+		if(semantic.type == SEMANTIC_SYSTEM_GIID) continue;
 		result += string_format("%s %s %s;\r\n",
 		                        inputTag, MakeTypeName(symbol.type).c_str(),
 		                        MakeLocalSymbolName(symbol).c_str());
@@ -337,8 +382,15 @@ std::string CGlslShaderGenerator::MakeLocalSymbolName(const CShaderBuilder::SYMB
 	case CShaderBuilder::SYMBOL_LOCATION_INPUT:
 	{
 		auto semantic = m_shaderBuilder.GetInputSemantic(sym);
-		const char* prefix = (m_shaderType == SHADER_TYPE_VERTEX) ? "a" : "v";
-		return string_format("%s_%s", prefix, MakeSemanticName(semantic).c_str());
+		if(semantic.type == SEMANTIC_SYSTEM_GIID)
+		{
+			return "ivec3(gl_GlobalInvocationID)";
+		}
+		else
+		{
+			const char* prefix = (m_shaderType == SHADER_TYPE_VERTEX) ? "a" : "v";
+			return string_format("%s_%s", prefix, MakeSemanticName(semantic).c_str());
+		}
 	}
 	break;
 	case CShaderBuilder::SYMBOL_LOCATION_OUTPUT:
@@ -393,6 +445,8 @@ std::string CGlslShaderGenerator::MakeTypeName(CShaderBuilder::SYMBOL_TYPE type)
 		return "ivec4";
 	case CShaderBuilder::SYMBOL_TYPE_UINT4:
 		return "uvec4";
+	case CShaderBuilder::SYMBOL_TYPE_BOOL4:
+		return "bvec4";
 	case CShaderBuilder::SYMBOL_TYPE_MATRIX:
 		return "mat4";
 	case CShaderBuilder::SYMBOL_TYPE_TEXTURE2D:

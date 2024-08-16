@@ -11,7 +11,8 @@ namespace Nuanceur
 		enum SHADER_TYPE
 		{
 			SHADER_TYPE_VERTEX,
-			SHADER_TYPE_FRAGMENT
+			SHADER_TYPE_FRAGMENT,
+			SHADER_TYPE_COMPUTE,
 		};
 
 		static std::string Generate(const CShaderBuilder&, SHADER_TYPE, uint32 = 0);
