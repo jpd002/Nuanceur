@@ -487,6 +487,9 @@ void CSpirvShaderGenerator::Generate()
 			case CShaderBuilder::STATEMENT_OP_MODULO:
 				Mod(dstRef, src1Ref, src2Ref);
 				break;
+			case CShaderBuilder::STATEMENT_OP_NEGATE:
+				Negate(dstRef, src1Ref);
+				break;
 			case CShaderBuilder::STATEMENT_OP_ABS:
 				GlslStdOp(GLSLstd450FAbs, dstRef, src1Ref);
 				break;
@@ -2170,6 +2173,23 @@ void CSpirvShaderGenerator::Mix(const CShaderBuilder::SYMBOLREF& dstRef, const C
 		assert(false);
 	}
 
+	StoreToSymbol(dstRef, resultId);
+}
+
+void CSpirvShaderGenerator::Negate(const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref)
+{
+	auto src1Id = LoadFromSymbol(src1Ref);
+	auto resultId = AllocateId();
+	auto symbolType = src1Ref.symbol.type;
+	switch(symbolType)
+	{
+	case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
+		WriteOp(spv::OpFNegate, m_float4TypeId, resultId, src1Id);
+		break;
+	default:
+		assert(false);
+		break;
+	}
 	StoreToSymbol(dstRef, resultId);
 }
 
