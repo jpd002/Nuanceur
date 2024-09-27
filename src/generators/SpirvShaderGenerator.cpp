@@ -378,6 +378,7 @@ void CSpirvShaderGenerator::Generate()
 		DeclareTextureIds();
 	}
 
+	RegisterFloatConstant(0);
 	GatherConstantsFromTemps();
 
 	//Declare Float Constants
@@ -502,11 +503,20 @@ void CSpirvShaderGenerator::Generate()
 			case CShaderBuilder::STATEMENT_OP_TRUNC:
 				GlslStdOp(GLSLstd450Trunc, dstRef, src1Ref);
 				break;
+			case CShaderBuilder::STATEMENT_OP_FLOOR:
+				GlslStdOp(GLSLstd450Floor, dstRef, src1Ref);
+				break;
 			case CShaderBuilder::STATEMENT_OP_ISINF:
 				ClassifyFloat(spv::OpIsInf, dstRef, src1Ref);
 				break;
+			case CShaderBuilder::STATEMENT_OP_EXP2:
+				GlslStdOp(GLSLstd450Exp2, dstRef, src1Ref);
+				break;
 			case CShaderBuilder::STATEMENT_OP_LOG2:
 				GlslStdOp(GLSLstd450Log2, dstRef, src1Ref);
+				break;
+			case CShaderBuilder::STATEMENT_OP_SQRT:
+				GlslStdOp(GLSLstd450Sqrt, dstRef, src1Ref);
 				break;
 			case CShaderBuilder::STATEMENT_OP_MIN:
 				Min(dstRef, src1Ref, src2Ref);
@@ -516,6 +526,9 @@ void CSpirvShaderGenerator::Generate()
 				break;
 			case CShaderBuilder::STATEMENT_OP_DOT:
 				Dot(dstRef, src1Ref, src2Ref);
+				break;
+			case CShaderBuilder::STATEMENT_OP_NORMALIZE:
+				Normalize(dstRef, src1Ref);
 				break;
 			case CShaderBuilder::STATEMENT_OP_MIX:
 				Mix(dstRef, src1Ref, src2Ref, src3Ref);
@@ -2078,8 +2091,64 @@ void CSpirvShaderGenerator::Dot(const CShaderBuilder::SYMBOLREF& dstRef, const C
 	auto symbolType = GetCommonSymbolType(src1Ref, src2Ref);
 	assert(symbolType == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
 
-	WriteOp(spv::OpDot, m_floatTypeId, tempId, src1Id, src2Id);
+	auto src1ElemCount = GetSwizzleElementCount(src1Ref.swizzle);
+	auto src2ElemCount = GetSwizzleElementCount(src2Ref.swizzle);
+	assert(src1ElemCount == src2ElemCount);
+
+	switch(src1ElemCount)
+	{
+	case 3:
+	{
+		assert(m_floatConstantIds.find(0) != std::end(m_floatConstantIds));
+		auto zeroId = m_floatConstantIds[0];
+		auto src1ZeroId = AllocateId();
+		auto src2ZeroId = AllocateId();
+		WriteOp(spv::OpCompositeInsert, m_float4TypeId, src1ZeroId, zeroId, src1Id, 3);
+		WriteOp(spv::OpCompositeInsert, m_float4TypeId, src2ZeroId, zeroId, src2Id, 3);
+		WriteOp(spv::OpDot, m_floatTypeId, tempId, src1ZeroId, src2ZeroId);
+	}
+	break;
+	default:
+		assert(false);
+		[[fallthrough]];
+	case 4:
+		WriteOp(spv::OpDot, m_floatTypeId, tempId, src1Id, src2Id);
+		break;
+	}
+
 	WriteOp(spv::OpCompositeConstruct, m_float4TypeId, resultId, tempId, tempId, tempId, tempId);
+
+	StoreToSymbol(dstRef, resultId);
+}
+
+void CSpirvShaderGenerator::Normalize(const CShaderBuilder::SYMBOLREF& dstRef, const CShaderBuilder::SYMBOLREF& src1Ref)
+{
+	auto src1Id = LoadFromSymbol(src1Ref);
+	auto tempId = AllocateId();
+	auto resultId = AllocateId();
+	auto symbolType = src1Ref.symbol.type;
+	assert(symbolType == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
+
+	auto src1ElemCount = GetSwizzleElementCount(src1Ref.swizzle);
+
+	switch(src1ElemCount)
+	{
+	case 3:
+	{
+		assert(m_floatConstantIds.find(0) != std::end(m_floatConstantIds));
+		auto zeroId = m_floatConstantIds[0];
+		auto src1ZeroId = AllocateId();
+		WriteOp(spv::OpCompositeInsert, m_float4TypeId, src1ZeroId, zeroId, src1Id, 3);
+		WriteOp(spv::OpExtInst, m_float4TypeId, resultId, m_glslStd450ExtInst, GLSLstd450Normalize, src1ZeroId);
+	}
+	break;
+	default:
+		assert(false);
+		[[fallthrough]];
+	case 4:
+		WriteOp(spv::OpExtInst, m_float4TypeId, resultId, m_glslStd450ExtInst, GLSLstd450Normalize, src1Id);
+		break;
+	}
 
 	StoreToSymbol(dstRef, resultId);
 }
@@ -2203,6 +2272,8 @@ void CSpirvShaderGenerator::Compare(CShaderBuilder::STATEMENT_OP op, const CShad
 	        {CShaderBuilder::STATEMENT_OP_COMPARE_EQ, spv::OpFOrdEqual},
 	        {CShaderBuilder::STATEMENT_OP_COMPARE_NE, spv::OpFOrdNotEqual},
 	        {CShaderBuilder::STATEMENT_OP_COMPARE_LT, spv::OpFOrdLessThan},
+	        {CShaderBuilder::STATEMENT_OP_COMPARE_GT, spv::OpFOrdGreaterThan},
+	        {CShaderBuilder::STATEMENT_OP_COMPARE_GE, spv::OpFOrdGreaterThanEqual},
 	    };
 
 	static const CompareOpPair intCompareOps[] =
@@ -2230,22 +2301,6 @@ void CSpirvShaderGenerator::Compare(CShaderBuilder::STATEMENT_OP op, const CShad
 	auto src1Id = LoadFromSymbol(src1Ref);
 	auto src2Id = LoadFromSymbol(src2Ref);
 	auto symbolType = GetCommonSymbolType(src1Ref, src2Ref);
-
-	uint32 scalarTypeId =
-	    [&]() {
-		    switch(symbolType)
-		    {
-		    default:
-			    assert(false);
-			    [[fallthrough]];
-		    case CShaderBuilder::SYMBOL_TYPE_FLOAT4:
-			    return m_floatTypeId;
-		    case CShaderBuilder::SYMBOL_TYPE_INT4:
-			    return m_intTypeId;
-		    case CShaderBuilder::SYMBOL_TYPE_UINT4:
-			    return m_uintTypeId;
-		    }
-	    }();
 
 	static const auto find_if_null =
 	    [](auto beginIterator, auto endIterator, auto matcher) {

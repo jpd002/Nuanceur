@@ -23,6 +23,9 @@ bool Nuanceur::IsMaskSwizzle(SWIZZLE_TYPE swizzle)
 	case SWIZZLE_YW:
 	case SWIZZLE_ZW:
 	case SWIZZLE_XYZ:
+	case SWIZZLE_XYW:
+	case SWIZZLE_XZW:
+	case SWIZZLE_YZW:
 	case SWIZZLE_XYZW:
 		return true;
 	default:
