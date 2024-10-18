@@ -1624,6 +1624,9 @@ uint32 CSpirvShaderGenerator::LoadFromSymbol(const CShaderBuilder::SYMBOLREF& sr
 		case CShaderBuilder::SYMBOL_TYPE_UINT4:
 			srcType = m_uint4TypeId;
 			break;
+		case CShaderBuilder::SYMBOL_TYPE_BOOL4:
+			srcType = m_bool4TypeId;
+			break;
 		default:
 			assert(false);
 			break;
@@ -2272,6 +2275,7 @@ void CSpirvShaderGenerator::Compare(CShaderBuilder::STATEMENT_OP op, const CShad
 	        {CShaderBuilder::STATEMENT_OP_COMPARE_EQ, spv::OpFOrdEqual},
 	        {CShaderBuilder::STATEMENT_OP_COMPARE_NE, spv::OpFOrdNotEqual},
 	        {CShaderBuilder::STATEMENT_OP_COMPARE_LT, spv::OpFOrdLessThan},
+	        {CShaderBuilder::STATEMENT_OP_COMPARE_LE, spv::OpFOrdLessThanEqual},
 	        {CShaderBuilder::STATEMENT_OP_COMPARE_GT, spv::OpFOrdGreaterThan},
 	        {CShaderBuilder::STATEMENT_OP_COMPARE_GE, spv::OpFOrdGreaterThanEqual},
 	    };
@@ -2301,6 +2305,7 @@ void CSpirvShaderGenerator::Compare(CShaderBuilder::STATEMENT_OP op, const CShad
 	auto src1Id = LoadFromSymbol(src1Ref);
 	auto src2Id = LoadFromSymbol(src2Ref);
 	auto symbolType = GetCommonSymbolType(src1Ref, src2Ref);
+	assert(dstRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_BOOL4);
 
 	static const auto find_if_null =
 	    [](auto beginIterator, auto endIterator, auto matcher) {
