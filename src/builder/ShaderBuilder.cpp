@@ -169,6 +169,24 @@ void CShaderBuilder::InsertStatement(const STATEMENT& statement)
 	m_statements.push_back(statement);
 }
 
+const std::string& CShaderBuilder::GetSource() const
+{
+	return m_source;
+}
+
+void CShaderBuilder::SetSource(std::string source)
+{
+	m_source = std::move(source);
+}
+
+void CShaderBuilder::SetSourceLine(uint32 sourceLine)
+{
+	STATEMENT statement;
+	statement.op = STATEMENT_OP_SOURCE_LINE;
+	statement.src1Ref.symbol.index = sourceLine;
+	InsertStatement(statement);
+}
+
 CShaderBuilder::SYMBOL CShaderBuilder::CreateInput(SEMANTIC semantic, unsigned int semanticIndex)
 {
 	SYMBOL sym;

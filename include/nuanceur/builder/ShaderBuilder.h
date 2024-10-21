@@ -314,6 +314,7 @@ namespace Nuanceur
 			STATEMENT_OP_INVOCATION_INTERLOCK_END,
 			STATEMENT_OP_IF_BEGIN,
 			STATEMENT_OP_IF_END,
+			STATEMENT_OP_SOURCE_LINE,
 		};
 
 		struct STATEMENT
@@ -379,6 +380,10 @@ namespace Nuanceur
 		uint32 GetMetadata(METADATA_TYPE, uint32) const;
 		void SetMetadata(METADATA_TYPE, uint32);
 
+		const std::string& GetSource() const;
+		void SetSource(std::string);
+		void SetSourceLine(uint32);
+
 		const SymbolArray& GetSymbols() const;
 		SEMANTIC_INFO GetInputSemantic(const SYMBOL&) const;
 		SEMANTIC_INFO GetOutputSemantic(const SYMBOL&) const;
@@ -440,6 +445,7 @@ namespace Nuanceur
 		typedef std::unordered_map<unsigned int, CBoolVector4> TemporaryValueBoolMap;
 
 		MetadataMap m_metadata;
+		std::string m_source;
 		SymbolArray m_symbols;
 		StatementList m_statements;
 		unsigned int m_currentTempIndex = 0;

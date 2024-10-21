@@ -245,9 +245,15 @@ void CSpirvShaderGenerator::Generate()
 		WriteOp(spv::OpExecutionMode, mainFunctionId, spv::ExecutionModeLocalSize, localSizeX, localSizeY, localSizeZ);
 	}
 
-	//Names
-	//WriteOp(spv::OpSource, spv::SourceLanguageUnknown, 100);
-	//WriteOp(spv::OpName, mainFunctionId, "main");
+	uint32 sourceStringId = EMPTY_ID;
+	const auto& source = m_shaderBuilder.GetSource();
+	if(!source.empty())
+	{
+		sourceStringId = AllocateId();
+		const char* sourceFilename = "nuanceur.txt";
+		WriteOp(spv::OpString, sourceStringId, sourceFilename);
+		WriteOp(spv::OpSource, spv::SourceLanguageUnknown, 100, sourceStringId, source.c_str());
+	}
 
 	WriteVariablePointerNames();
 	WriteUniformStructNames();
@@ -827,6 +833,12 @@ void CSpirvShaderGenerator::Generate()
 				returnInBlock = false;
 			}
 			break;
+			case CShaderBuilder::STATEMENT_OP_SOURCE_LINE:
+				if(sourceStringId != EMPTY_ID)
+				{
+					WriteOp(spv::OpLine, sourceStringId, src1Ref.symbol.index, 0);
+				}
+				break;
 			default:
 				assert(false);
 				break;
