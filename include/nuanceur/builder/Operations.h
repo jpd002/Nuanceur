@@ -35,6 +35,7 @@ namespace Nuanceur
 	CIntRvalue operator+(const CIntValue& lhs, const CIntValue& rhs);
 	CInt2Rvalue operator+(const CInt2Value& lhs, const CInt2Value& rhs);
 	CInt3Rvalue operator+(const CInt3Value& lhs, const CInt3Value& rhs);
+	CInt4Rvalue operator+(const CInt4Value& lhs, const CInt4Value& rhs);
 	CUintRvalue operator+(const CUintValue& lhs, const CUintValue& rhs);
 	CUint3Rvalue operator+(const CUint3Value& lhs, const CUint3Value& rhs);
 
@@ -43,6 +44,7 @@ namespace Nuanceur
 	CFloat4Rvalue operator-(const CFloat4Value& lhs, const CFloat4Value& rhs);
 	CIntRvalue operator-(const CIntValue& lhs, const CIntValue& rhs);
 	CInt3Rvalue operator-(const CInt3Value& lhs, const CInt3Value& rhs);
+	CInt4Rvalue operator-(const CInt4Value& lhs, const CInt4Value& rhs);
 	CUint3Rvalue operator-(const CUint3Value& lhs, const CUint3Value& rhs);
 
 	CFloatRvalue operator*(const CFloatValue& lhs, const CFloatValue& rhs);
@@ -61,6 +63,8 @@ namespace Nuanceur
 	CFloat2Rvalue operator/(const CFloat2Value& lhs, const CFloat2Value& rhs);
 	CFloat4Rvalue operator/(const CFloat4Value& lhs, const CFloat4Value& rhs);
 	CIntRvalue operator/(const CIntValue& lhs, const CIntValue& rhs);
+	CInt2Rvalue operator/(const CInt2Value& lhs, const CInt2Value& rhs);
+	CInt4Rvalue operator/(const CInt4Value& lhs, const CInt4Value& rhs);
 
 	CIntRvalue operator%(const CIntValue& lhs, const CIntValue& rhs);
 
@@ -69,6 +73,7 @@ namespace Nuanceur
 	CUint3Rvalue operator>>(const CUint3Value& lhs, const CUint3Value& rhs);
 
 	CIntRvalue operator<<(const CIntValue& lhs, const CIntValue& rhs);
+	CInt2Rvalue operator<<(const CInt2Value& lhs, const CInt2Value& rhs);
 	CUintRvalue operator<<(const CUintValue& lhs, const CUintValue& rhs);
 
 	CIntRvalue operator&(const CIntValue& lhs, const CIntValue& rhs);
