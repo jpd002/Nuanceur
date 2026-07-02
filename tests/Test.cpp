@@ -6,7 +6,7 @@
 #include "MemStream.h"
 #include "string_format.h"
 
-void CTest::Submit(const Nuanceur::CShaderBuilder& shaderBuilder, const CVector4& expectedValue)
+void CTest::Submit(const Nuanceur::CShaderBuilder& shaderBuilder, const CTestContext& testContext)
 {
 	std::string testString;
 	testString += "[vertex shader passthrough]\r\n";
@@ -28,11 +28,21 @@ void CTest::Submit(const Nuanceur::CShaderBuilder& shaderBuilder, const CVector4
 	}
 
 	testString += "[test]\r\n";
+	testString += "clear\r\n";
+	if(!testContext.uniformBuffer.empty())
+	{
+		const auto& uboData = testContext.uniformBuffer[0];
+		testString += string_format("ubo 0 subdata vec4 %f %f %f %f\r\n",
+		                            uboData.x, uboData.y, uboData.z, uboData.w);
+	}
 	testString += "draw rect -1 -1 2 2\r\n";
 	testString += "\r\n";
 
 	testString += string_format("probe all rgba %f %f %f %f\r\n",
-		expectedValue.x, expectedValue.y, expectedValue.z, expectedValue.w);
+	                            testContext.expectedValue.x,
+	                            testContext.expectedValue.y,
+	                            testContext.expectedValue.z,
+	                            testContext.expectedValue.w);
 
 	/* Create a source representing the file */
 	struct vr_source* source = vr_source_from_string(testString.c_str());
@@ -49,6 +59,13 @@ void CTest::Submit(const Nuanceur::CShaderBuilder& shaderBuilder, const CVector4
 	       vr_result_to_string(result));
 
 	assert(result == VR_RESULT_PASS);
+}
+
+void CTest::Submit(const Nuanceur::CShaderBuilder& shaderBuilder, const CVector4& expectedValue)
+{
+	CTestContext context;
+	context.expectedValue = expectedValue;
+	Submit(shaderBuilder, context);
 }
 
 std::vector<uint32> CTest::GenerateCode(const Nuanceur::CShaderBuilder& shaderBuilder)

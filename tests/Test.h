@@ -9,6 +9,13 @@ namespace Nuanceur
 	class CShaderBuilder;
 }
 
+class CTestContext
+{
+public:
+	std::vector<CVector4> uniformBuffer;
+	CVector4 expectedValue = CVector4(0, 0, 0, 0);
+};
+
 class CTest
 {
 public:
@@ -16,6 +23,7 @@ public:
 	virtual void Run() = 0;
 
 protected:
+	void Submit(const Nuanceur::CShaderBuilder&, const CTestContext&);
 	void Submit(const Nuanceur::CShaderBuilder&, const CVector4&);
 
 private:

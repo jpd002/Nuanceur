@@ -83,6 +83,8 @@ if(TARGET_PLATFORM_WIN32)
 		../tests/SwizzleTempTest.h
 		../tests/Test.cpp
 		../tests/Test.h
+		../tests/UniformTest.cpp
+		../tests/UniformTest.h
 	)
 	target_include_directories(NuanceurTestSuite PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include ${CMAKE_CURRENT_SOURCE_DIR}/../deps/vkrunner)
 	target_link_libraries(NuanceurTestSuite PUBLIC Nuanceur Framework vkrunner)
