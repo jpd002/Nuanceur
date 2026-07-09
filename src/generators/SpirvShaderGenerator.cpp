@@ -839,6 +839,58 @@ void CSpirvShaderGenerator::Generate()
 				returnInBlock = false;
 			}
 			break;
+			case CShaderBuilder::STATEMENT_OP_LOOP_BEGIN:
+			{
+				LOOP_FLOW_INFO loopFlow;
+				loopFlow.headerLabelId = AllocateId();
+				loopFlow.exitLabelId = AllocateId();
+				loopFlow.continueLabelId = AllocateId();
+				m_flowLabelIds.push(loopFlow);
+
+				WriteOp(spv::OpBranch, loopFlow.headerLabelId);
+				WriteOp(spv::OpLabel, loopFlow.headerLabelId);
+				WriteOp(spv::OpLoopMerge, loopFlow.exitLabelId, loopFlow.continueLabelId, spv::LoopControlMaskNone);
+
+				auto beginLabelId = AllocateId();
+				WriteOp(spv::OpBranch, beginLabelId);
+				WriteOp(spv::OpLabel, beginLabelId);
+			}
+			break;
+			case CShaderBuilder::STATEMENT_OP_LOOP_END:
+			{
+				assert(!m_flowLabelIds.empty());
+				auto flowLabelIds = m_flowLabelIds.top();
+				assert(!returnInBlock);
+				WriteOp(spv::OpBranch, flowLabelIds.continueLabelId);
+				WriteOp(spv::OpLabel, flowLabelIds.continueLabelId);
+				WriteOp(spv::OpBranch, flowLabelIds.headerLabelId);
+				WriteOp(spv::OpLabel, flowLabelIds.exitLabelId);
+				m_flowLabelIds.pop();
+				returnInBlock = false;
+			}
+			break;
+			case CShaderBuilder::STATEMENT_OP_LOOP_BREAK:
+			{
+				auto newBlockLabelId = AllocateId();
+				assert(!m_flowLabelIds.empty());
+				auto flowLabelIds = m_flowLabelIds.top();
+				assert(!returnInBlock);
+				WriteOp(spv::OpBranch, flowLabelIds.exitLabelId);
+				WriteOp(spv::OpLabel, newBlockLabelId);
+				returnInBlock = false;
+			}
+			break;
+			case CShaderBuilder::STATEMENT_OP_LOOP_CONTINUE:
+			{
+				auto newBlockLabelId = AllocateId();
+				assert(!m_flowLabelIds.empty());
+				auto flowLabelIds = m_flowLabelIds.top();
+				assert(!returnInBlock);
+				WriteOp(spv::OpBranch, flowLabelIds.continueLabelId);
+				WriteOp(spv::OpLabel, newBlockLabelId);
+				returnInBlock = false;
+			}
+			break;
 			case CShaderBuilder::STATEMENT_OP_SOURCE_LINE:
 				if(sourceStringId != EMPTY_ID)
 				{

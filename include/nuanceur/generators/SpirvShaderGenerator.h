@@ -275,6 +275,13 @@ namespace Nuanceur
 		uint32 m_subpassInputPointerTypeId = EMPTY_ID;
 		uint32 m_subpassInputUintPointerTypeId = EMPTY_ID;
 
+		struct LOOP_FLOW_INFO
+		{
+			uint32 headerLabelId;
+			uint32 continueLabelId;
+			uint32 exitLabelId;
+		};
+
 		Framework::CStream& m_outputStream;
 		const CShaderBuilder& m_shaderBuilder;
 		SHADER_TYPE m_shaderType = SHADER_TYPE_VERTEX;
@@ -297,5 +304,6 @@ namespace Nuanceur
 		uint32 m_boolConstantTrueId;
 		uint32 m_nextId = EMPTY_ID + 1;
 		std::stack<uint32> m_endLabelIds;
+		std::stack<LOOP_FLOW_INFO> m_flowLabelIds;
 	};
 }
