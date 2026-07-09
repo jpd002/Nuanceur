@@ -1,5 +1,6 @@
 #include <functional>
 #include "BasicTest.h"
+#include "LoopTest.h"
 #include "Swizzle1Test.h"
 #include "Swizzle2Test.h"
 #include "SwizzleTempTest.h"
@@ -11,6 +12,7 @@ typedef std::function<CTest*()> TestFactoryFunction;
 static const TestFactoryFunction s_factories[] =
 {
 	[]() { return new CBasicTest(); },
+	[]() { return new CLoopTest(); },
 	[]() { return new CSwizzle1Test(); },
 	[]() { return new CSwizzle2Test(); },
 	[]() { return new CSwizzleTempTest(); },

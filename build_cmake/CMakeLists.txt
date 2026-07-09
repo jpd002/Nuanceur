@@ -74,6 +74,8 @@ if(TARGET_PLATFORM_WIN32)
 	add_executable(NuanceurTestSuite
 		../tests/BasicTest.cpp
 		../tests/BasicTest.h
+		../tests/LoopTest.cpp
+		../tests/LoopTest.h
 		../tests/Main.cpp
 		../tests/Swizzle1Test.cpp
 		../tests/Swizzle1Test.h
