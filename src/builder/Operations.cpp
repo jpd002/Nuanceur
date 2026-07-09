@@ -820,3 +820,27 @@ void Nuanceur::EndIf(CShaderBuilder& owner)
 	owner.InsertStatement(
 	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_IF_END, Nuanceur::CShaderBuilder::SYMBOLREF(), Nuanceur::CShaderBuilder::SYMBOLREF()));
 }
+
+void Nuanceur::BeginLoop(CShaderBuilder& owner)
+{
+	owner.InsertStatement(
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOOP_BEGIN, Nuanceur::CShaderBuilder::SYMBOLREF(), Nuanceur::CShaderBuilder::SYMBOLREF()));
+}
+
+void Nuanceur::EndLoop(CShaderBuilder& owner)
+{
+	owner.InsertStatement(
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOOP_END, Nuanceur::CShaderBuilder::SYMBOLREF(), Nuanceur::CShaderBuilder::SYMBOLREF()));
+}
+
+void Nuanceur::LoopBreak(CShaderBuilder& owner)
+{
+	owner.InsertStatement(
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOOP_BREAK, Nuanceur::CShaderBuilder::SYMBOLREF(), Nuanceur::CShaderBuilder::SYMBOLREF()));
+}
+
+void Nuanceur::LoopContinue(CShaderBuilder& owner)
+{
+	owner.InsertStatement(
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOOP_CONTINUE, Nuanceur::CShaderBuilder::SYMBOLREF(), Nuanceur::CShaderBuilder::SYMBOLREF()));
+}

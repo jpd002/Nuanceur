@@ -208,4 +208,9 @@ namespace Nuanceur
 
 	void BeginIf(CShaderBuilder& owner, const CBoolValue& condition);
 	void EndIf(CShaderBuilder& owner);
+
+	void BeginLoop(CShaderBuilder& owner);
+	void EndLoop(CShaderBuilder& owner);
+	void LoopBreak(CShaderBuilder& owner);
+	void LoopContinue(CShaderBuilder& owner);
 }
