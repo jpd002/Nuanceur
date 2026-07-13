@@ -4,6 +4,7 @@
 #include "Swizzle2Test.h"
 #include "SwizzleTempTest.h"
 #include "UniformTest.h"
+#include "UniformArrayTest.h"
 
 typedef std::function<CTest*()> TestFactoryFunction;
 
@@ -15,6 +16,7 @@ static const TestFactoryFunction s_factories[] =
 	[]() { return new CSwizzle2Test(); },
 	[]() { return new CSwizzleTempTest(); },
 	[]() { return new CUniformTest(); },
+	[]() { return new CUniformArrayTest(); },
 };
 // clang-format on
 

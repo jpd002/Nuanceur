@@ -3,6 +3,7 @@
 #include "Types.h"
 #include "ShaderBuilder.h"
 
+#include "ArrayFloat4Value.h"
 #include "ArrayUintValue.h"
 #include "ArrayUcharValue.h"
 #include "ArrayUshortValue.h"
@@ -175,6 +176,7 @@ namespace Nuanceur
 	CUintRvalue AtomicAnd(const CImageUint2DValue& image, const CInt2Value& coord, const CUintValue&);
 	CUintRvalue AtomicOr(const CImageUint2DValue& image, const CInt2Value& coord, const CUintValue&);
 
+	CFloat4Rvalue Load(const CArrayFloat4Value& buffer, const CIntValue& index);
 	CUintRvalue Load(const CArrayUintValue& buffer, const CIntValue& index);
 	void Store(const CArrayUintValue& buffer, const CIntValue& index, const CUintValue&);
 	void Store(const CArrayUshortValue& buffer, const CIntValue& index, const CUshortValue&);

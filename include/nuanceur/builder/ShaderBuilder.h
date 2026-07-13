@@ -34,6 +34,11 @@ namespace Nuanceur
 		UNIFORM_UNIT_PUSHCONSTANT = -1,
 	};
 
+	enum
+	{
+		ARRAY_SIZE_UNBOUNDED = -1,
+	};
+
 	enum COMPONENT
 	{
 		COMPONENT_X,
@@ -156,6 +161,7 @@ namespace Nuanceur
 			SYMBOL_TYPE_UCHAR4,
 			SYMBOL_TYPE_BOOL4,
 			SYMBOL_TYPE_MATRIX,
+			SYMBOL_TYPE_ARRAYFLOAT4,
 			SYMBOL_TYPE_ARRAYUINT,
 			SYMBOL_TYPE_ARRAYUCHAR,
 			SYMBOL_TYPE_ARRAYUSHORT,
@@ -199,6 +205,7 @@ namespace Nuanceur
 			SYMBOL_LOCATION location = SYMBOL_LOCATION_NULL;
 			unsigned int unit = 0;
 			unsigned int index = 0;
+			uint32 arraySize = 0;
 			uint32 attributes = 0;
 		};
 
@@ -423,6 +430,7 @@ namespace Nuanceur
 		SYMBOL CreateUniformFloat4(const std::string&, unsigned int = 0);
 		SYMBOL CreateUniformInt4(const std::string&, unsigned int = 0);
 		SYMBOL CreateUniformMatrix(const std::string&, unsigned int = 0);
+		SYMBOL CreateUniformArrayFloat4(const std::string&, unsigned int, unsigned int = 0);
 		SYMBOL CreateUniformArrayUint(const std::string&, unsigned int = 0, uint32 = 0);
 		SYMBOL CreateUniformArrayUchar(const std::string&, unsigned int = 0, uint32 = 0);
 		SYMBOL CreateUniformArrayUshort(const std::string&, unsigned int = 0, uint32 = 0);

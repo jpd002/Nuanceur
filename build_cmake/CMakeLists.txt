@@ -30,6 +30,7 @@ add_library(Nuanceur
 
 	../include/nuanceur/Builder.h
 
+	../include/nuanceur/builder/ArrayFloat4Value.h
 	../include/nuanceur/builder/ArrayUcharValue.h
 	../include/nuanceur/builder/ArrayUintValue.h
 	../include/nuanceur/builder/ArrayUshortValue.h
@@ -87,6 +88,8 @@ if(TARGET_PLATFORM_WIN32)
 		../tests/Test.h
 		../tests/UniformTest.cpp
 		../tests/UniformTest.h
+		../tests/UniformArrayTest.cpp
+		../tests/UniformArrayTest.h
 	)
 	target_include_directories(NuanceurTestSuite PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include ${CMAKE_CURRENT_SOURCE_DIR}/../deps/vkrunner)
 	target_link_libraries(NuanceurTestSuite PUBLIC Nuanceur Framework vkrunner)

@@ -599,6 +599,15 @@ CUintRvalue Nuanceur::AtomicOr(const CImageUint2DValue& image, const CInt2Value&
 	return temp;
 }
 
+CFloat4Rvalue Nuanceur::Load(const CArrayFloat4Value& buffer, const CIntValue& index)
+{
+	auto owner = GetCommonOwner(buffer.symbol, index.symbol);
+	auto temp = CFloat4Rvalue(owner->CreateTemporary());
+	owner->InsertStatement(
+	    CShaderBuilder::STATEMENT(CShaderBuilder::STATEMENT_OP_LOAD, temp, buffer, index));
+	return temp;
+}
+
 CUintRvalue Nuanceur::Load(const CArrayUintValue& buffer, const CIntValue& index)
 {
 	auto owner = GetCommonOwner(buffer.symbol, index.symbol);

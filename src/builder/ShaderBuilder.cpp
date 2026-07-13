@@ -498,6 +498,24 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformMatrix(const std::string& na
 	return sym;
 }
 
+CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayFloat4(const std::string& name, unsigned int arraySize, unsigned int unit)
+{
+	assert(arraySize != 0);
+
+	SYMBOL sym;
+	sym.owner = this;
+	sym.index = m_currentTempIndex++;
+	sym.type = SYMBOL_TYPE_ARRAYFLOAT4;
+	sym.location = SYMBOL_LOCATION_UNIFORM;
+	sym.unit = unit;
+	sym.arraySize = arraySize;
+	m_symbols.push_back(sym);
+
+	m_uniformNames.insert(std::make_pair(sym.index, name));
+
+	return sym;
+}
+
 CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUint(const std::string& name, unsigned int unit, uint32 attributes)
 {
 	SYMBOL sym;

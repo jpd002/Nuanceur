@@ -29,11 +29,11 @@ void CTest::Submit(const Nuanceur::CShaderBuilder& shaderBuilder, const CTestCon
 
 	testString += "[test]\r\n";
 	testString += "clear\r\n";
-	if(!testContext.uniformBuffer.empty())
+	for(int i = 0; i < testContext.uniformBuffer.size(); i++)
 	{
-		const auto& uboData = testContext.uniformBuffer[0];
-		testString += string_format("ubo 0 subdata vec4 %f %f %f %f\r\n",
-		                            uboData.x, uboData.y, uboData.z, uboData.w);
+		const auto& uboData = testContext.uniformBuffer[i];
+		testString += string_format("ubo 0 subdata vec4 %d %f %f %f %f\r\n",
+		                            i * 16, uboData.x, uboData.y, uboData.z, uboData.w);
 	}
 	testString += "draw rect -1 -1 2 2\r\n";
 	testString += "\r\n";
