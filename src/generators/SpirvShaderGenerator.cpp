@@ -85,10 +85,6 @@ void CSpirvShaderGenerator::Generate()
 	m_uint4TypeId = AllocateId();
 	m_matrix44TypeId = AllocateId();
 
-	m_uintArrayTypeId = AllocateId();
-	m_ushortArrayTypeId = AllocateId();
-	m_ucharArrayTypeId = AllocateId();
-
 	m_intTypeId = AllocateId();
 	m_shortTypeId = AllocateId();
 	m_charTypeId = AllocateId();
@@ -109,6 +105,8 @@ void CSpirvShaderGenerator::Generate()
 	m_functionUint4PointerTypeId = AllocateId();
 	m_functionBool4PointerTypeId = AllocateId();
 	auto outputPerVertexStructPointerTypeId = AllocateId();
+
+	AllocateArrayTypeIds();
 
 	AllocateUniformStructsIds();
 	if(!m_structInfos.empty())
@@ -278,13 +276,11 @@ void CSpirvShaderGenerator::Generate()
 	DecorateInputPointerIds();
 	DecorateOutputPointerIds();
 
-	WriteOp(spv::OpDecorate, m_uintArrayTypeId, spv::DecorationArrayStride, 4); //Make this optional
-	if(m_has8BitInt)
-		WriteOp(spv::OpDecorate, m_ucharArrayTypeId, spv::DecorationArrayStride, 1);
-	if(m_has16BitInt)
-		WriteOp(spv::OpDecorate, m_ushortArrayTypeId, spv::DecorationArrayStride, 2);
+	DecorateArrayTypeIds();
 
-	//Type declarations
+	//Type declaration section
+	//----------------------------------------------------------------
+
 	WriteOp(spv::OpTypeVoid, voidTypeId);
 	WriteOp(spv::OpTypeFunction, mainFunctionTypeId, voidTypeId);
 	WriteOp(spv::OpTypeBool, m_boolTypeId);
@@ -300,18 +296,15 @@ void CSpirvShaderGenerator::Generate()
 	{
 		WriteOp(spv::OpTypeInt, m_charTypeId, 8, 1);
 		WriteOp(spv::OpTypeInt, m_ucharTypeId, 8, 0);
-		WriteOp(spv::OpTypeRuntimeArray, m_ucharArrayTypeId, m_ucharTypeId);
 		WriteOp(spv::OpTypeVector, m_uchar4TypeId, m_ucharTypeId, 4);
 	}
 	if(m_has16BitInt)
 	{
 		WriteOp(spv::OpTypeInt, m_shortTypeId, 16, 1);
 		WriteOp(spv::OpTypeInt, m_ushortTypeId, 16, 0);
-		WriteOp(spv::OpTypeRuntimeArray, m_ushortArrayTypeId, m_ushortTypeId);
 		WriteOp(spv::OpTypeVector, m_ushort4TypeId, m_ushortTypeId, 4);
 	}
 	WriteOp(spv::OpTypeVector, m_uint4TypeId, m_uintTypeId, 4);
-	WriteOp(spv::OpTypeRuntimeArray, m_uintArrayTypeId, m_uintTypeId); //Make this optional
 	WriteOp(spv::OpTypePointer, m_inputFloat4PointerTypeId, spv::StorageClassInput, m_float4TypeId);
 	WriteOp(spv::OpTypePointer, m_inputUint4PointerTypeId, spv::StorageClassInput, m_uint4TypeId);
 	WriteOp(spv::OpTypePointer, m_outputFloatPointerTypeId, spv::StorageClassOutput, m_floatTypeId);
@@ -334,8 +327,6 @@ void CSpirvShaderGenerator::Generate()
 		WriteOp(spv::OpTypePointer, m_inputInt3PointerTypeId, spv::StorageClassInput, m_int3TypeId);
 	}
 
-	DeclareUniformStructIds();
-
 	if(m_hasTextures)
 	{
 		//Sampled image
@@ -356,36 +347,10 @@ void CSpirvShaderGenerator::Generate()
 		WriteOp(spv::OpTypePointer, m_subpassInputUintPointerTypeId, spv::StorageClassUniformConstant, m_subpassInputUintTypeId);
 	}
 
-	DeclareInputPointerIds();
-	DeclareOutputPointerIds();
-
-	//Declare Output PerVertex (Position + PointSize) BuiltIn
-	if(m_shaderType == SHADER_TYPE_VERTEX)
-	{
-		WriteOp(spv::OpVariable, outputPerVertexStructPointerTypeId, m_outputPerVertexVariableId, spv::StorageClassOutput);
-	}
-
-	for(auto& structInfoPair : m_structInfos)
-	{
-		auto& structInfo = structInfoPair.second;
-		auto structUnit = structInfoPair.first;
-		if(structUnit == Nuanceur::UNIFORM_UNIT_PUSHCONSTANT)
-		{
-			WriteOp(spv::OpVariable, structInfo.pointerTypeId, structInfo.variableId, spv::StorageClassPushConstant);
-		}
-		else
-		{
-			WriteOp(spv::OpVariable, structInfo.pointerTypeId, structInfo.variableId, spv::StorageClassUniform);
-		}
-	}
-
-	if(m_hasTextures)
-	{
-		DeclareTextureIds();
-	}
-
 	RegisterFloatConstant(0);
 	GatherConstantsFromTemps();
+
+	GatherArraySizeConstants();
 
 	//Declare Float Constants
 	for(const auto& floatConstantIdPair : m_floatConstantIds)
@@ -425,6 +390,40 @@ void CSpirvShaderGenerator::Generate()
 	//Declare Bool Constants
 	WriteOp(spv::OpConstantFalse, m_boolTypeId, m_boolConstantFalseId);
 	WriteOp(spv::OpConstantTrue, m_boolTypeId, m_boolConstantTrueId);
+
+	DeclareArrayTypeIds();
+	DeclareUniformStructIds();
+
+	//Variable declarations
+	//-----------------------------------------------------------------------------------
+
+	for(auto& structInfoPair : m_structInfos)
+	{
+		auto& structInfo = structInfoPair.second;
+		auto structUnit = structInfoPair.first;
+		if(structUnit == Nuanceur::UNIFORM_UNIT_PUSHCONSTANT)
+		{
+			WriteOp(spv::OpVariable, structInfo.pointerTypeId, structInfo.variableId, spv::StorageClassPushConstant);
+		}
+		else
+		{
+			WriteOp(spv::OpVariable, structInfo.pointerTypeId, structInfo.variableId, spv::StorageClassUniform);
+		}
+	}
+
+	DeclareInputPointerIds();
+	DeclareOutputPointerIds();
+
+	//Declare Output PerVertex (Position + PointSize) BuiltIn
+	if(m_shaderType == SHADER_TYPE_VERTEX)
+	{
+		WriteOp(spv::OpVariable, outputPerVertexStructPointerTypeId, m_outputPerVertexVariableId, spv::StorageClassOutput);
+	}
+
+	if(m_hasTextures)
+	{
+		DeclareTextureIds();
+	}
 
 	DeclareTemporaryValueIds();
 
@@ -1220,6 +1219,110 @@ void CSpirvShaderGenerator::DeclareVariablePointerIds()
 	}
 }
 
+void CSpirvShaderGenerator::AllocateArrayTypeIds()
+{
+	for(const auto& symbol : m_shaderBuilder.GetSymbols())
+	{
+		switch(symbol.type)
+		{
+		case CShaderBuilder::SYMBOL_TYPE_ARRAYFLOAT4:
+		case CShaderBuilder::SYMBOL_TYPE_ARRAYUCHAR:
+		case CShaderBuilder::SYMBOL_TYPE_ARRAYUSHORT:
+		case CShaderBuilder::SYMBOL_TYPE_ARRAYUINT:
+			auto arraySizeType = ArraySizeType{symbol.type, symbol.arraySize};
+			if(m_arraySizeTypeIds.count(arraySizeType) == 0)
+			{
+				m_arraySizeTypeIds[arraySizeType] = AllocateId();
+			}
+			break;
+		}
+	}
+}
+
+void CSpirvShaderGenerator::DecorateArrayTypeIds()
+{
+	for(const auto& symbol : m_shaderBuilder.GetSymbols())
+	{
+		auto arraySizeType = ArraySizeType{symbol.type, symbol.arraySize};
+		auto arraySizeTypeIterator = m_arraySizeTypeIds.find(arraySizeType);
+		if(arraySizeTypeIterator == std::end(m_arraySizeTypeIds)) continue;
+		auto arraySizeTypeId = arraySizeTypeIterator->second;
+		switch(symbol.type)
+		{
+		case CShaderBuilder::SYMBOL_TYPE_ARRAYFLOAT4:
+			WriteOp(spv::OpDecorate, arraySizeTypeId, spv::DecorationArrayStride, 16);
+			break;
+		case CShaderBuilder::SYMBOL_TYPE_ARRAYUCHAR:
+			WriteOp(spv::OpDecorate, arraySizeTypeId, spv::DecorationArrayStride, 1);
+			break;
+		case CShaderBuilder::SYMBOL_TYPE_ARRAYUSHORT:
+			WriteOp(spv::OpDecorate, arraySizeTypeId, spv::DecorationArrayStride, 2);
+			break;
+		case CShaderBuilder::SYMBOL_TYPE_ARRAYUINT:
+			WriteOp(spv::OpDecorate, arraySizeTypeId, spv::DecorationArrayStride, 4);
+			break;
+		}
+	}
+}
+
+void CSpirvShaderGenerator::GatherArraySizeConstants()
+{
+	for(const auto& symbol : m_shaderBuilder.GetSymbols())
+	{
+		auto arraySizeType = ArraySizeType{symbol.type, symbol.arraySize};
+		auto arraySizeTypeIterator = m_arraySizeTypeIds.find(arraySizeType);
+		if(arraySizeTypeIterator == std::end(m_arraySizeTypeIds)) continue;
+		if(symbol.arraySize == ARRAY_SIZE_UNBOUNDED) continue;
+		RegisterIntConstant(symbol.arraySize);
+	}
+}
+
+void CSpirvShaderGenerator::DeclareArrayTypeIds()
+{
+	for(const auto& symbol : m_shaderBuilder.GetSymbols())
+	{
+		auto arraySizeType = ArraySizeType{symbol.type, symbol.arraySize};
+		auto arraySizeTypeIterator = m_arraySizeTypeIds.find(arraySizeType);
+		if(arraySizeTypeIterator == std::end(m_arraySizeTypeIds)) continue;
+		auto arraySizeTypeId = arraySizeTypeIterator->second;
+		if(symbol.arraySize != ARRAY_SIZE_UNBOUNDED)
+		{
+			switch(symbol.type)
+			{
+			case CShaderBuilder::SYMBOL_TYPE_ARRAYFLOAT4:
+				WriteOp(spv::OpTypeArray, arraySizeTypeId, m_float4TypeId, m_intConstantIds[symbol.arraySize]);
+				break;
+			default:
+				assert(false);
+				break;
+			}
+		}
+		else
+		{
+			switch(symbol.type)
+			{
+			case CShaderBuilder::SYMBOL_TYPE_ARRAYFLOAT4:
+				WriteOp(spv::OpTypeRuntimeArray, arraySizeTypeId, m_float4TypeId);
+				break;
+			case CShaderBuilder::SYMBOL_TYPE_ARRAYUCHAR:
+				assert(m_has8BitInt);
+				WriteOp(spv::OpTypeRuntimeArray, arraySizeTypeId, m_ucharTypeId);
+				break;
+			case CShaderBuilder::SYMBOL_TYPE_ARRAYUSHORT:
+				assert(m_has16BitInt);
+				WriteOp(spv::OpTypeRuntimeArray, arraySizeTypeId, m_ushortTypeId);
+				break;
+			case CShaderBuilder::SYMBOL_TYPE_ARRAYUINT:
+				WriteOp(spv::OpTypeRuntimeArray, arraySizeTypeId, m_uintTypeId);
+				break;
+			default:
+				assert(false);
+				break;
+			}
+		}
+	}
+}
+
 void CSpirvShaderGenerator::AllocateUniformStructsIds()
 {
 	for(const auto& symbol : m_shaderBuilder.GetSymbols())
@@ -1242,18 +1345,16 @@ void CSpirvShaderGenerator::AllocateUniformStructsIds()
 		case CShaderBuilder::SYMBOL_TYPE_MATRIX:
 			structInfo.components.push_back(m_matrix44TypeId);
 			break;
+		case CShaderBuilder::SYMBOL_TYPE_ARRAYFLOAT4:
 		case CShaderBuilder::SYMBOL_TYPE_ARRAYUINT:
-			structInfo.components.push_back(m_uintArrayTypeId);
-			structInfo.isBufferBlock = true;
-			break;
 		case CShaderBuilder::SYMBOL_TYPE_ARRAYUCHAR:
-			structInfo.components.push_back(m_ucharArrayTypeId);
-			structInfo.isBufferBlock = true;
-			break;
 		case CShaderBuilder::SYMBOL_TYPE_ARRAYUSHORT:
-			structInfo.components.push_back(m_ushortArrayTypeId);
-			structInfo.isBufferBlock = true;
-			break;
+		{
+			auto arraySizeTypeIdIterator = m_arraySizeTypeIds.find(ArraySizeType{symbol.type, symbol.arraySize});
+			assert(arraySizeTypeIdIterator != std::end(m_arraySizeTypeIds));
+			structInfo.components.push_back(arraySizeTypeIdIterator->second);
+		}
+		break;
 		default:
 			assert(false);
 			break;
@@ -1285,9 +1386,11 @@ void CSpirvShaderGenerator::WriteUniformStructNames()
 
 void CSpirvShaderGenerator::DecorateUniformStructIds()
 {
+	bool cannotHaveMoreMembers = false;
 	for(auto& symbol : m_shaderBuilder.GetSymbols())
 	{
 		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_UNIFORM) continue;
+		assert(!cannotHaveMoreMembers);
 		auto& structInfo = m_structInfos[symbol.unit];
 		auto memberIndex = structInfo.memberIndices[symbol.index];
 		WriteOp(spv::OpMemberDecorate, structInfo.typeId, memberIndex, spv::DecorationOffset, structInfo.currentOffset);
@@ -1314,10 +1417,23 @@ void CSpirvShaderGenerator::DecorateUniformStructIds()
 			//sizeof(float) * 16
 			structInfo.currentOffset += 64;
 			break;
+		case CShaderBuilder::SYMBOL_TYPE_ARRAYFLOAT4:
+			//sizeof(float) * 4 * arraySize
+			if(symbol.arraySize != ARRAY_SIZE_UNBOUNDED)
+			{
+				structInfo.currentOffset += 16 * symbol.arraySize;
+			}
+			else
+			{
+				cannotHaveMoreMembers = true;
+			}
+			break;
 		case CShaderBuilder::SYMBOL_TYPE_ARRAYUINT:
 		case CShaderBuilder::SYMBOL_TYPE_ARRAYUCHAR:
 		case CShaderBuilder::SYMBOL_TYPE_ARRAYUSHORT:
 			//This needs to be the last element of a struct
+			assert(structInfo.isBufferBlock);
+			cannotHaveMoreMembers = true;
 			break;
 		default:
 			assert(false);
@@ -2433,6 +2549,21 @@ void CSpirvShaderGenerator::Load(const CShaderBuilder::SYMBOLREF& dstRef, const 
 		WriteOp(spv::OpAccessChain, m_uniformUintPtrId, src1Id, bufferAccessParams.first, bufferAccessParams.second, indexId);
 		WriteOp(spv::OpLoad, m_uintTypeId, tempId, src1Id);
 		WriteOp(spv::OpCompositeConstruct, m_uint4TypeId, resultId, tempId, zeroConstantId, zeroConstantId, zeroConstantId);
+		StoreToSymbol(dstRef, resultId);
+	}
+	else if(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_ARRAYFLOAT4)
+	{
+		assert(dstRef.symbol.type == CShaderBuilder::SYMBOL_TYPE_FLOAT4);
+
+		auto bufferAccessParams = GetStructAccessChainParams(src1Ref);
+		auto src1Id = AllocateId();
+		auto src2Id = LoadFromSymbol(src2Ref);
+		auto indexId = AllocateId();
+		auto resultId = AllocateId();
+
+		WriteOp(spv::OpCompositeExtract, m_intTypeId, indexId, src2Id, 0);
+		WriteOp(spv::OpAccessChain, m_uniformFloat4PointerTypeId, src1Id, bufferAccessParams.first, bufferAccessParams.second, indexId);
+		WriteOp(spv::OpLoad, m_float4TypeId, resultId, src1Id);
 		StoreToSymbol(dstRef, resultId);
 	}
 	else if(src1Ref.symbol.type == CShaderBuilder::SYMBOL_TYPE_IMAGE2DUINT)

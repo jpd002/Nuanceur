@@ -127,6 +127,11 @@ namespace Nuanceur
 		void WriteVariablePointerNames();
 		void DeclareVariablePointerIds();
 
+		void AllocateArrayTypeIds();
+		void DecorateArrayTypeIds();
+		void GatherArraySizeConstants();
+		void DeclareArrayTypeIds();
+
 		void AllocateUniformStructsIds();
 		void WriteUniformStructNames();
 		void DecorateUniformStructIds();
@@ -231,10 +236,6 @@ namespace Nuanceur
 		uint32 m_uchar4TypeId = EMPTY_ID;
 		uint32 m_ushort4TypeId = EMPTY_ID;
 
-		uint32 m_uintArrayTypeId = EMPTY_ID;
-		uint32 m_ucharArrayTypeId = EMPTY_ID;
-		uint32 m_ushortArrayTypeId = EMPTY_ID;
-
 		uint32 m_inputFloat4PointerTypeId = EMPTY_ID;
 		uint32 m_outputFloatPointerTypeId = EMPTY_ID;
 		uint32 m_outputFloat4PointerTypeId = EMPTY_ID;
@@ -279,6 +280,8 @@ namespace Nuanceur
 		const CShaderBuilder& m_shaderBuilder;
 		SHADER_TYPE m_shaderType = SHADER_TYPE_VERTEX;
 
+		using ArraySizeType = std::pair<CShaderBuilder::SYMBOL_TYPE, uint32>;
+
 		bool m_hasTextures = false;
 		bool m_has8BitInt = false;
 		bool m_has16BitInt = false;
@@ -293,6 +296,7 @@ namespace Nuanceur
 		std::map<uint32, uint32> m_uintConstantIds;
 		std::map<uint32, uint32> m_ushortConstantIds;
 		std::map<uint32, uint32> m_ucharConstantIds;
+		std::map<ArraySizeType, uint32> m_arraySizeTypeIds;
 		uint32 m_boolConstantFalseId;
 		uint32 m_boolConstantTrueId;
 		uint32 m_nextId = EMPTY_ID + 1;
