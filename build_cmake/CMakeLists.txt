@@ -78,6 +78,8 @@ if(TARGET_PLATFORM_WIN32)
 		../tests/BasicTest.cpp
 		../tests/BasicTest.h
 		../tests/Main.cpp
+		../tests/StorageArrayTest.cpp
+		../tests/StorageArrayTest.h
 		../tests/Swizzle1Test.cpp
 		../tests/Swizzle1Test.h
 		../tests/Swizzle2Test.cpp

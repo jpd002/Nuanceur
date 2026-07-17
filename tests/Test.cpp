@@ -9,6 +9,13 @@
 void CTest::Submit(const Nuanceur::CShaderBuilder& shaderBuilder, const CTestContext& testContext)
 {
 	std::string testString;
+
+	testString += "[require]\r\n";
+	if(!testContext.storageBuffer.empty())
+	{
+		testString += "fragmentStoresAndAtomics\r\n";
+	}
+
 	testString += "[vertex shader passthrough]\r\n";
 	testString += "[fragment shader binary]\r\n";
 
@@ -33,6 +40,12 @@ void CTest::Submit(const Nuanceur::CShaderBuilder& shaderBuilder, const CTestCon
 	{
 		const auto& uboData = testContext.uniformBuffer[i];
 		testString += string_format("ubo 0 subdata vec4 %d %f %f %f %f\r\n",
+		                            i * 16, uboData.x, uboData.y, uboData.z, uboData.w);
+	}
+	for(int i = 0; i < testContext.storageBuffer.size(); i++)
+	{
+		const auto& uboData = testContext.storageBuffer[i];
+		testString += string_format("ssbo 0 subdata vec4 %d %f %f %f %f\r\n",
 		                            i * 16, uboData.x, uboData.y, uboData.z, uboData.w);
 	}
 	testString += "draw rect -1 -1 2 2\r\n";

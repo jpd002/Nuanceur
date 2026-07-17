@@ -179,6 +179,7 @@ namespace Nuanceur
 			SYMBOL_LOCATION_INPUT,
 			SYMBOL_LOCATION_OUTPUT,
 			SYMBOL_LOCATION_UNIFORM,
+			SYMBOL_LOCATION_STORAGE,
 			SYMBOL_LOCATION_TEXTURE,
 		};
 
@@ -431,9 +432,11 @@ namespace Nuanceur
 		SYMBOL CreateUniformInt4(const std::string&, unsigned int = 0);
 		SYMBOL CreateUniformMatrix(const std::string&, unsigned int = 0);
 		SYMBOL CreateUniformArrayFloat4(const std::string&, unsigned int, unsigned int = 0);
-		SYMBOL CreateUniformArrayUint(const std::string&, unsigned int = 0, uint32 = 0);
-		SYMBOL CreateUniformArrayUchar(const std::string&, unsigned int = 0, uint32 = 0);
-		SYMBOL CreateUniformArrayUshort(const std::string&, unsigned int = 0, uint32 = 0);
+
+		SYMBOL CreateStorageArrayFloat4(const std::string&, unsigned int = 0, uint32 = 0);
+		SYMBOL CreateStorageArrayUint(const std::string&, unsigned int = 0, uint32 = 0);
+		SYMBOL CreateStorageArrayUchar(const std::string&, unsigned int = 0, uint32 = 0);
+		SYMBOL CreateStorageArrayUshort(const std::string&, unsigned int = 0, uint32 = 0);
 
 		SYMBOL CreateTexture2D(unsigned int);
 

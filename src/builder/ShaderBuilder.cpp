@@ -516,15 +516,33 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayFloat4(const std::strin
 	return sym;
 }
 
-CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUint(const std::string& name, unsigned int unit, uint32 attributes)
+CShaderBuilder::SYMBOL CShaderBuilder::CreateStorageArrayFloat4(const std::string& name, unsigned int unit, uint32 attributes)
+{
+	SYMBOL sym;
+	sym.owner = this;
+	sym.index = m_currentTempIndex++;
+	sym.type = SYMBOL_TYPE_ARRAYFLOAT4;
+	sym.location = SYMBOL_LOCATION_STORAGE;
+	sym.unit = unit;
+	sym.attributes = attributes;
+	sym.arraySize = ARRAY_SIZE_UNBOUNDED;
+	m_symbols.push_back(sym);
+
+	m_uniformNames.insert(std::make_pair(sym.index, name));
+
+	return sym;
+}
+
+CShaderBuilder::SYMBOL CShaderBuilder::CreateStorageArrayUint(const std::string& name, unsigned int unit, uint32 attributes)
 {
 	SYMBOL sym;
 	sym.owner = this;
 	sym.index = m_currentTempIndex++;
 	sym.type = SYMBOL_TYPE_ARRAYUINT;
-	sym.location = SYMBOL_LOCATION_UNIFORM;
+	sym.location = SYMBOL_LOCATION_STORAGE;
 	sym.unit = unit;
 	sym.attributes = attributes;
+	sym.arraySize = ARRAY_SIZE_UNBOUNDED;
 	m_symbols.push_back(sym);
 
 	m_uniformNames.insert(std::make_pair(sym.index, name));
@@ -532,15 +550,16 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUint(const std::string&
 	return sym;
 }
 
-CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUchar(const std::string& name, unsigned int unit, uint32 attributes)
+CShaderBuilder::SYMBOL CShaderBuilder::CreateStorageArrayUchar(const std::string& name, unsigned int unit, uint32 attributes)
 {
 	SYMBOL sym;
 	sym.owner = this;
 	sym.index = m_currentTempIndex++;
 	sym.type = SYMBOL_TYPE_ARRAYUCHAR;
-	sym.location = SYMBOL_LOCATION_UNIFORM;
+	sym.location = SYMBOL_LOCATION_STORAGE;
 	sym.unit = unit;
 	sym.attributes = attributes;
+	sym.arraySize = ARRAY_SIZE_UNBOUNDED;
 	m_symbols.push_back(sym);
 
 	m_uniformNames.insert(std::make_pair(sym.index, name));
@@ -548,15 +567,16 @@ CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUchar(const std::string
 	return sym;
 }
 
-CShaderBuilder::SYMBOL CShaderBuilder::CreateUniformArrayUshort(const std::string& name, unsigned int unit, uint32 attributes)
+CShaderBuilder::SYMBOL CShaderBuilder::CreateStorageArrayUshort(const std::string& name, unsigned int unit, uint32 attributes)
 {
 	SYMBOL sym;
 	sym.owner = this;
 	sym.index = m_currentTempIndex++;
 	sym.type = SYMBOL_TYPE_ARRAYUSHORT;
-	sym.location = SYMBOL_LOCATION_UNIFORM;
+	sym.location = SYMBOL_LOCATION_STORAGE;
 	sym.unit = unit;
 	sym.attributes = attributes;
+	sym.arraySize = ARRAY_SIZE_UNBOUNDED;
 	m_symbols.push_back(sym);
 
 	m_uniformNames.insert(std::make_pair(sym.index, name));

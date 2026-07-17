@@ -13,6 +13,7 @@ class CTestContext
 {
 public:
 	std::vector<CVector4> uniformBuffer;
+	std::vector<CVector4> storageBuffer;
 	CVector4 expectedValue = CVector4(0, 0, 0, 0);
 };
 
