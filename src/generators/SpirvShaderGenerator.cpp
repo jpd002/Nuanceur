@@ -30,6 +30,12 @@ static CShaderBuilder::SYMBOL_TYPE GetCommonSymbolType(const CShaderBuilder::SYM
 	return op1.symbol.type;
 }
 
+static bool IsBlockLocation(const CShaderBuilder::SYMBOL& symbol)
+{
+	return (symbol.location == CShaderBuilder::SYMBOL_LOCATION_UNIFORM) ||
+	       (symbol.location == CShaderBuilder::SYMBOL_LOCATION_STORAGE);
+}
+
 void CSpirvShaderGenerator::Generate()
 {
 	//Some notes:
@@ -1327,7 +1333,7 @@ void CSpirvShaderGenerator::AllocateUniformStructsIds()
 {
 	for(const auto& symbol : m_shaderBuilder.GetSymbols())
 	{
-		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_UNIFORM) continue;
+		if(!IsBlockLocation(symbol)) continue;
 		auto& structInfo = m_structInfos[symbol.unit];
 		uint32 memberIndex = structInfo.memberIndex++;
 		structInfo.memberIndices[symbol.index] = memberIndex;
@@ -1389,10 +1395,14 @@ void CSpirvShaderGenerator::DecorateUniformStructIds()
 	bool cannotHaveMoreMembers = false;
 	for(auto& symbol : m_shaderBuilder.GetSymbols())
 	{
-		if(symbol.location != CShaderBuilder::SYMBOL_LOCATION_UNIFORM) continue;
+		if(!IsBlockLocation(symbol)) continue;
 		assert(!cannotHaveMoreMembers);
 		auto& structInfo = m_structInfos[symbol.unit];
 		auto memberIndex = structInfo.memberIndices[symbol.index];
+		if(symbol.location == CShaderBuilder::SYMBOL_LOCATION_STORAGE)
+		{
+			structInfo.isBufferBlock = true;
+		}
 		WriteOp(spv::OpMemberDecorate, structInfo.typeId, memberIndex, spv::DecorationOffset, structInfo.currentOffset);
 		if(symbol.attributes & SYMBOL_ATTRIBUTE_COHERENT)
 		{
@@ -1425,6 +1435,7 @@ void CSpirvShaderGenerator::DecorateUniformStructIds()
 			}
 			else
 			{
+				assert(structInfo.isBufferBlock);
 				cannotHaveMoreMembers = true;
 			}
 			break;
